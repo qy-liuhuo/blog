@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="基于go-cqhttp和AliceBot的QQ机器人编写经验">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QQ机器人编写经验分享">
+<meta property="og:url" content="https://qylh.xyz/posts/a30716d2">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="基于go-cqhttp和AliceBot的QQ机器人编写经验">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1657805067518.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1657805281264.png">
+<meta property="article:published_time" content="2022-07-14T13:02:24.000Z">
+<meta property="article:modified_time" content="2022-11-27T05:57:13.527Z">
+<meta property="article:author" content="MaHaotian">
+<meta property="article:tag" content="QQ机器人">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="go-cqhttp">
+<meta property="article:tag" content="AliceBot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.qylh.xyz/blog/1657805067518.png">
+
+<link rel="canonical" href="https://qylh.xyz/posts/a30716d2.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>QQ机器人编写经验分享 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/a30716d2">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          QQ机器人编写经验分享
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-07-14 21:02:24" itemprop="dateCreated datePublished" datetime="2022-07-14T21:02:24+08:00">2022-07-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-11-27 13:57:13" itemprop="dateModified" datetime="2022-11-27T13:57:13+08:00">2022-11-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/" itemprop="url" rel="index"><span itemprop="name">开发经验</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>基于go-cqhttp和AliceBot的QQ机器人编写经验</p>
+<span id="more"></span>
+
+<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>由于组织迎新群需求，往年使用的MyQQ机器人灵活性稍差，且频繁更新，感觉不是很稳定。因此今年尝试基于go-cqhttp框架和AliceBot框架实现一款高自由度的QQ机器人。并配套后台管理系统，可编辑回复语，编辑敏感词汇表，更改插件开关状态等。</p>
+<p>预计实现主要功能：</p>
+<ol>
+<li>入群欢迎</li>
+<li>入群自动审批</li>
+<li>智能聊天</li>
+<li>自动回答问题</li>
+<li>垃圾广告信息识别、记录、禁言</li>
+</ol>
+<p>垃圾广告信息识别本准备使用NLP技术实现，但是缺暂时很难拿到足够的训练数据，所以先使用人工标记方案进行标注，待数据充足后再训练模型。</p>
+<p>下面简单分享一下此次开发经验</p>
+<h2 id="两个框架"><a href="#两个框架" class="headerlink" title="两个框架"></a>两个框架</h2><h3 id="go-cqhttp"><a href="#go-cqhttp" class="headerlink" title="go-cqhttp"></a>go-cqhttp</h3><p><a target="_blank" rel="noopener" href="https://docs.go-cqhttp.org/">go-cqhttp文档链接</a></p>
+<blockquote>
+<p>官方介绍：使用 mirai 以及 MiraiGo 开发的 cqhttp golang 原生实现, 并在 cqhttp 原版 的基础上做了部分修改和拓展。 文档目前还在撰写中。</p>
+</blockquote>
+<p>支持协议类型：</p>
+<ol>
+<li>HTTP API</li>
+<li>反向HTTP POST</li>
+<li>正向WebSocket</li>
+<li>反向WebSocket</li>
+</ol>
+<p>我的理解是这个工具用来<code>登录QQ</code>,并将QQ收到的事件通过协议反馈给我们要写的项目，并且我们写的代码也可以通过接口借助这个工具实现对QQ的一些操作。</p>
+<p>首先我们要按照文档要求进行安装，这里比较简单不再多说。</p>
+<p>值得注意的是config.yml的修改，可以参照官方文档的注释来修改，注意此处写的端口和协议需要与我们之后定义的保持一致。</p>
+<p>修改完成配置后，启动运行脚本（这里如果需要在服务器上运行，可以开启进程守护），第一次登录需要扫码，之后登录信息会存储在<code>device.json</code>中，就不需要扫码咯</p>
+<h3 id="AliceBot"><a href="#AliceBot" class="headerlink" title="AliceBot"></a>AliceBot</h3><p>(AliceBot文档)[<a target="_blank" rel="noopener" href="https://docs.alicebot.dev/guide/]">https://docs.alicebot.dev/guide/]</a></p>
+<blockquote>
+<p>官方介绍 AliceBot 是一个简单的 Python 异步多后端机器人框架，支持多种协议适配，可以轻松地编写易用学习和使用的插件来拓展其功能。</p>
+</blockquote>
+<p>！注意：AliceBot 仅支持 Python <code>3.8+</code> 版本。</p>
+<p>还是按照官方文档进行配置初始项目，也是注意config文件的编写，尤其是端口需要与上面的对应。</p>
+<p>我的理解这个主要是我们机器人逻辑实现的一个框架，借助cqhttp（其实也支持其他框架的）与qq的交互。</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>借助AliceBot文档的图来解释：</p>
+<p><img src="https://img.qylh.xyz/blog/1657805067518.png"></p>
+<blockquote>
+<p>AliceBot 在使用时，首先需要你实例化一个 Bot 对象，Bot 对象负责加载配置文件，维护一个插件列表和一个适配器列表并提供了一个供适配器使用的通用的事件分发方法。协议适配器（Adapter）负责和协议后端进行通讯，当协议后端发送一个新的事件（Event）给适配器后，适配器会按插件优先级分发事件给各个插件进行处理。<br>插件（Plugin）是由你编写的用于处理事件的类，它必须具有两个方法，rule() 和 handle() ，rule() 方法要求返回一个 bool 值，表示当前事件是否要交由此插件处理，当 rule() 方法返回 True 时，handle() 方法会被调用以进行事件处理。</p>
+</blockquote>
+<p><img src="https://img.qylh.xyz/blog/1657805281264.png"></p>
+<h2 id="插件类的编写"><a href="#插件类的编写" class="headerlink" title="插件类的编写"></a>插件类的编写</h2><p>简单来说就是需要接收事件，根据API作出响应。每一个功能是一个插件也就是一个类，这个类需要继承<code>alicebot.plugin.Plugin</code>，插件由三部分组成：</p>
+<p>事件的信息和API参考go-cqhttp(或其他框架的文档)</p>
+<p>API不一定要手写请求，AliceBot已经封装好了，参考<a target="_blank" rel="noopener" href="https://docs.alicebot.dev/guide/cqhttp-adapter.html">CQHTTP 协议适配器</a></p>
+<h3 id="优先级配置"><a href="#优先级配置" class="headerlink" title="优先级配置"></a>优先级配置</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">priority: int = 5  # 数字越高优先级越低</span><br><span class="line">block: bool = False # 若为True当前插件执行完毕后会停止当前事件传播，更低优先级的插件将不会被执行</span><br></pre></td></tr></table></figure>
+
+<h3 id="执行条件"><a href="#执行条件" class="headerlink" title="执行条件"></a>执行条件</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">rule</span>(<span class="params">self</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">    <span class="keyword">if</span> self.event.<span class="built_in">type</span> == <span class="string">&#x27;message&#x27;</span>:</span><br><span class="line">        msg = <span class="built_in">str</span>(self.event.message).lower()</span><br><span class="line">        keyWords = [<span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;hi&#x27;</span>, <span class="string">&#x27;大家好&#x27;</span>, <span class="string">&#x27;你好&#x27;</span>]</span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> keyWords:</span><br><span class="line">            <span class="keyword">if</span> msg.endswith(key) <span class="keyword">or</span> msg.startswith(key):</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+
+<p>该某个插件执行时，需要先检查rule，若返回了True才会执行具体内容</p>
+<h3 id="执行内容"><a href="#执行内容" class="headerlink" title="执行内容"></a>执行内容</h3><p>满足rule后会执行handle代码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">handle</span>(<span class="params">self</span>) -&gt; <span class="literal">None</span>:</span><br><span class="line"></span><br><span class="line">    replay = [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;type&quot;</span>: <span class="string">&quot;at&quot;</span>,</span><br><span class="line">            <span class="string">&quot;data&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;qq&quot;</span>: <span class="built_in">str</span>(self.event.user_id)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;type&quot;</span>: <span class="string">&quot;text&quot;</span>,</span><br><span class="line">            <span class="string">&quot;data&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;text&quot;</span>: self.getHelloWord()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">    <span class="keyword">await</span> self.event.reply(replay)</span><br></pre></td></tr></table></figure>
+
+<h2 id="一些踩过的坑"><a href="#一些踩过的坑" class="headerlink" title="一些踩过的坑"></a>一些踩过的坑</h2><ol>
+<li>QQ机器人通过API发出的操作，也会再次被接收到，如果执行条件写的不好，可能会被误处理，导致错误。</li>
+<li>事件的有些字段可能有些类型不具备，所以为了防止报错，最好先判断一下key值存不存在。</li>
+</ol>
+<h2 id="后台管理编写思路"><a href="#后台管理编写思路" class="headerlink" title="后台管理编写思路"></a>后台管理编写思路</h2><p>主要是把一下配置信息，写到文件里或者存放到Mysql or Redis 等数据库中。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/QQ%E6%9C%BA%E5%99%A8%E4%BA%BA/" rel="tag"># QQ机器人</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/go-cqhttp/" rel="tag"># go-cqhttp</a>
+              <a href="/tags/AliceBot/" rel="tag"># AliceBot</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/f1dde85a" rel="prev" title="区块链学习">
+      <i class="fa fa-chevron-left"></i> 区块链学习
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/e3ead1b2" rel="next" title="超标量总结">
+      超标量总结 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E6%A1%86%E6%9E%B6"><span class="nav-number">2.</span> <span class="nav-text">两个框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#go-cqhttp"><span class="nav-number">2.1.</span> <span class="nav-text">go-cqhttp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AliceBot"><span class="nav-number">2.2.</span> <span class="nav-text">AliceBot</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E4%BB%B6%E7%B1%BB%E7%9A%84%E7%BC%96%E5%86%99"><span class="nav-number">4.</span> <span class="nav-text">插件类的编写</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7%E9%85%8D%E7%BD%AE"><span class="nav-number">4.1.</span> <span class="nav-text">优先级配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%9D%A1%E4%BB%B6"><span class="nav-number">4.2.</span> <span class="nav-text">执行条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E5%86%85%E5%AE%B9"><span class="nav-number">4.3.</span> <span class="nav-text">执行内容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91"><span class="nav-number">5.</span> <span class="nav-text">一些踩过的坑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E7%BC%96%E5%86%99%E6%80%9D%E8%B7%AF"><span class="nav-number">6.</span> <span class="nav-text">后台管理编写思路</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MaHaotian"
+      src="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+  <p class="site-author-name" itemprop="name">MaHaotian</p>
+  <div class="site-description" itemprop="description">给时光以生命，而不是给生命以时光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MaHaotian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>

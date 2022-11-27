@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="软件工程知识点总结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="软件工程总结">
+<meta property="og:url" content="https://qylh.xyz/posts/b6a7a87b">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="软件工程知识点总结">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1653148393253.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1653148416139.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1653148568070.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1653148728999.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1653148893746.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/uTools_1653149879021.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1653186497818.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1653186643064.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1653186702057.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1653187770938.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1653620191748.png">
+<meta property="article:published_time" content="2022-05-21T13:25:24.000Z">
+<meta property="article:modified_time" content="2022-11-27T05:54:05.193Z">
+<meta property="article:author" content="MaHaotian">
+<meta property="article:tag" content="软件工程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.qylh.xyz/blog/1653148393253.png">
+
+<link rel="canonical" href="https://qylh.xyz/posts/b6a7a87b.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>软件工程总结 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/b6a7a87b">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          软件工程总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-21 21:25:24" itemprop="dateCreated datePublished" datetime="2022-05-21T21:25:24+08:00">2022-05-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-11-27 13:54:05" itemprop="dateModified" datetime="2022-11-27T13:54:05+08:00">2022-11-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">软件工程</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>软件工程知识点总结</p>
+<span id="more"></span>
+
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h4 id="软件"><a href="#软件" class="headerlink" title="软件"></a>软件</h4><blockquote>
+<p>程序+数据+文档</p>
+</blockquote>
+<h3 id="软件危机"><a href="#软件危机" class="headerlink" title="软件危机"></a>软件危机</h3><blockquote>
+<p>软件危机是指落后的软件生产方式无法满足迅速增长的计算机软件需求，从而导致软件开发和维护过程中出现一系列严重问题的现象</p>
+</blockquote>
+<h4 id="软件危机的表现"><a href="#软件危机的表现" class="headerlink" title="软件危机的表现"></a>软件危机的表现</h4><ol>
+<li>对软件的开发成本和进度的估计不准确</li>
+<li>用户对已完成的系统不满意</li>
+<li>软件质量不可靠</li>
+<li>软件可维护性差</li>
+<li>缺乏文档资料</li>
+<li>软件成本上升</li>
+<li>生产速率跟不上计算机应用普及的趋势</li>
+</ol>
+<h4 id="软件危机的原因"><a href="#软件危机的原因" class="headerlink" title="软件危机的原因"></a>软件危机的原因</h4><h5 id="软件自身原因"><a href="#软件自身原因" class="headerlink" title="软件自身原因"></a>软件自身原因</h5><p>软件自身特点使得开发和维护困难，主要表现在两个方面：</p>
+<ol>
+<li>复杂性</li>
+<li>不可见性</li>
+</ol>
+<h5 id="软件开发和维护方法不正确"><a href="#软件开发和维护方法不正确" class="headerlink" title="软件开发和维护方法不正确"></a>软件开发和维护方法不正确</h5><ol>
+<li>没有科学的工程化思想来组织和指导开发</li>
+<li>没有完善的质量保证体系</li>
+<li>软件文档没有得到重视</li>
+<li>从业人员缺乏经验</li>
+</ol>
+<h3 id="软件工程"><a href="#软件工程" class="headerlink" title="软件工程"></a>软件工程</h3><h4 id="软件工程的定义"><a href="#软件工程的定义" class="headerlink" title="软件工程的定义"></a>软件工程的定义</h4><blockquote>
+<p>软件工程是指导计算机软件开发和维护的一门学科，<br>采用工程的概念原理技术和方法来开发与维护软件，<br>把经过时间考验而证明正确的管理技术和当前能够的到的最好的技术方法结合起来，<br>以经济地开发出高质量的软件并有效地维护它。</p>
+</blockquote>
+<h4 id="软件工程的本质特征"><a href="#软件工程的本质特征" class="headerlink" title="软件工程的本质特征"></a>软件工程的本质特征</h4><ol>
+<li>关注于大型程序的构造</li>
+<li>中心课题是控制复杂性</li>
+<li>软件经常变化</li>
+<li>开发效率非常重要</li>
+<li>和谐开发是关键</li>
+<li>必须有效地支持用户</li>
+<li>开发者与用户的文化背景不同</li>
+</ol>
+<h4 id="软件工程的基本原理"><a href="#软件工程的基本原理" class="headerlink" title="软件工程的基本原理"></a>软件工程的基本原理</h4><ol>
+<li>用分阶段的生命周期计划严格管理</li>
+<li>坚持阶段评审</li>
+<li>实行严格的产品控制</li>
+<li>采用现代程序设计技术</li>
+<li>结果应能清楚地进行审查</li>
+<li>开发小组应少而精</li>
+<li>承认不断改进软件工程实践的必要性</li>
+</ol>
+<h4 id="软件开发方法学"><a href="#软件开发方法学" class="headerlink" title="软件开发方法学"></a>软件开发方法学</h4><blockquote>
+<p>软件生命周期中使用的一整套技术方法的集合称为方法学，也称为泛型</p>
+</blockquote>
+<h5 id="方法学要素"><a href="#方法学要素" class="headerlink" title="方法学要素"></a>方法学要素</h5><ol>
+<li>方法：软件开发如何做？</li>
+<li>工具：为软件工程方法提供的软件支撑工具</li>
+<li>过程：用于开发、管理、维护软件的一系列活动，是将软件工程的标准、方法、工具综合起来以达到合理及时进行软件开发管理维护活动的序列</li>
+</ol>
+<h5 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h5><ul>
+<li>传统方法学</li>
+<li>面向对象方法学</li>
+</ul>
+<h3 id="软件生命周期"><a href="#软件生命周期" class="headerlink" title="软件生命周期"></a>软件生命周期</h3><h4 id="软件开发三个阶段"><a href="#软件开发三个阶段" class="headerlink" title="软件开发三个阶段"></a>软件开发三个阶段</h4><ol>
+<li>定义阶段</li>
+<li>开发阶段</li>
+<li>维护阶段</li>
+</ol>
+<h4 id="软件生命周期每个阶段的基本任务"><a href="#软件生命周期每个阶段的基本任务" class="headerlink" title="软件生命周期每个阶段的基本任务"></a>软件生命周期每个阶段的基本任务</h4><ol>
+<li>可行性研究</li>
+<li>需求分析</li>
+<li>软件设计</li>
+<li>编码</li>
+<li>软件测试</li>
+<li>软件维护</li>
+</ol>
+<h3 id="软件开发模型（软件过程）"><a href="#软件开发模型（软件过程）" class="headerlink" title="软件开发模型（软件过程）"></a>软件开发模型（软件过程）</h3><blockquote>
+<p>软件过程是为了获得高质量软件所需要完成的一系列任务的框架。规定了完成各项任务的工作步骤</p>
+</blockquote>
+<p>用UML 建模语言来描述软件工程模型</p>
+<h4 id="瀑布模型-☆"><a href="#瀑布模型-☆" class="headerlink" title="瀑布模型 ☆"></a>瀑布模型 ☆</h4><blockquote>
+<p>各阶段间的组织方式就如同瀑布流水一样，逐级下落，完成前一阶段任务后才可开始下一阶段工作<br><img src="https://img.qylh.xyz/blog/1653148393253.png"></p>
+</blockquote>
+<h5 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h5><ol>
+<li>阶段间具有顺序性和依赖性<ul>
+<li>必须等前一阶段完成后，才能开始下一阶段工作</li>
+<li>前一阶段的输出文档就是后一个阶段的输入文档</li>
+</ul>
+</li>
+<li>推迟实现的观点：规模大的软件，编码开始越早，最终完成所需时间越长，瀑布模型尽可能推迟程序的物理实现</li>
+<li>质量保证的观点<ul>
+<li>基于里程碑的阶段过程，开发人员为每个阶段设立里程碑，并做好评审</li>
+</ul>
+</li>
+</ol>
+<h5 id="优点："><a href="#优点：" class="headerlink" title="优点："></a>优点：</h5><ul>
+<li>过程模型简单</li>
+<li>强迫开发人员采用规范的方法，严格要求文档并需要经过评审，能够保证软件质量</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>无法适应变更</li>
+</ul>
+<h4 id="快速原型模型"><a href="#快速原型模型" class="headerlink" title="快速原型模型"></a>快速原型模型</h4><blockquote>
+<p>快速建立起能反映用户需求的程序，让用户试用，以了解目标系统概貌，并按照客户要求快速修改原型系统，不断重复。</p>
+</blockquote>
+<p><img src="https://img.qylh.xyz/blog/1653148416139.png"></p>
+<p>优点：</p>
+<ul>
+<li>简单快速</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>需要花费额外成本构造原型</li>
+<li>不利于创新</li>
+</ul>
+<h4 id="增量模型-☆"><a href="#增量模型-☆" class="headerlink" title="增量模型  ☆"></a>增量模型  ☆</h4><blockquote>
+<p>增量模型是把待开发的软件系统模块化，将每个模块作为一个增量组件，从而分批次地分析、设计、编码和测试这些增量组件。是一个递增的过程，分批次交付软件</p>
+</blockquote>
+<p><img src="https://img.qylh.xyz/blog/1653148568070.png"></p>
+<p>优点：</p>
+<ul>
+<li>模块化可分批次交付，便于客户了解进展</li>
+<li>模块化降低开发风险，一个周期内的错误不会影响整个系统</li>
+<li>开发顺序灵活</li>
+</ul>
+<h4 id="螺旋模型"><a href="#螺旋模型" class="headerlink" title="螺旋模型"></a>螺旋模型</h4><blockquote>
+<p>用于风险较大的大型软件项目开发过程，可以看成是增加了风险分析过程的快速原型模型</p>
+</blockquote>
+<p><img src="https://img.qylh.xyz/blog/1653148728999.png"></p>
+<h4 id="喷泉模型"><a href="#喷泉模型" class="headerlink" title="喷泉模型"></a>喷泉模型</h4><blockquote>
+<p>一种过程模型，支持面向对象，由于面向对象经常需要迭代，喷泉模型可随时回到底层</p>
+</blockquote>
+<p><img src="https://img.qylh.xyz/blog/1653148893746.png"></p>
+<h4 id="敏捷模型"><a href="#敏捷模型" class="headerlink" title="敏捷模型"></a>敏捷模型</h4><blockquote>
+<p>敏捷方法是一种轻量级的软件工程方法，相对于传统的软件工程方法，它更强调软件开发过程中各种变化的必然性，通过团队成员间充分的交流和沟通以及合理的机制来有效地响应变化。</p>
+</blockquote>
+<p>敏捷软件开发宣言：</p>
+<ol>
+<li>个体和交互胜过过程和工具</li>
+<li>可以工作的软件胜过面面俱到的文档</li>
+<li>客户合作胜过合同谈判</li>
+<li>响应变化胜过遵循计划</li>
+</ol>
+<h3 id="习题"><a href="#习题" class="headerlink" title="习题"></a>习题</h3><p><img src="https://img.qylh.xyz/blog/uTools_1653149879021.png"></p>
+<h2 id="可行性研究"><a href="#可行性研究" class="headerlink" title="可行性研究"></a>可行性研究</h2><details>
+  <summary>可行性研究的目的</summary>
+用最小的代价在尽可能短的时间内确定问题是否能够并且值得解决
+</details>
+
+<details>
+  <summary>可行性研究的根本任务</summary>
+对以后的行动方针提出建议
+</details>
+
+<h3 id="可行性研究的三个组成："><a href="#可行性研究的三个组成：" class="headerlink" title="可行性研究的三个组成："></a>可行性研究的三个组成：</h3><ol>
+<li>技术可行性 现有技术能否实现</li>
+<li>经济可行性 经济效益能否超过开发成本</li>
+<li>操作可行性 系统的操作方式在用户组织内行的通吗<br>此外还应在法律、社会、管理等其他方面分析</li>
+</ol>
+<h3 id="可行性研究的过程"><a href="#可行性研究的过程" class="headerlink" title="可行性研究的过程"></a>可行性研究的过程</h3><ol>
+<li>复查系统规模和目标</li>
+<li>研究目前正在使用的系统</li>
+<li>导出新系统的高层逻辑模型</li>
+<li>进一步定义问题</li>
+<li>导出并评价共选择的方案</li>
+<li>推荐行动方针</li>
+<li>草拟开发计划</li>
+<li>书写文档提交审查</li>
+</ol>
+<h3 id="系统流程图"><a href="#系统流程图" class="headerlink" title="系统流程图"></a>系统流程图</h3><blockquote>
+<p>是概括描述<em>物理系统</em>的传统工具,表达数据在系统各部件之间流动的情况</p>
+</blockquote>
+<blockquote>
+<p>用于分析现有系统！！！</p>
+</blockquote>
+<p><img src="https://img.qylh.xyz/blog/1653186497818.png"></p>
+<p>复杂系统时应该分层画</p>
+<h3 id="数据流图"><a href="#数据流图" class="headerlink" title="数据流图"></a>数据流图</h3><blockquote>
+<p>数据流图描绘系统的逻辑模型，无具体的物理元素，值描绘信息在系统中流动处理的情况</p>
+</blockquote>
+<p><img src="https://img.qylh.xyz/blog/1653186643064.png"></p>
+<p><img src="https://img.qylh.xyz/blog/1653186702057.png"></p>
+<h3 id="成本效益分析"><a href="#成本效益分析" class="headerlink" title="成本效益分析"></a>成本效益分析</h3><h4 id="成本估计"><a href="#成本估计" class="headerlink" title="成本估计"></a>成本估计</h4><h5 id="代码行技术"><a href="#代码行技术" class="headerlink" title="代码行技术"></a>代码行技术</h5><blockquote>
+<p>2Xf2E6aEU7n685eHEbXGYHrmWn2y7a62UWBrtZzodVdD</p>
+</blockquote>
+<h5 id="任务分解技术"><a href="#任务分解技术" class="headerlink" title="任务分解技术"></a>任务分解技术</h5><blockquote>
+<p>将软件开发工程分解成若干个相对独立的任务，分别估算，累加得到总成本</p>
+</blockquote>
+<h5 id="开发成本估计技术"><a href="#开发成本估计技术" class="headerlink" title="开发成本估计技术"></a>开发成本估计技术</h5><blockquote>
+<p>需要软件和数据的支撑</p>
+</blockquote>
+<h3 id="习题-1"><a href="#习题-1" class="headerlink" title="习题"></a>习题</h3><p><img src="https://img.qylh.xyz/blog/1653187770938.png"></p>
+<h2 id="总体设计"><a href="#总体设计" class="headerlink" title="总体设计"></a>总体设计</h2><h3 id="软件设计的任务"><a href="#软件设计的任务" class="headerlink" title="软件设计的任务"></a>软件设计的任务</h3><blockquote>
+<p>以软件需求规格说明书为依据，着手实现软件的需求，并将设计的结果反应在“设计规格说明书”的文档中</p>
+</blockquote>
+<h4 id="总体设计（概要设计）"><a href="#总体设计（概要设计）" class="headerlink" title="总体设计（概要设计）"></a>总体设计（概要设计）</h4><blockquote>
+<p>根据软件需求，设计软件系统结构和数据结构确定程序的组成模块之间的关系，从抽象的层次上分析对比多种可能的系统实现方案和软件结构，从中选取最佳方案和最合理的软件结构，从而用较低成本开发出高质量的软件系统</p>
+</blockquote>
+<h4 id="详细设计（过程设计）"><a href="#详细设计（过程设计）" class="headerlink" title="详细设计（过程设计）"></a>详细设计（过程设计）</h4><blockquote>
+<p>确定模块内部的算法和数据结构，选定某种过程的表达形式来描述算法，生成详细文档</p>
+</blockquote>
+<h3 id="设计过程"><a href="#设计过程" class="headerlink" title="设计过程"></a>设计过程</h3><ol>
+<li>提供选择方案<ol>
+<li>从需求阶段的数据流图出发</li>
+</ol>
+</li>
+<li>选取合理方案<ol>
+<li>系统流程图</li>
+<li>组成系统的物理元素清单</li>
+<li>成本效益分析</li>
+<li>实现系统的进度计划</li>
+</ol>
+</li>
+<li>推荐最佳方案</li>
+<li>功能分解</li>
+<li>设计软件结构</li>
+<li>设计数据库</li>
+<li>制定测试计划</li>
+<li>书写文档<ol>
+<li>系统说明</li>
+<li>用户手册</li>
+<li>测试计划</li>
+<li>详细的实现计划</li>
+<li>数据库设计结果</li>
+</ol>
+</li>
+<li>审查和复审</li>
+</ol>
+<h3 id="设计原理"><a href="#设计原理" class="headerlink" title="设计原理"></a>设计原理</h3><h4 id="模块化"><a href="#模块化" class="headerlink" title="模块化"></a>模块化</h4><h5 id="什么是模块？"><a href="#什么是模块？" class="headerlink" title="什么是模块？"></a>什么是模块？</h5><blockquote>
+<p>模块是数据说明和可执行语句等程序对象的集合，每个模块单独命名并且可以通过名字对模块进行访问</p>
+</blockquote>
+<h5 id="模块化思想"><a href="#模块化思想" class="headerlink" title="模块化思想"></a>模块化思想</h5><blockquote>
+<p>采用自顶向下的方式，逐层把软件系统划分成若干个可单独命名和可编址的模块，每个模块完成一个特定的子功能，所有模块按照某种方法组成一个整体，完成整个系统所要求的的功能。</p>
+</blockquote>
+<h5 id="模块化的优点"><a href="#模块化的优点" class="headerlink" title="模块化的优点"></a>模块化的优点</h5><ol>
+<li>降低软件复杂性</li>
+<li>减少开发工作量</li>
+<li>降低成本</li>
+<li>提高软件生产率</li>
+</ol>
+<h5 id="模块化与软件成本的关系"><a href="#模块化与软件成本的关系" class="headerlink" title="模块化与软件成本的关系"></a>模块化与软件成本的关系</h5><p><img src="https://img.qylh.xyz/blog/1653620191748.png"></p>
+<p>并非模块越多越好！</p>
+<h4 id="抽象"><a href="#抽象" class="headerlink" title="抽象"></a>抽象</h4><h5 id="什么是抽象？"><a href="#什么是抽象？" class="headerlink" title="什么是抽象？"></a>什么是抽象？</h5><p>认识复杂事物和现象时，抽出事物本质的共同特性而暂不考虑他们的细节</p>
+<h4 id="逐步求精"><a href="#逐步求精" class="headerlink" title="逐步求精"></a>逐步求精</h4><blockquote>
+<p>为了能集中精力解决主要问题而尽量推迟对问题细节的考虑。可以看做把一个时期内必须解决的问题按照优先级排序的技术，是一种自顶向下的设计策略</p>
+</blockquote>
+<h5 id="miller原则"><a href="#miller原则" class="headerlink" title="miller原则"></a>miller原则</h5><blockquote>
+<p>一个人在任何时候都只能把注意力集中在5-9个知识块上</p>
+</blockquote>
+<h4 id="信息隐藏和局部化"><a href="#信息隐藏和局部化" class="headerlink" title="信息隐藏和局部化"></a>信息隐藏和局部化</h4><blockquote>
+<p>在设计和确定模块时，使得一个模块内包含的信息（过程或数据），不允许其它不需要这些信息的模块访问，独立的模块间仅仅交换为完成系统功能而必项交换的信息。</p>
+</blockquote>
+<blockquote>
+<p>局部化：将一些关系密切的软件元素物理地彼此靠近：如局部变量</p>
+</blockquote>
+<h4 id="模块独立（低耦合，高内聚）"><a href="#模块独立（低耦合，高内聚）" class="headerlink" title="模块独立（低耦合，高内聚）"></a>模块独立（低耦合，高内聚）</h4><blockquote>
+<p>模块只完成系统要求的相对独立的功能，符合信息隐蔽原则，模块间关联和依赖程度尽量小</p>
+</blockquote>
+<h5 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h5><p>容易开发测试和维护</p>
+<h5 id="两个原则"><a href="#两个原则" class="headerlink" title="两个原则"></a>两个原则</h5><p>低耦合、高内聚</p>
+<p>详见另一篇博客：<a href="https://qylh.xyz/2022/01/26/%E8%80%A6%E5%90%88%E4%B8%8E%E5%86%85%E8%81%9A/">耦合与内聚</a></p>
+<h3 id="启发规则"><a href="#启发规则" class="headerlink" title="启发规则"></a>启发规则</h3><ol>
+<li>改进软件结构提高模块独立性</li>
+<li>模块规模应该适中</li>
+<li>深度、宽度、扇出、扇入应适当</li>
+<li>模块的作用域应在控制域之内</li>
+<li>力争降低模块接口的复杂程度</li>
+<li>设计单入口单出口的模块</li>
+<li>模块功能应该可以预测</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/" rel="tag"># 软件工程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/eb46ecd9" rel="prev" title="ip查询工具">
+      <i class="fa fa-chevron-left"></i> ip查询工具
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/f1dde85a" rel="next" title="区块链学习">
+      区块链学习 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6"><span class="nav-number">1.0.1.</span> <span class="nav-text">软件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%8D%B1%E6%9C%BA"><span class="nav-number">1.1.</span> <span class="nav-text">软件危机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%8D%B1%E6%9C%BA%E7%9A%84%E8%A1%A8%E7%8E%B0"><span class="nav-number">1.1.1.</span> <span class="nav-text">软件危机的表现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%8D%B1%E6%9C%BA%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="nav-number">1.1.2.</span> <span class="nav-text">软件危机的原因</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E8%87%AA%E8%BA%AB%E5%8E%9F%E5%9B%A0"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">软件自身原因</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E5%92%8C%E7%BB%B4%E6%8A%A4%E6%96%B9%E6%B3%95%E4%B8%8D%E6%AD%A3%E7%A1%AE"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">软件开发和维护方法不正确</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">软件工程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.2.1.</span> <span class="nav-text">软件工程的定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E7%9A%84%E6%9C%AC%E8%B4%A8%E7%89%B9%E5%BE%81"><span class="nav-number">1.2.2.</span> <span class="nav-text">软件工程的本质特征</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-number">1.2.3.</span> <span class="nav-text">软件工程的基本原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E6%96%B9%E6%B3%95%E5%AD%A6"><span class="nav-number">1.2.4.</span> <span class="nav-text">软件开发方法学</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E5%AD%A6%E8%A6%81%E7%B4%A0"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">方法学要素</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">类型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">1.3.</span> <span class="nav-text">软件生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E4%B8%89%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="nav-number">1.3.1.</span> <span class="nav-text">软件开发三个阶段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%AF%8F%E4%B8%AA%E9%98%B6%E6%AE%B5%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BB%BB%E5%8A%A1"><span class="nav-number">1.3.2.</span> <span class="nav-text">软件生命周期每个阶段的基本任务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E6%A8%A1%E5%9E%8B%EF%BC%88%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">软件开发模型（软件过程）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%80%91%E5%B8%83%E6%A8%A1%E5%9E%8B-%E2%98%86"><span class="nav-number">1.4.1.</span> <span class="nav-text">瀑布模型 ☆</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BC%98%E7%82%B9%EF%BC%9A"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">优点：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.4.2.</span> <span class="nav-text">快速原型模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A2%9E%E9%87%8F%E6%A8%A1%E5%9E%8B-%E2%98%86"><span class="nav-number">1.4.3.</span> <span class="nav-text">增量模型  ☆</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%9E%BA%E6%97%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.4.4.</span> <span class="nav-text">螺旋模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%96%B7%E6%B3%89%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.4.5.</span> <span class="nav-text">喷泉模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%8F%E6%8D%B7%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.4.6.</span> <span class="nav-text">敏捷模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%A0%E9%A2%98"><span class="nav-number">1.5.</span> <span class="nav-text">习题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E8%A1%8C%E6%80%A7%E7%A0%94%E7%A9%B6"><span class="nav-number">2.</span> <span class="nav-text">可行性研究</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%A1%8C%E6%80%A7%E7%A0%94%E7%A9%B6%E7%9A%84%E4%B8%89%E4%B8%AA%E7%BB%84%E6%88%90%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">可行性研究的三个组成：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%A1%8C%E6%80%A7%E7%A0%94%E7%A9%B6%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">可行性研究的过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">2.3.</span> <span class="nav-text">系统流程图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%B5%81%E5%9B%BE"><span class="nav-number">2.4.</span> <span class="nav-text">数据流图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%90%E6%9C%AC%E6%95%88%E7%9B%8A%E5%88%86%E6%9E%90"><span class="nav-number">2.5.</span> <span class="nav-text">成本效益分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%88%90%E6%9C%AC%E4%BC%B0%E8%AE%A1"><span class="nav-number">2.5.1.</span> <span class="nav-text">成本估计</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A1%8C%E6%8A%80%E6%9C%AF"><span class="nav-number">2.5.1.1.</span> <span class="nav-text">代码行技术</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E5%88%86%E8%A7%A3%E6%8A%80%E6%9C%AF"><span class="nav-number">2.5.1.2.</span> <span class="nav-text">任务分解技术</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E6%88%90%E6%9C%AC%E4%BC%B0%E8%AE%A1%E6%8A%80%E6%9C%AF"><span class="nav-number">2.5.1.3.</span> <span class="nav-text">开发成本估计技术</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%A0%E9%A2%98-1"><span class="nav-number">2.6.</span> <span class="nav-text">习题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E4%BD%93%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.</span> <span class="nav-text">总体设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%BB%BB%E5%8A%A1"><span class="nav-number">3.1.</span> <span class="nav-text">软件设计的任务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E4%BD%93%E8%AE%BE%E8%AE%A1%EF%BC%88%E6%A6%82%E8%A6%81%E8%AE%BE%E8%AE%A1%EF%BC%89"><span class="nav-number">3.1.1.</span> <span class="nav-text">总体设计（概要设计）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%A6%E7%BB%86%E8%AE%BE%E8%AE%A1%EF%BC%88%E8%BF%87%E7%A8%8B%E8%AE%BE%E8%AE%A1%EF%BC%89"><span class="nav-number">3.1.2.</span> <span class="nav-text">详细设计（过程设计）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E8%BF%87%E7%A8%8B"><span class="nav-number">3.2.</span> <span class="nav-text">设计过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86"><span class="nav-number">3.3.</span> <span class="nav-text">设计原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E5%8C%96"><span class="nav-number">3.3.1.</span> <span class="nav-text">模块化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%A8%A1%E5%9D%97%EF%BC%9F"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">什么是模块？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E5%8C%96%E6%80%9D%E6%83%B3"><span class="nav-number">3.3.1.2.</span> <span class="nav-text">模块化思想</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E4%BC%98%E7%82%B9"><span class="nav-number">3.3.1.3.</span> <span class="nav-text">模块化的优点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E5%8C%96%E4%B8%8E%E8%BD%AF%E4%BB%B6%E6%88%90%E6%9C%AC%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">3.3.1.4.</span> <span class="nav-text">模块化与软件成本的关系</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1"><span class="nav-number">3.3.2.</span> <span class="nav-text">抽象</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%8A%BD%E8%B1%A1%EF%BC%9F"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">什么是抽象？</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%90%E6%AD%A5%E6%B1%82%E7%B2%BE"><span class="nav-number">3.3.3.</span> <span class="nav-text">逐步求精</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#miller%E5%8E%9F%E5%88%99"><span class="nav-number">3.3.3.1.</span> <span class="nav-text">miller原则</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E9%9A%90%E8%97%8F%E5%92%8C%E5%B1%80%E9%83%A8%E5%8C%96"><span class="nav-number">3.3.4.</span> <span class="nav-text">信息隐藏和局部化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E7%8B%AC%E7%AB%8B%EF%BC%88%E4%BD%8E%E8%80%A6%E5%90%88%EF%BC%8C%E9%AB%98%E5%86%85%E8%81%9A%EF%BC%89"><span class="nav-number">3.3.5.</span> <span class="nav-text">模块独立（低耦合，高内聚）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BC%98%E7%82%B9"><span class="nav-number">3.3.5.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E5%8E%9F%E5%88%99"><span class="nav-number">3.3.5.2.</span> <span class="nav-text">两个原则</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8F%91%E8%A7%84%E5%88%99"><span class="nav-number">3.4.</span> <span class="nav-text">启发规则</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MaHaotian"
+      src="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+  <p class="site-author-name" itemprop="name">MaHaotian</p>
+  <div class="site-description" itemprop="description">给时光以生命，而不是给生命以时光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MaHaotian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>
