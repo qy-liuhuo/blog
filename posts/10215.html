@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/mylogo.svg">
+  <link rel="mask-icon" href="/images/mylogo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="基于Vivado平台使用VHDL设计实现一个单周期CPU(HBU硬件描述语言实验大作业)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VHDL_单周期CPU设计">
+<meta property="og:url" content="https://qylh.xyz/posts/10215.html">
+<meta property="og:site_name" content="Coder_M">
+<meta property="og:description" content="基于Vivado平台使用VHDL设计实现一个单周期CPU(HBU硬件描述语言实验大作业)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1671347485766.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1671347534659.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1671347973398.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1671348044531.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1671348974672.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1671349198347.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1671349233863.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1671350320848.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1671350057398.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1671350240298.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1671350702852.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1671350347074.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/Snipaste_2022-12-18_14-00-41.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/Snipaste_2022-12-18_14-28-13.png">
+<meta property="article:published_time" content="2022-12-18T07:02:17.000Z">
+<meta property="article:modified_time" content="2022-12-18T08:50:09.551Z">
+<meta property="article:author" content="MaHaotian">
+<meta property="article:tag" content="硬件">
+<meta property="article:tag" content="VHDL">
+<meta property="article:tag" content="CPU">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.qylh.xyz/blog/1671347485766.png">
+
+<link rel="canonical" href="https://qylh.xyz/posts/10215.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>VHDL_单周期CPU设计 | Coder_M</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Coder_M</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/10215.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coder_M">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          VHDL_单周期CPU设计
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-12-18 15:02:17 / 修改时间：16:50:09" itemprop="dateCreated datePublished" datetime="2022-12-18T15:02:17+08:00">2022-12-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>基于Vivado平台使用VHDL设计实现一个单周期CPU(HBU硬件描述语言实验大作业)</p>
+<span id="more"></span>
+
+<h2 id="CPU架构"><a href="#CPU架构" class="headerlink" title="CPU架构"></a>CPU架构</h2><h3 id="基本架构"><a href="#基本架构" class="headerlink" title="基本架构"></a>基本架构</h3><blockquote>
+<p>参考课程给出的推荐架构，具体如下：</p>
+</blockquote>
+<ul>
+<li>哈佛结构RISC，字长为16位</li>
+<li>单周期</li>
+<li>指令字长为16位</li>
+<li>数据字长为16位</li>
+<li>程序存储空间为65536字</li>
+<li>数据存储空间为65536字</li>
+</ul>
+<h3 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h3><ul>
+<li>16个16位通用寄存器r0-r15 ，r0总为零，r15为链接寄存器；</li>
+<li>1个4位标志寄存器，V溢出，C进位，N负，Z零；</li>
+</ul>
+<h2 id="指令集说明"><a href="#指令集说明" class="headerlink" title="指令集说明"></a>指令集说明</h2><p>指令集分类如下：</p>
+<ul>
+<li>立即寻址加载指令</li>
+<li>寄存器寻址运算指令</li>
+<li>立即寻址跳转指令</li>
+<li>偏移寻址条件分支指令</li>
+<li>寄存器间接寻址加载&#x2F;存储指令</li>
+<li>链接寄存器寻址跳转指令</li>
+</ul>
+<h3 id="立即寻址加载指令"><a href="#立即寻址加载指令" class="headerlink" title="立即寻址加载指令"></a>立即寻址加载指令</h3><blockquote>
+<p>指令中的8位立即数加载到指定的通用寄存器低8位。 Imm8为8位立即数，rd为通用寄存器。</p>
+</blockquote>
+<p><code>LI rd, Imm8</code></p>
+<p><img data-src="https://img.qylh.xyz/blog/1671347485766.png"></p>
+<h3 id="寄存器寻址运算指令"><a href="#寄存器寻址运算指令" class="headerlink" title="寄存器寻址运算指令"></a>寄存器寻址运算指令</h3><blockquote>
+<p>通用寄存器rs和rd中的两个操作数进行运算操作码alu_op指定运算Fx ，结果赋值到寄存器rd中。寄存器寻址运算指令的运算操作码为4位，可以指定16种运算。每种运算都将改变标志位寄存器的内容。</p>
+</blockquote>
+<p><code>Fx rd, rs</code></p>
+<p><img data-src="https://img.qylh.xyz/blog/1671347534659.png"></p>
+<table>
+<thead>
+<tr>
+<th>运算指令</th>
+<th>操作码</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ADD</td>
+<td>0000</td>
+<td>加法</td>
+</tr>
+<tr>
+<td>SUB</td>
+<td>0001</td>
+<td>减法</td>
+</tr>
+<tr>
+<td>MOV</td>
+<td>0100</td>
+<td>拷贝</td>
+</tr>
+<tr>
+<td>AND</td>
+<td>0101</td>
+<td>与运算</td>
+</tr>
+<tr>
+<td>OR</td>
+<td>1010</td>
+<td>或运算</td>
+</tr>
+<tr>
+<td>NOT</td>
+<td>0111</td>
+<td>非运算</td>
+</tr>
+<tr>
+<td>XOR</td>
+<td>1000</td>
+<td>异或运算</td>
+</tr>
+<tr>
+<td>SLL</td>
+<td>1001</td>
+<td>逻辑左移</td>
+</tr>
+<tr>
+<td>SRL</td>
+<td>1010</td>
+<td>逻辑右移</td>
+</tr>
+<tr>
+<td>SRA</td>
+<td>1011</td>
+<td>算数右移</td>
+</tr>
+<tr>
+<td>SCC</td>
+<td>1100</td>
+<td>带进位循环一位右移</td>
+</tr>
+<tr>
+<td>TST</td>
+<td>1101</td>
+<td>比较运算，仅改变标志位</td>
+</tr>
+<tr>
+<td>RDF</td>
+<td>1110</td>
+<td>读标志位</td>
+</tr>
+<tr>
+<td>WRF</td>
+<td>1111</td>
+<td>写标志位</td>
+</tr>
+</tbody></table>
+<h3 id="立即寻址跳转指令"><a href="#立即寻址跳转指令" class="headerlink" title="立即寻址跳转指令"></a>立即寻址跳转指令</h3><h4 id="跳转指令"><a href="#跳转指令" class="headerlink" title="跳转指令"></a>跳转指令</h4><blockquote>
+<p>14位立即数地址送PC低14位(程序跳转)， PC高2位不变。</p>
+</blockquote>
+<p><code>JMP addr14</code></p>
+<p><img data-src="https://img.qylh.xyz/blog/1671347973398.png"></p>
+<h4 id="带链接的跳转指令"><a href="#带链接的跳转指令" class="headerlink" title="带链接的跳转指令"></a>带链接的跳转指令</h4><blockquote>
+<p>当前 PC值送r15 ，14为立即数地址送 PC低14位。</p>
+</blockquote>
+<p><code>JL addr14</code></p>
+<p><img data-src="https://img.qylh.xyz/blog/1671348044531.png"></p>
+<h3 id="偏移寻址条件分支指令"><a href="#偏移寻址条件分支指令" class="headerlink" title="偏移寻址条件分支指令"></a>偏移寻址条件分支指令</h3><blockquote>
+<p>若指定条件为真，当前 PC 值加上有符号相对偏移地址立即数 addr8 送给 PC，程序跳转。条件码为4位，对应4位标志位，产生4个执行跳转条件。条件码某位为1，所对应的标志位为1，则该执行跳转条件为真。条件码某位为0，则该执行跳转条件总为真。</p>
+</blockquote>
+<p><code>BX addr8</code></p>
+<p><img data-src="https://img.qylh.xyz/blog/1671348974672.png"></p>
+<table>
+<thead>
+<tr>
+<th>条件码</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0000</td>
+<td>直接跳转</td>
+</tr>
+<tr>
+<td>0001</td>
+<td>Z为1（相等）则跳转</td>
+</tr>
+<tr>
+<td>0010</td>
+<td>标志位 N为1（小于）则跳转</td>
+</tr>
+<tr>
+<td>0100</td>
+<td>标志位 C为1（有进位或借位）则跳转</td>
+</tr>
+<tr>
+<td>1000</td>
+<td>标志位 V为1（溢出）则跳转</td>
+</tr>
+</tbody></table>
+<h3 id="寄存器间接寻址"><a href="#寄存器间接寻址" class="headerlink" title="寄存器间接寻址"></a>寄存器间接寻址</h3><h4 id="寄存器间接寻址加载指令"><a href="#寄存器间接寻址加载指令" class="headerlink" title="寄存器间接寻址加载指令"></a>寄存器间接寻址加载指令</h4><blockquote>
+<p>将 rs 所存的地址值指定的数据存储器单元中的数据加载到 rd</p>
+</blockquote>
+<p><code>LM rd, rs</code></p>
+<p><img data-src="https://img.qylh.xyz/blog/1671349198347.png"></p>
+<h4 id="存器间接寻址存储指令"><a href="#存器间接寻址存储指令" class="headerlink" title="存器间接寻址存储指令"></a>存器间接寻址存储指令</h4><blockquote>
+<p>将 rd 中的数据保存到 rs 所存的地址值指定的数据存储器单元。</p>
+</blockquote>
+<p><code>SM rd, rs</code></p>
+<p><img data-src="https://img.qylh.xyz/blog/1671349233863.png"></p>
+<h3 id="链接寄存器寻址跳转指令"><a href="#链接寄存器寻址跳转指令" class="headerlink" title="链接寄存器寻址跳转指令"></a>链接寄存器寻址跳转指令</h3><blockquote>
+<p>r15送 PC，程序跳转</p>
+</blockquote>
+<p><code>JR</code></p>
+<p><img data-src="https://img.qylh.xyz/blog/1671350320848.png"></p>
+<h2 id="设计框架"><a href="#设计框架" class="headerlink" title="设计框架"></a>设计框架</h2><p>该CPU主要组成部件如下：</p>
+<ul>
+<li>寄存器堆</li>
+<li>标志寄存器</li>
+<li>ALU</li>
+<li>译码器</li>
+<li>数据存储器</li>
+<li>指令存储器</li>
+</ul>
+<p><img data-src="https://img.qylh.xyz/blog/1671350057398.png"></p>
+<h2 id="组件设计"><a href="#组件设计" class="headerlink" title="组件设计"></a>组件设计</h2><h3 id="寄存器组"><a href="#寄存器组" class="headerlink" title="寄存器组"></a>寄存器组</h3><p>共16个16位寄存器，设置一个读端口和一个读写端口</p>
+<p><img data-src="https://img.qylh.xyz/blog/1671350240298.png"></p>
+<figure class="highlight vhdl"><table><tr><td class="code"><pre><span class="line"><span class="keyword">library</span> IEEE;</span><br><span class="line"><span class="keyword">use</span> IEEE.STD_LOGIC_1164.<span class="keyword">ALL</span>;</span><br><span class="line"><span class="keyword">use</span> ieee.std_logic_unsigned.<span class="keyword">all</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">entity</span> My_register <span class="keyword">is</span></span><br><span class="line">    <span class="keyword">Port</span> ( </span><br><span class="line">        clk : <span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">        ra1 : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 端口1 地址</span></span><br><span class="line">        ra2 : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 端口2 地址</span></span><br><span class="line">        rwd2 : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 端口2 写数据</span></span><br><span class="line">        rwe2 : <span class="keyword">in</span>  <span class="built_in">STD_LOGIC</span>;                       <span class="comment">-- 端口2 写数据使能</span></span><br><span class="line">        rrd1 : <span class="keyword">out</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 端口1 读数据</span></span><br><span class="line">        rrd2 : <span class="keyword">out</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>) <span class="comment">-- 端口2 读数据</span></span><br><span class="line">    );</span><br><span class="line"><span class="keyword">end</span> My_register;</span><br><span class="line"></span><br><span class="line"><span class="keyword">architecture</span> Behavioral <span class="keyword">of</span> My_register <span class="keyword">is</span></span><br><span class="line">    <span class="comment">-- 16个16位通用寄存器</span></span><br><span class="line">    <span class="keyword">type</span> type_reg <span class="keyword">is</span> <span class="keyword">array</span> (<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>) <span class="keyword">of</span> <span class="built_in">std_logic_vector</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">signal</span> reg : type_reg;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">process</span> (clk) <span class="keyword">is</span></span><br><span class="line">    <span class="keyword">begin</span> </span><br><span class="line">        <span class="keyword">if</span> clk<span class="symbol">&#x27;event</span> <span class="keyword">and</span> clk = <span class="string">&#x27;1&#x27;</span> <span class="keyword">then</span></span><br><span class="line">            <span class="keyword">if</span> rwe2 = <span class="string">&#x27;1&#x27;</span> <span class="keyword">then</span></span><br><span class="line">                reg(conv_integer(ra2)) &lt;= rwd2;</span><br><span class="line">            <span class="keyword">end</span> <span class="keyword">if</span>;</span><br><span class="line">        <span class="keyword">end</span> <span class="keyword">if</span>;</span><br><span class="line">    <span class="keyword">end</span> <span class="keyword">process</span>;</span><br><span class="line">    rrd1 &lt;= X<span class="string">&quot;0000&quot;</span> <span class="keyword">when</span> ra1=<span class="string">&quot;0000&quot;</span> <span class="keyword">else</span> reg(conv_integer(ra1));</span><br><span class="line">    rrd2 &lt;= X<span class="string">&quot;0000&quot;</span> <span class="keyword">when</span> ra2=<span class="string">&quot;0000&quot;</span> <span class="keyword">else</span> reg(conv_integer(ra2));</span><br><span class="line"><span class="keyword">end</span> Behavioral;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="标志位寄存器"><a href="#标志位寄存器" class="headerlink" title="标志位寄存器"></a>标志位寄存器</h3><p><img data-src="https://img.qylh.xyz/blog/1671350702852.png"></p>
+<h3 id="ALU-算数逻辑运算单元"><a href="#ALU-算数逻辑运算单元" class="headerlink" title="ALU 算数逻辑运算单元"></a>ALU 算数逻辑运算单元</h3><p><img data-src="https://img.qylh.xyz/blog/1671350347074.png"></p>
+<figure class="highlight vhdl"><table><tr><td class="code"><pre><span class="line"><span class="keyword">library</span> IEEE;</span><br><span class="line"><span class="keyword">use</span> IEEE.STD_LOGIC_1164.<span class="keyword">ALL</span>;</span><br><span class="line"><span class="keyword">use</span> ieee.std_logic_unsigned.<span class="keyword">all</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">entity</span> My_alu <span class="keyword">is</span></span><br><span class="line">    <span class="keyword">Port</span> ( </span><br><span class="line">        vcnz    : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">        aluop   : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">        od1     : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">        od2     : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">        aluout : <span class="keyword">inout</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">        fout    : <span class="keyword">out</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>)</span><br><span class="line">    );</span><br><span class="line"><span class="keyword">end</span> My_alu;</span><br><span class="line"></span><br><span class="line"><span class="keyword">architecture</span> Behavioral <span class="keyword">of</span> My_alu <span class="keyword">is</span></span><br><span class="line">    <span class="keyword">signal</span> add_result : <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">16</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">signal</span> minus_result : <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">16</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">signal</span> shift_number : <span class="built_in">integer</span> <span class="keyword">range</span> <span class="number">0</span> <span class="keyword">to</span> <span class="number">31</span>;</span><br><span class="line">    <span class="keyword">signal</span> sll_result : <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">signal</span> srl_result : <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">signal</span> sra_result : <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">signal</span> scc_result : <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">signal</span> flag_v : <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">    <span class="keyword">signal</span> c_result : <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">    <span class="keyword">signal</span> flag_c : <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">    <span class="keyword">signal</span> flag_n : <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">    <span class="keyword">signal</span> flag_z : <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">    <span class="keyword">signal</span> temp_fout:<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line"><span class="comment">-- 加法  </span></span><br><span class="line">add_result &lt;= (<span class="string">&quot;0&quot;</span> &amp; od1) + (<span class="string">&quot;0&quot;</span> &amp; od2);</span><br><span class="line"><span class="comment">-- 减法</span></span><br><span class="line">minus_result &lt;= (<span class="string">&quot;0&quot;</span> &amp; od1) - (<span class="string">&quot;0&quot;</span> &amp; od2);</span><br><span class="line"><span class="comment">-- 移位数目</span></span><br><span class="line">shift_number &lt;= conv_integer(od2);</span><br><span class="line"><span class="comment">-- 逻辑左移</span></span><br><span class="line">sll_result &lt;= to_stdlogicvector(to_bitvector(od1) <span class="keyword">sll</span> Shift_Number);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 逻辑右移</span></span><br><span class="line">srl_result &lt;= to_stdlogicvector(to_bitvector(od1) <span class="keyword">srl</span> Shift_Number);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 算数右移</span></span><br><span class="line">sra_result &lt;= to_stdlogicvector(to_bitvector(od1) <span class="keyword">sra</span> Shift_Number);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 带进位循环一位右移</span></span><br><span class="line">scc_result(<span class="number">15</span>) &lt;= od1(<span class="number">0</span>);</span><br><span class="line">scc_result(<span class="number">14</span> <span class="keyword">downto</span> <span class="number">0</span>) &lt;= od1(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">1</span>) ;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 标志位输出</span></span><br><span class="line">temp_fout(<span class="number">3</span>) &lt;= add_result(<span class="number">16</span>); <span class="comment">-- 溢出标志</span></span><br><span class="line">temp_fout(<span class="number">2</span>) &lt;= add_result(<span class="number">16</span>); <span class="comment">-- 进位标志</span></span><br><span class="line">temp_fout(<span class="number">1</span>) &lt;= aluout(<span class="number">15</span>) ; <span class="comment">-- 负数标志</span></span><br><span class="line">temp_fout(<span class="number">0</span>) &lt;= <span class="string">&#x27;1&#x27;</span> <span class="keyword">when</span> minus_result(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>) = X<span class="string">&quot;000&quot;</span> <span class="keyword">else</span></span><br><span class="line">            <span class="string">&#x27;0&#x27;</span> ;  <span class="comment">-- 零标志</span></span><br><span class="line"></span><br><span class="line">fout &lt;= od1(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>) <span class="keyword">when</span> aluop=<span class="string">&quot;1111&quot;</span> <span class="keyword">else</span></span><br><span class="line">        temp_fout;</span><br><span class="line"></span><br><span class="line">aluout &lt;= add_result(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>)     <span class="keyword">when</span> aluop = <span class="string">&quot;0000&quot;</span> <span class="keyword">else</span>  <span class="comment">-- ADD</span></span><br><span class="line">            minus_result(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>)  <span class="keyword">when</span> aluop = <span class="string">&quot;0001&quot;</span> <span class="keyword">else</span>   <span class="comment">-- SUB</span></span><br><span class="line">            od2                            <span class="keyword">when</span> aluop = <span class="string">&quot;0100&quot;</span> <span class="keyword">else</span>   <span class="comment">-- MOV  ？</span></span><br><span class="line">            od1 <span class="keyword">and</span> od2                   <span class="keyword">when</span> aluop = <span class="string">&quot;0101&quot;</span> <span class="keyword">else</span>   <span class="comment">-- AND</span></span><br><span class="line">            od1 <span class="keyword">or</span> od2                    <span class="keyword">when</span> aluop = <span class="string">&quot;0110&quot;</span> <span class="keyword">else</span> <span class="comment">-- OR</span></span><br><span class="line">            <span class="keyword">not</span> od2                       <span class="keyword">when</span> aluop = <span class="string">&quot;0111&quot;</span> <span class="keyword">else</span> <span class="comment">-- NOT</span></span><br><span class="line">            od1 <span class="keyword">xor</span> od2                  <span class="keyword">when</span> aluop = <span class="string">&quot;1000&quot;</span> <span class="keyword">else</span> <span class="comment">-- XOR</span></span><br><span class="line">            sll_result                   <span class="keyword">when</span> aluop = <span class="string">&quot;1001&quot;</span> <span class="keyword">else</span></span><br><span class="line">            srl_result                   <span class="keyword">when</span> aluop = <span class="string">&quot;1010&quot;</span> <span class="keyword">else</span></span><br><span class="line">            sra_result                   <span class="keyword">when</span> aluop = <span class="string">&quot;1011&quot;</span> <span class="keyword">else</span></span><br><span class="line">            scc_result                   <span class="keyword">when</span> aluop = <span class="string">&quot;1100&quot;</span> <span class="keyword">else</span></span><br><span class="line">            od1                           <span class="keyword">when</span> aluop = <span class="string">&quot;1101&quot;</span> <span class="keyword">else</span> <span class="comment">-- TST 比较</span></span><br><span class="line">            X<span class="string">&quot;000&quot;</span> &amp; vcnz               <span class="keyword">when</span> aluop = <span class="string">&quot;1110&quot;</span> <span class="keyword">else</span> </span><br><span class="line">            od2;</span><br><span class="line"><span class="keyword">end</span> Behavioral;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="数据存储器"><a href="#数据存储器" class="headerlink" title="数据存储器"></a>数据存储器</h3><p>基于IP核<code>blk_mem_gen_0</code>封装</p>
+<figure class="highlight vhdl"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">library</span> IEEE;</span><br><span class="line"><span class="keyword">use</span> IEEE.STD_LOGIC_1164.<span class="keyword">ALL</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">entity</span> Mem_data <span class="keyword">is</span></span><br><span class="line">    <span class="keyword">port</span>(</span><br><span class="line">                clk		:	<span class="keyword">in</span>	<span class="built_in">STD_LOGIC</span>;</span><br><span class="line">                ma 		:	<span class="keyword">in</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">                mrd		:	<span class="keyword">out</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">                mwe		:	<span class="keyword">in</span>	<span class="built_in">STD_LOGIC</span>;</span><br><span class="line">                mwd		:	<span class="keyword">in</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>)</span><br><span class="line">        );</span><br><span class="line"><span class="keyword">end</span> Mem_data;</span><br><span class="line"></span><br><span class="line"><span class="keyword">architecture</span> Behavioral <span class="keyword">of</span> Mem_data <span class="keyword">is</span></span><br><span class="line">    <span class="keyword">component</span> blk_mem_gen_0 <span class="keyword">is</span></span><br><span class="line">	  <span class="keyword">Port</span> ( </span><br><span class="line">	    clka : <span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">	    wea : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span> ( <span class="number">0</span> <span class="keyword">to</span> <span class="number">0</span> );</span><br><span class="line">	    addra : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span> ( <span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span> );</span><br><span class="line">	    dina : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span> ( <span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span> );</span><br><span class="line">	    douta : <span class="keyword">out</span> <span class="built_in">STD_LOGIC_VECTOR</span> ( <span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span> )</span><br><span class="line">	  );</span><br><span class="line">	<span class="keyword">end</span> <span class="keyword">component</span> blk_mem_gen_0;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">signal</span>	wea		:	<span class="built_in">STD_LOGIC_VECTOR</span> ( <span class="number">0</span> <span class="keyword">to</span> <span class="number">0</span> );</span><br><span class="line"></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    wea		&lt;=	(<span class="keyword">others</span> =&gt; mwe);</span><br><span class="line">	u0:	blk_mem_gen_0	<span class="keyword">port</span> <span class="keyword">map</span>(</span><br><span class="line">									clka	=&gt;	clk,</span><br><span class="line">									wea		=&gt;	wea,</span><br><span class="line">									addra	=&gt;	ma,</span><br><span class="line">									dina	=&gt;	mwd,</span><br><span class="line">									douta	=&gt;	mrd	</span><br><span class="line">								);</span><br><span class="line"><span class="keyword">end</span> Behavioral;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="指令存储器"><a href="#指令存储器" class="headerlink" title="指令存储器"></a>指令存储器</h3><p>基于IP核<code>dist_mem_gen_0</code>封装</p>
+<figure class="highlight vhdl"><table><tr><td class="code"><pre><span class="line"><span class="keyword">library</span> IEEE;</span><br><span class="line"><span class="keyword">use</span> IEEE.STD_LOGIC_1164.<span class="keyword">ALL</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">entity</span> Mem_inst <span class="keyword">is</span></span><br><span class="line">    <span class="keyword">port</span>(</span><br><span class="line">                pc		:	<span class="keyword">in</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">                instr	:	<span class="keyword">out</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>)</span><br><span class="line">        );</span><br><span class="line"><span class="keyword">end</span> Mem_inst;</span><br><span class="line"></span><br><span class="line"><span class="keyword">architecture</span> Behavioral <span class="keyword">of</span> Mem_inst <span class="keyword">is</span></span><br><span class="line">    <span class="keyword">component</span> dist_mem_gen_0 <span class="keyword">is</span></span><br><span class="line">	  <span class="keyword">Port</span> ( </span><br><span class="line">	    a : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span> ( <span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span> );</span><br><span class="line">	    spo : <span class="keyword">out</span> <span class="built_in">STD_LOGIC_VECTOR</span> ( <span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span> )</span><br><span class="line">	  );</span><br><span class="line">	<span class="keyword">end</span> <span class="keyword">component</span> dist_mem_gen_0;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line"></span><br><span class="line">u0:	dist_mem_gen_0	<span class="keyword">port</span> <span class="keyword">map</span>(</span><br><span class="line">									a	=&gt;	pc,</span><br><span class="line">									spo	=&gt;	instr	</span><br><span class="line">								);</span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span> Behavioral;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="控制器"><a href="#控制器" class="headerlink" title="控制器"></a>控制器</h3><p>主要完成指令译码，生成控制信号，计算PC值等任务</p>
+<figure class="highlight vhdl"><table><tr><td class="code"><pre><span class="line"><span class="keyword">library</span> IEEE;</span><br><span class="line"><span class="keyword">use</span> IEEE.STD_LOGIC_1164.<span class="keyword">ALL</span>;</span><br><span class="line"><span class="keyword">use</span> ieee.std_logic_unsigned.<span class="keyword">all</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">entity</span> My_cpu <span class="keyword">is</span></span><br><span class="line">	<span class="keyword">port</span>(</span><br><span class="line">			clk			:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>; <span class="comment">-- 时钟信号</span></span><br><span class="line">			rst			:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>; <span class="comment">-- 复位信号</span></span><br><span class="line"></span><br><span class="line">			pc			:	<span class="keyword">buffer</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 程序指针</span></span><br><span class="line">			instr		:	<span class="keyword">in</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 指令</span></span><br><span class="line"></span><br><span class="line">			ma 			:	<span class="keyword">out</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 地址</span></span><br><span class="line">			mrd			:	<span class="keyword">in</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 读数据</span></span><br><span class="line">			mwe			:	<span class="keyword">out</span>	<span class="built_in">STD_LOGIC</span>; <span class="comment">-- 写使能</span></span><br><span class="line">			mwd			:	<span class="keyword">out</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>) <span class="comment">-- 写数据</span></span><br><span class="line">	);</span><br><span class="line"><span class="keyword">end</span> My_cpu;</span><br><span class="line"></span><br><span class="line"><span class="keyword">architecture</span> Behavioral <span class="keyword">of</span> My_cpu <span class="keyword">is</span></span><br><span class="line">    <span class="keyword">signal</span>	ra1			:	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	ra2			:	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	rrd1		:	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	rrd2		:	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	rwd2		:	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	rwe2		:	<span class="built_in">STD_LOGIC</span>; <span class="comment">-- rd寄存器写使能</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">signal</span>	fi			:	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	fwe			:	<span class="built_in">STD_LOGIC</span>; <span class="comment">-- 标志寄存器写使能</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">signal</span>	npcs		: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">1</span> <span class="keyword">downto</span> <span class="number">0</span>);  <span class="comment">-- 下一条程序地址选择</span></span><br><span class="line">	<span class="keyword">signal</span>	rdas		: <span class="built_in">STD_LOGIC</span>; <span class="comment">-- rd寄存器地址选择</span></span><br><span class="line">	<span class="keyword">signal</span>	rdwds		: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">1</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- rd寄存器写数据选择</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">signal</span>	fo		: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 标志位寄存器输出</span></span><br><span class="line">	<span class="keyword">signal</span>	rs			: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	rd			: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 目标寄存器</span></span><br><span class="line">	<span class="keyword">signal</span>	imm8		: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">7</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 8位立即数</span></span><br><span class="line">	<span class="keyword">signal</span>	op			: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 操作码</span></span><br><span class="line">	<span class="keyword">signal</span>	aluop		: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- alu操作码</span></span><br><span class="line">	<span class="keyword">signal</span>	fcond		: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 条件码</span></span><br><span class="line">	<span class="keyword">signal</span>	aluout		: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	fout		: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	od1			: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">16</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	od2			: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">16</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	addr8		: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">7</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 目的地址（指令）	</span></span><br><span class="line">	<span class="keyword">signal</span>	addr14		: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">13</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	ja			: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	ba			: <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span> flag         : <span class="built_in">STD_LOGIC</span>; <span class="comment">-- 标志寄存器flag</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">component</span>	My_register	<span class="keyword">is</span></span><br><span class="line">		<span class="keyword">port</span>(</span><br><span class="line">				clk : <span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">				ra1 : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 端口1 地址</span></span><br><span class="line">				ra2 : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 端口2 地址</span></span><br><span class="line">				rwd2 : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 端口2 写数据</span></span><br><span class="line">				rwe2 : <span class="keyword">in</span>  <span class="built_in">STD_LOGIC</span>; <span class="comment">-- 端口2 写数据使能</span></span><br><span class="line">				rrd1 : <span class="keyword">out</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>); <span class="comment">-- 端口1 读数据</span></span><br><span class="line">				rrd2 : <span class="keyword">out</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>) <span class="comment">-- 端口2 读数据</span></span><br><span class="line">			);</span><br><span class="line">	<span class="keyword">end</span> <span class="keyword">component</span> My_register;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">component</span>	My_flag_register	<span class="keyword">is</span></span><br><span class="line">		<span class="keyword">Port</span> ( </span><br><span class="line">			clk : <span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">			fi  : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">			fwe : <span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">			fo  : <span class="keyword">out</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>)</span><br><span class="line">    	);</span><br><span class="line">	<span class="keyword">end</span> <span class="keyword">component</span> My_flag_register;	</span><br><span class="line"></span><br><span class="line">	<span class="keyword">component</span>	My_alu	<span class="keyword">is</span></span><br><span class="line">		<span class="keyword">port</span> (</span><br><span class="line">			vcnz    : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">			aluop   : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">			od1     : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">			od2     : <span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">			aluout : <span class="keyword">inout</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">			fout    : <span class="keyword">out</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>)</span><br><span class="line">		);</span><br><span class="line">	<span class="keyword">end</span> <span class="keyword">component</span> My_alu;	</span><br><span class="line"></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">	<span class="comment">-- 寄存器堆</span></span><br><span class="line">	register1:	My_register		<span class="keyword">port</span> <span class="keyword">map</span>(</span><br><span class="line">									clk			=&gt;	clk,</span><br><span class="line">									ra1			=&gt;	ra1,</span><br><span class="line">									ra2			=&gt;	ra2,</span><br><span class="line">									rwd2		=&gt;	rwd2,</span><br><span class="line">									rwe2 			=&gt;	rwe2,</span><br><span class="line">									rrd1			=&gt;	rrd1,</span><br><span class="line">									rrd2			=&gt;	rrd2</span><br><span class="line">								);</span><br><span class="line">	<span class="comment">-- 标志寄存器</span></span><br><span class="line">	flag_register: My_flag_register 	<span class="keyword">port</span> <span class="keyword">map</span>(</span><br><span class="line">									clk			=&gt;	clk,</span><br><span class="line">									fi			=&gt;	fi,</span><br><span class="line">									fwe			=&gt;	fwe,</span><br><span class="line">									fo		=&gt;	fo</span><br><span class="line">								);</span><br><span class="line">	<span class="comment">-- alu</span></span><br><span class="line">	alu: My_alu <span class="keyword">port</span> <span class="keyword">map</span>(</span><br><span class="line">			vcnz    =&gt; fo,</span><br><span class="line">			aluop   =&gt; aluop,</span><br><span class="line">			od1     =&gt; rrd2,</span><br><span class="line">			od2     =&gt; rrd1,</span><br><span class="line">			aluout  =&gt; aluout,</span><br><span class="line">			fout    =&gt; fi</span><br><span class="line">	);</span><br><span class="line"><span class="comment">-- ——————————————————————————————————————————————</span></span><br><span class="line"><span class="comment">-- 译码</span></span><br><span class="line">	op &lt;= instr(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">12</span>);</span><br><span class="line">	rs &lt;= instr(<span class="number">7</span> <span class="keyword">downto</span> <span class="number">4</span>);</span><br><span class="line">	rd &lt;= instr(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	imm8 &lt;= instr(<span class="number">11</span> <span class="keyword">downto</span> <span class="number">4</span>);</span><br><span class="line">	aluop &lt;= instr(<span class="number">11</span> <span class="keyword">downto</span> <span class="number">8</span>);</span><br><span class="line">	addr8 &lt;= instr(<span class="number">7</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	fcond &lt;= instr(<span class="number">11</span> <span class="keyword">downto</span> <span class="number">8</span>);</span><br><span class="line">	addr14 &lt;= instr(<span class="number">13</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line"><span class="comment">-- ——————————————————————————————————————————————</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">-- begin——————————————————————————————————————————————</span></span><br><span class="line"><span class="comment">-- 寄存区写数据选择</span></span><br><span class="line">	<span class="comment">-- 寄存器写数据来源选择</span></span><br><span class="line">	rdwds &lt;= <span class="string">&quot;00&quot;</span> <span class="keyword">when</span> op = <span class="string">&quot;0000&quot;</span> <span class="keyword">else</span></span><br><span class="line">			  <span class="string">&quot;01&quot;</span> <span class="keyword">when</span> op = <span class="string">&quot;0001&quot;</span> <span class="keyword">else</span></span><br><span class="line">			  <span class="string">&quot;10&quot;</span> <span class="keyword">when</span> op(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">2</span>) = <span class="string">&quot;11&quot;</span> <span class="keyword">else</span></span><br><span class="line">			  <span class="string">&quot;11&quot;</span> <span class="keyword">when</span> op = <span class="string">&quot;0100&quot;</span> <span class="keyword">else</span> </span><br><span class="line">			  <span class="string">&quot;XX&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	rwd2 &lt;= X<span class="string">&quot;00&quot;</span> &amp; imm8 <span class="keyword">when</span> rdwds = <span class="string">&quot;00&quot;</span> <span class="keyword">else</span></span><br><span class="line">			aluout 	   	   <span class="keyword">when</span> rdwds = <span class="string">&quot;01&quot;</span> <span class="keyword">else</span></span><br><span class="line">			pc              <span class="keyword">when</span> rdwds = <span class="string">&quot;10&quot;</span> <span class="keyword">else</span></span><br><span class="line">			mrd             <span class="keyword">when</span> rdwds = <span class="string">&quot;11&quot;</span> <span class="keyword">else</span></span><br><span class="line">			X<span class="string">&quot;0000&quot;</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">-- 寄存器写使能</span></span><br><span class="line">	rwe2 &lt;= <span class="string">&#x27;1&#x27;</span> <span class="keyword">when</span> op =<span class="string">&quot;0000&quot;</span> <span class="keyword">or</span> op=<span class="string">&quot;0001&quot;</span> <span class="keyword">or</span> op(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">2</span>) = <span class="string">&quot;11&quot;</span> <span class="keyword">or</span> op= <span class="string">&quot;0100&quot;</span> <span class="keyword">else</span></span><br><span class="line">			 <span class="string">&#x27;0&#x27;</span> <span class="keyword">when</span> op(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">2</span>) = <span class="string">&quot;10&quot;</span> <span class="keyword">or</span> op = <span class="string">&quot;0010&quot;</span> <span class="keyword">or</span> op = <span class="string">&quot;0101&quot;</span> <span class="keyword">or</span> op = <span class="string">&quot;0011&quot;</span> <span class="keyword">else</span></span><br><span class="line">			 <span class="string">&#x27;X&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- end——————————————————————————————————————————————</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">-- 读写寄存器端口地址选择</span></span><br><span class="line">	rdas &lt;= <span class="string">&#x27;1&#x27;</span> <span class="keyword">when</span> op = <span class="string">&quot;0000&quot;</span> <span class="keyword">or</span> op =<span class="string">&quot;0001&quot;</span> <span class="keyword">or</span> op = <span class="string">&quot;0100&quot;</span> <span class="keyword">or</span> op =<span class="string">&quot;0101&quot;</span> <span class="keyword">else</span> </span><br><span class="line">			 <span class="string">&#x27;0&#x27;</span> <span class="keyword">when</span> op(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">2</span>) = <span class="string">&quot;11&quot;</span> <span class="keyword">or</span> op = <span class="string">&quot;0011&quot;</span> <span class="keyword">else</span></span><br><span class="line">			 <span class="string">&#x27;X&#x27;</span>;</span><br><span class="line"></span><br><span class="line">	ra2 &lt;=  rd <span class="keyword">when</span> rdas = <span class="string">&#x27;1&#x27;</span> <span class="keyword">else</span></span><br><span class="line">			 <span class="string">&quot;1111&quot;</span> <span class="keyword">when</span> rdas = <span class="string">&#x27;0&#x27;</span> <span class="keyword">else</span></span><br><span class="line">			 <span class="string">&quot;XXXX&quot;</span>;</span><br><span class="line">	<span class="comment">-- 读寄存器端口地址选择</span></span><br><span class="line">	ra1 &lt;= rs;</span><br><span class="line"></span><br><span class="line">	<span class="comment">-- 标志寄存器写使能</span></span><br><span class="line">	fwe &lt;= <span class="string">&#x27;1&#x27;</span> <span class="keyword">when</span> op = <span class="string">&quot;0001&quot;</span> <span class="keyword">else</span></span><br><span class="line">			<span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">	</span><br><span class="line">	flag &lt;= <span class="string">&#x27;1&#x27;</span> <span class="keyword">when</span> fcond = <span class="string">&quot;0000&quot;</span> <span class="keyword">else</span></span><br><span class="line">			 fo(<span class="number">0</span>) <span class="keyword">when</span> fcond = <span class="string">&quot;0001&quot;</span> <span class="keyword">else</span></span><br><span class="line">			fo(<span class="number">1</span>) <span class="keyword">when</span> fcond = <span class="string">&quot;0010&quot;</span> <span class="keyword">else</span></span><br><span class="line">			fo(<span class="number">2</span>) <span class="keyword">when</span> fcond = <span class="string">&quot;0100&quot;</span> <span class="keyword">else</span></span><br><span class="line">			fo(<span class="number">3</span>) <span class="keyword">when</span> fcond = <span class="string">&quot;1000&quot;</span> <span class="keyword">else</span></span><br><span class="line">			<span class="string">&#x27;0&#x27;</span>;</span><br><span class="line"></span><br><span class="line">	mwe &lt;= <span class="string">&#x27;1&#x27;</span> <span class="keyword">when</span> op = <span class="string">&quot;0101&quot;</span> <span class="keyword">else</span></span><br><span class="line">			<span class="string">&#x27;0&#x27;</span>;</span><br><span class="line"></span><br><span class="line">	mwd&lt;=rrd2;</span><br><span class="line"></span><br><span class="line">	ma&lt;=rrd1;</span><br><span class="line"><span class="comment">-- begin——————————————————————————————————————————————</span></span><br><span class="line"><span class="comment">-- 下一条指令选择</span></span><br><span class="line">	ja &lt;=<span class="string">&quot;00&quot;</span> &amp; instr(<span class="number">13</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	ba &lt;= X<span class="string">&quot;00&quot;</span> &amp; instr(<span class="number">7</span> <span class="keyword">downto</span> <span class="number">0</span>) <span class="keyword">when</span> instr(<span class="number">7</span>)=<span class="string">&#x27;0&#x27;</span> <span class="keyword">else</span></span><br><span class="line">		   X<span class="string">&quot;ff&quot;</span> &amp; instr(<span class="number">7</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	npcs &lt;= <span class="string">&quot;00&quot;</span> <span class="keyword">when</span> op = <span class="string">&quot;0000&quot;</span> <span class="keyword">or</span> op =<span class="string">&quot;0001&quot;</span> <span class="keyword">or</span> op = <span class="string">&quot;0100&quot;</span> <span class="keyword">or</span> op=<span class="string">&quot;0101&quot;</span> <span class="keyword">else</span></span><br><span class="line">			 <span class="string">&quot;01&quot;</span> <span class="keyword">when</span> op(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">2</span>) = <span class="string">&quot;10&quot;</span> <span class="keyword">or</span>  op(<span class="number">3</span> <span class="keyword">downto</span> <span class="number">2</span>) = <span class="string">&quot;11&quot;</span> <span class="keyword">else</span></span><br><span class="line">			 <span class="string">&quot;10&quot;</span> <span class="keyword">when</span> op = <span class="string">&quot;0010&quot;</span> <span class="keyword">and</span> flag = <span class="string">&#x27;1&#x27;</span> <span class="keyword">else</span></span><br><span class="line">			 <span class="string">&quot;00&quot;</span> <span class="keyword">when</span> op = <span class="string">&quot;0010&quot;</span> <span class="keyword">and</span> flag = <span class="string">&#x27;0&#x27;</span> <span class="keyword">else</span></span><br><span class="line">			 <span class="string">&quot;11&quot;</span> <span class="keyword">when</span> op = <span class="string">&quot;0011&quot;</span>  <span class="keyword">else</span></span><br><span class="line">			 <span class="string">&quot;XX&quot;</span>;</span><br><span class="line">	<span class="keyword">process</span> (clk) <span class="keyword">is</span></span><br><span class="line">	<span class="keyword">begin</span></span><br><span class="line">		<span class="keyword">if</span> clk<span class="symbol">&#x27;event</span> <span class="keyword">and</span> clk=<span class="string">&#x27;1&#x27;</span> <span class="keyword">then</span></span><br><span class="line">			<span class="keyword">if</span> rst=<span class="string">&#x27;1&#x27;</span> <span class="keyword">then</span></span><br><span class="line">				pc &lt;= X<span class="string">&quot;0000&quot;</span>;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">case</span> npcs <span class="keyword">is</span></span><br><span class="line">			<span class="keyword">when</span> <span class="string">&quot;00&quot;</span> =&gt; pc &lt;= pc + <span class="string">&#x27;1&#x27;</span>; <span class="comment">-- 顺序执行</span></span><br><span class="line">			<span class="keyword">when</span> <span class="string">&quot;01&quot;</span> =&gt; pc &lt;= ja; <span class="comment">-- 寻址跳转</span></span><br><span class="line">			<span class="keyword">when</span> <span class="string">&quot;10&quot;</span> =&gt; pc &lt;= pc + ba; <span class="comment">-- 跳转</span></span><br><span class="line">			<span class="keyword">when</span> <span class="string">&quot;11&quot;</span> =&gt; pc &lt;= rrd2; <span class="comment">-- 链接跳转</span></span><br><span class="line">			<span class="keyword">when</span> <span class="keyword">others</span> =&gt; pc &lt;= pc;</span><br><span class="line">		<span class="keyword">end</span> <span class="keyword">case</span>;</span><br><span class="line">		<span class="keyword">end</span> <span class="keyword">if</span>;</span><br><span class="line">		<span class="keyword">end</span> <span class="keyword">if</span>;</span><br><span class="line"><span class="keyword">end</span> <span class="keyword">process</span>;</span><br><span class="line"><span class="comment">-- end——————————————————————————————————————————————</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span> Behavioral;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="整体封装"><a href="#整体封装" class="headerlink" title="整体封装"></a>整体封装</h3><p>将CPU、数据存储器、指令存储器封装到一起</p>
+<figure class="highlight vhdl"><table><tr><td class="code"><pre><span class="line"><span class="keyword">library</span> IEEE;</span><br><span class="line"><span class="keyword">use</span> IEEE.STD_LOGIC_1164.<span class="keyword">ALL</span>;</span><br><span class="line"><span class="keyword">use</span> ieee.std_logic_unsigned.<span class="keyword">all</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">entity</span> My_computer <span class="keyword">is</span></span><br><span class="line">    <span class="keyword">port</span>(</span><br><span class="line">            clk				:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">            rst				:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line"></span><br><span class="line">            ma_io 			:	<span class="keyword">buffer</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">            mrd_io			:	<span class="keyword">buffer</span>		<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">            mwe_io			:	<span class="keyword">buffer</span>	<span class="built_in">STD_LOGIC</span>;</span><br><span class="line">            mwd_io			:	<span class="keyword">buffer</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>)</span><br><span class="line">        );</span><br><span class="line"><span class="keyword">end</span> My_computer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">architecture</span> Behavioral <span class="keyword">of</span> My_computer <span class="keyword">is</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">component</span>	My_cpu	<span class="keyword">is</span></span><br><span class="line">		<span class="keyword">port</span>(</span><br><span class="line">				clk			:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">				rst			:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line"></span><br><span class="line">				pc			:	<span class="keyword">buffer</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">				instr		:	<span class="keyword">in</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">				ma 			:	<span class="keyword">out</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">				mrd			:	<span class="keyword">in</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">				mwe			:	<span class="keyword">out</span>	<span class="built_in">STD_LOGIC</span>;</span><br><span class="line">				mwd			:	<span class="keyword">out</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>)</span><br><span class="line">		);</span><br><span class="line">	<span class="keyword">end</span> <span class="keyword">component</span> My_CPU;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">component</span>	Mem_inst	<span class="keyword">is</span></span><br><span class="line">    <span class="keyword">port</span>(</span><br><span class="line">            pc		:	<span class="keyword">in</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">            instr	:	<span class="keyword">out</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>)</span><br><span class="line">    );</span><br><span class="line">	<span class="keyword">end</span> <span class="keyword">component</span> Mem_inst;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">component</span>	Mem_data	<span class="keyword">is</span></span><br><span class="line">		<span class="keyword">port</span>(</span><br><span class="line">				clk		:	<span class="keyword">in</span>	<span class="built_in">STD_LOGIC</span>;</span><br><span class="line">				ma 		:	<span class="keyword">in</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">				mrd		:	<span class="keyword">out</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">				mwe		:	<span class="keyword">in</span>	<span class="built_in">STD_LOGIC</span>;</span><br><span class="line">				mwd		:	<span class="keyword">in</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>)</span><br><span class="line">		);</span><br><span class="line">	<span class="keyword">end</span> <span class="keyword">component</span> Mem_data;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">signal</span> 			pc			:	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span> 			instr		:	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">signal</span> 			ma 			:	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span> 			mrd			:	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span> 			mwe			:	<span class="built_in">STD_LOGIC</span>;</span><br><span class="line">	<span class="keyword">signal</span> 			mwd			:	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">	ma_io &lt;=ma;</span><br><span class="line">	mrd_io&lt;=mrd;</span><br><span class="line">	mwe_io&lt;=mwe;</span><br><span class="line">	mwd_io&lt;=mwd;</span><br><span class="line">    u0:	My_CPU		<span class="keyword">port</span> <span class="keyword">map</span>(</span><br><span class="line">									clk			=&gt;	clk,</span><br><span class="line">									rst			=&gt;	rst,</span><br><span class="line"></span><br><span class="line">									pc			=&gt;	pc,</span><br><span class="line">									instr		=&gt;	instr,</span><br><span class="line"></span><br><span class="line">									ma 			=&gt;	ma,</span><br><span class="line">									mrd			=&gt;	mrd,</span><br><span class="line">									mwe			=&gt;	mwe,</span><br><span class="line">									mwd			=&gt;	mwd</span><br><span class="line">								);</span><br><span class="line"></span><br><span class="line">	u1:	Mem_inst	<span class="keyword">port</span> <span class="keyword">map</span>(</span><br><span class="line">									pc		=&gt;	pc,</span><br><span class="line">									instr	=&gt;	instr</span><br><span class="line">								);</span><br><span class="line"></span><br><span class="line">	u2:	Mem_data	<span class="keyword">port</span> <span class="keyword">map</span>(</span><br><span class="line">									clk		=&gt;	clk,</span><br><span class="line">									ma		=&gt;	ma,</span><br><span class="line">									mrd		=&gt;	mrd,</span><br><span class="line">									mwe		=&gt;	mwe,</span><br><span class="line">									mwd		=&gt;	mwd</span><br><span class="line">								);</span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span> Behavioral;</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试验证"><a href="#测试验证" class="headerlink" title="测试验证"></a>测试验证</h2><h3 id="编写顶层仿真模块"><a href="#编写顶层仿真模块" class="headerlink" title="编写顶层仿真模块"></a>编写顶层仿真模块</h3><figure class="highlight vhdl"><table><tr><td class="code"><pre><span class="line"><span class="keyword">library</span> IEEE;</span><br><span class="line"><span class="keyword">use</span> IEEE.STD_LOGIC_1164.<span class="keyword">ALL</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">entity</span> First_TestBanch <span class="keyword">is</span></span><br><span class="line"><span class="keyword">end</span> First_TestBanch;</span><br><span class="line"></span><br><span class="line"><span class="keyword">architecture</span> Behavioral <span class="keyword">of</span> First_TestBanch <span class="keyword">is</span></span><br><span class="line">	<span class="keyword">component</span> My_computer <span class="keyword">is</span></span><br><span class="line">		<span class="keyword">port</span>(</span><br><span class="line">				clk				:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">				rst				:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line"></span><br><span class="line">				ma_io 			:	<span class="keyword">buffer</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">				mrd_io			:	<span class="keyword">buffer</span>		<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">				mwe_io			:	<span class="keyword">buffer</span>	<span class="built_in">STD_LOGIC</span>;</span><br><span class="line">				mwd_io			:	<span class="keyword">buffer</span>	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>)</span><br><span class="line">		);</span><br><span class="line">	<span class="keyword">end</span> <span class="keyword">component</span> My_computer;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">signal</span>	clk				:	<span class="built_in">STD_LOGIC</span>;</span><br><span class="line">	<span class="keyword">signal</span>	rst				:	<span class="built_in">STD_LOGIC</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">signal</span>	ma_io 			:	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	mrd_io			:	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">signal</span>	mwe_io			:	<span class="built_in">STD_LOGIC</span>;</span><br><span class="line">	<span class="keyword">signal</span>	mwd_io			:	<span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">	computer:	My_computer	<span class="keyword">port</span> <span class="keyword">map</span>(</span><br><span class="line">									clk			=&gt;	clk,			</span><br><span class="line">									rst			=&gt;	rst,</span><br><span class="line"></span><br><span class="line">									ma_io 		=&gt;	ma_io,</span><br><span class="line">									mrd_io		=&gt;	mrd_io,</span><br><span class="line">									mwe_io		=&gt;	mwe_io,</span><br><span class="line">									mwd_io		=&gt;	mwd_io			</span><br><span class="line">								);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">process</span> <span class="keyword">is</span></span><br><span class="line">	<span class="keyword">begin</span></span><br><span class="line">		rst		&lt;=	<span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">		<span class="keyword">wait</span> <span class="keyword">for</span>	<span class="number">5</span> ps;</span><br><span class="line">		rst		&lt;=	<span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">		<span class="keyword">wait</span>;</span><br><span class="line">	<span class="keyword">end</span> <span class="keyword">process</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">process</span> <span class="keyword">is</span></span><br><span class="line">	<span class="keyword">begin</span></span><br><span class="line">		clk		&lt;=	<span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">		<span class="keyword">wait</span> <span class="keyword">for</span>	<span class="number">1</span> ps;</span><br><span class="line">		clk		&lt;=	<span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">		<span class="keyword">wait</span> <span class="keyword">for</span>	<span class="number">1</span> ps;</span><br><span class="line">	<span class="keyword">end</span> <span class="keyword">process</span>;</span><br><span class="line"><span class="keyword">end</span> Behavioral;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="初步仿真测试"><a href="#初步仿真测试" class="headerlink" title="初步仿真测试"></a>初步仿真测试</h3><p>使用老师给出的测试指令进行仿真</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">memory_initialization_radix = 16;</span><br><span class="line">memory_initialization_vector =</span><br><span class="line">0121    ;   LI      r1, #12h</span><br><span class="line">0082    ;   LI      r2, #08h</span><br><span class="line">1921    ;   SLL     r1, r2 </span><br><span class="line">0343    ;   LI      r3, #34h</span><br><span class="line">1631    ;   OR      r1, r3</span><br><span class="line">1414    ;   MOV     r4, r1</span><br><span class="line">0561    ;   LI      r1, #56h</span><br><span class="line">1921    ;   SLL     r1, r2 </span><br><span class="line">0783    ;   LI      r3, #78h</span><br><span class="line">1631    ;   OR      r1, r3</span><br><span class="line">1415    ;   MOV     r5, r1</span><br><span class="line">1154    ;   SUB     r4, r5              ;sub</span><br><span class="line">0121    ;   LI      r1, #12h</span><br><span class="line">1921    ;   SLL     r1, r2 </span><br><span class="line">0343    ;   LI      r3, #34h</span><br><span class="line">1631    ;   OR      r1, r3</span><br><span class="line">1414    ;   MOV     r4, r1</span><br><span class="line">0561    ;   LI      r1, #56h</span><br><span class="line">1921    ;   SLL     r1, r2 </span><br><span class="line">0783    ;   LI      r3, #78h</span><br><span class="line">1631    ;   OR      r1, r3</span><br><span class="line">1415    ;   MOV     r5, r1</span><br><span class="line">1145    ;   SUB     r5, r4             ;sub</span><br><span class="line">07f1    ;   LI      r1, #7fh</span><br><span class="line">1921    ;   SLL     r1, r2 </span><br><span class="line">0ff3    ;   LI      r3, #ffh</span><br><span class="line">1631    ;   OR      r1, r3</span><br><span class="line">1414    ;   MOV     r4, r1</span><br><span class="line">0001    ;   LI      r1, #00h</span><br><span class="line">1921    ;   SLL     r1, r2 </span><br><span class="line">0023    ;   LI      r3, #02h</span><br><span class="line">1631    ;   OR      r1, r3</span><br><span class="line">1415    ;   MOV     r5, r1</span><br><span class="line">1054    ;   ADD     r4, r5             ;add</span><br><span class="line">c028    ;   JL      0028h</span><br><span class="line">0000    ;   LI      r0, #00h</span><br><span class="line">0000    ;   LI      r0, #00h</span><br><span class="line">0000    ;   LI      r0, #00h</span><br><span class="line">0000    ;   LI      r0, #00h</span><br><span class="line">0000    ;   LI      r0, #00h</span><br><span class="line">0046    ;   LI      r6, #04h</span><br><span class="line">1f06    ;   WRF     r6</span><br><span class="line">0a07    ;   LI      r7, #a0h</span><br><span class="line">1c07    ;   SCC     r7</span><br><span class="line">0018    ;   LI      r8, #01h</span><br><span class="line">108f    ;   ADD     r15, r8             ;add</span><br><span class="line">3000    ;   JR</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>经过不断地调试改错后，完成了此测试，整个测试过程中的寄存器值变化如下表：</p>
+<table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>数据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>00h</td>
+</tr>
+<tr>
+<td>1</td>
+<td>12h-&gt;1200h-&gt;1234h-&gt;56h-&gt;5600h-&gt;5678h-&gt;12h-&gt;1200h-&gt;1234h-&gt;56h-&gt;5600h-&gt;5678h-&gt;7fh-&gt;7f00h-&gt;7fffh-&gt;00h-&gt;02h</td>
+</tr>
+<tr>
+<td>2</td>
+<td>08h</td>
+</tr>
+<tr>
+<td>3</td>
+<td>34h-&gt;78h-&gt;34h-&gt;78h-&gt;ffh-&gt;02h</td>
+</tr>
+<tr>
+<td>4</td>
+<td>1234h-&gt;bbbch-&gt;1234h-&gt;7fffh-&gt;8001h</td>
+</tr>
+<tr>
+<td>5</td>
+<td>5678h-&gt;5678h-&gt;4444h-&gt;02h</td>
+</tr>
+<tr>
+<td>6</td>
+<td>04h</td>
+</tr>
+<tr>
+<td>7</td>
+<td>a0h-&gt;50h</td>
+</tr>
+<tr>
+<td>8</td>
+<td>01h</td>
+</tr>
+<tr>
+<td>9</td>
+<td></td>
+</tr>
+<tr>
+<td>10</td>
+<td></td>
+</tr>
+<tr>
+<td>11</td>
+<td></td>
+</tr>
+<tr>
+<td>12</td>
+<td></td>
+</tr>
+<tr>
+<td>13</td>
+<td></td>
+</tr>
+<tr>
+<td>14</td>
+<td></td>
+</tr>
+<tr>
+<td>15</td>
+<td>22h-&gt;23h</td>
+</tr>
+</tbody></table>
+<p>仿真结果与人工计算结果完全一致，仿真如下：</p>
+<p><img data-src="https://img.qylh.xyz/blog/Snipaste_2022-12-18_14-00-41.png"></p>
+<p>但分析发现，此测试集中缺少分支跳转、数据存储等指令，因此在此基础上进行了修改，增加了<code>TST</code>,<code>BS</code>,<code>SM</code> 指令，以测试相关指令的执行。</p>
+<h3 id="改进仿真测试"><a href="#改进仿真测试" class="headerlink" title="改进仿真测试"></a>改进仿真测试</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">memory_initialization_radix = 16;</span><br><span class="line">memory_initialization_vector =</span><br><span class="line">0121    ;   LI      r1, #12h</span><br><span class="line">0082    ;   LI      r2, #08h</span><br><span class="line">1921    ;   SLL     r1, r2  左移八位</span><br><span class="line">0343    ;   LI      r3, #34h</span><br><span class="line">1631    ;   OR      r1, r3</span><br><span class="line">1414    ;   MOV     r4, r1</span><br><span class="line">0561    ;   LI      r1, #56h</span><br><span class="line">1921    ;   SLL     r1, r2 </span><br><span class="line">0783    ;   LI      r3, #78h</span><br><span class="line">1631    ;   OR      r1, r3</span><br><span class="line">1415    ;   MOV     r5, r1</span><br><span class="line">1154    ;   SUB     r4, r5              ;sub</span><br><span class="line">0121    ;   LI      r1, #12h</span><br><span class="line">1921    ;   SLL     r1, r2 </span><br><span class="line">0343    ;   LI      r3, #34h</span><br><span class="line">1631    ;   OR      r1, r3</span><br><span class="line">1414    ;   MOV     r4, r1</span><br><span class="line">0561    ;   LI      r1, #56h</span><br><span class="line">1921    ;   SLL     r1, r2 </span><br><span class="line">0783    ;   LI      r3, #78h</span><br><span class="line">1631    ;   OR      r1, r3</span><br><span class="line">1415    ;   MOV     r5, r1</span><br><span class="line">1145    ;   SUB     r5, r4             ;sub</span><br><span class="line">07f1    ;   LI      r1, #7fh</span><br><span class="line">1921    ;   SLL     r1, r2 </span><br><span class="line">0ff3    ;   LI      r3, #ffh</span><br><span class="line">1631    ;   OR      r1, r3</span><br><span class="line">1414    ;   MOV     r4, r1</span><br><span class="line">0001    ;   LI      r1, #00h</span><br><span class="line">1921    ;   SLL     r1, r2 </span><br><span class="line">0023    ;   LI      r3, #02h</span><br><span class="line">1631    ;   OR      r1, r3</span><br><span class="line">1415    ;   MOV     r5, r1</span><br><span class="line">1054    ;   ADD     r4, r5             ;add</span><br><span class="line">c028    ;   JL      0028h              </span><br><span class="line">0ff3    ;   LI      r3, #ffh           ;跳到这里 pc:0023</span><br><span class="line">0000    ;   LI      r0, #00h</span><br><span class="line">0000    ;   LI      r0, #00h</span><br><span class="line">0000    ;   LI      r0, #00h</span><br><span class="line">0000    ;   LI      r0, #00h</span><br><span class="line">0046    ;   LI      r6, #04h</span><br><span class="line">1f06    ;   WRF     r6</span><br><span class="line">0a07    ;   LI      r7, #a0h</span><br><span class="line">1c07    ;   SCC     r7</span><br><span class="line">0018    ;   LI      r8, #01h</span><br><span class="line">108f    ;   ADD     r15, r8            ;add</span><br><span class="line">1d35    ;   TST     r3,r5  ;002e</span><br><span class="line">21f4    ;   BX      #f4                 ;pc：002f -13</span><br><span class="line">5013    ;   SM      r3,r1               ;存储指令</span><br></pre></td></tr></table></figure>
+
+<p>在<code>1d35</code>指令处，进行相等判断，写入标志寄存器，<code>21f4</code>处根据标志位寄存器进行跳转，第一次经过时由于<code>r3</code>与<code>r5</code>均为<code>02h</code> 所以进行跳转，PC在原基础上<code>减13</code>实际是加上<code>-13</code>（注意应该写成补码！），跳转到<code>0ff3</code>指令处<br>，修改<code>r3</code>为ffh。第二次经过分支跳转时，不满足相等条件，继续执行最后一条存储指令。</p>
+<p>仿真结果与预期一致，如下:</p>
+<p><img data-src="https://img.qylh.xyz/blog/Snipaste_2022-12-18_14-28-13.png"></p>
+<h2 id="代码地址"><a href="#代码地址" class="headerlink" title="代码地址"></a>代码地址</h2><p><a target="_blank" rel="noopener" href="https://github.com/qy-liuhuo/My_CPU">https://github.com/qy-liuhuo/My_CPU</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%A1%AC%E4%BB%B6/" rel="tag"># 硬件</a>
+              <a href="/tags/VHDL/" rel="tag"># VHDL</a>
+              <a href="/tags/CPU/" rel="tag"># CPU</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/d080713b.html" rel="prev" title="Go学习">
+      <i class="fa fa-chevron-left"></i> Go学习
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">CPU架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">基本架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text">寄存器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E9%9B%86%E8%AF%B4%E6%98%8E"><span class="nav-number">2.</span> <span class="nav-text">指令集说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AB%8B%E5%8D%B3%E5%AF%BB%E5%9D%80%E5%8A%A0%E8%BD%BD%E6%8C%87%E4%BB%A4"><span class="nav-number">2.1.</span> <span class="nav-text">立即寻址加载指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E5%AF%BB%E5%9D%80%E8%BF%90%E7%AE%97%E6%8C%87%E4%BB%A4"><span class="nav-number">2.2.</span> <span class="nav-text">寄存器寻址运算指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AB%8B%E5%8D%B3%E5%AF%BB%E5%9D%80%E8%B7%B3%E8%BD%AC%E6%8C%87%E4%BB%A4"><span class="nav-number">2.3.</span> <span class="nav-text">立即寻址跳转指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%B3%E8%BD%AC%E6%8C%87%E4%BB%A4"><span class="nav-number">2.3.1.</span> <span class="nav-text">跳转指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6%E9%93%BE%E6%8E%A5%E7%9A%84%E8%B7%B3%E8%BD%AC%E6%8C%87%E4%BB%A4"><span class="nav-number">2.3.2.</span> <span class="nav-text">带链接的跳转指令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%8F%E7%A7%BB%E5%AF%BB%E5%9D%80%E6%9D%A1%E4%BB%B6%E5%88%86%E6%94%AF%E6%8C%87%E4%BB%A4"><span class="nav-number">2.4.</span> <span class="nav-text">偏移寻址条件分支指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E9%97%B4%E6%8E%A5%E5%AF%BB%E5%9D%80"><span class="nav-number">2.5.</span> <span class="nav-text">寄存器间接寻址</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E9%97%B4%E6%8E%A5%E5%AF%BB%E5%9D%80%E5%8A%A0%E8%BD%BD%E6%8C%87%E4%BB%A4"><span class="nav-number">2.5.1.</span> <span class="nav-text">寄存器间接寻址加载指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%98%E5%99%A8%E9%97%B4%E6%8E%A5%E5%AF%BB%E5%9D%80%E5%AD%98%E5%82%A8%E6%8C%87%E4%BB%A4"><span class="nav-number">2.5.2.</span> <span class="nav-text">存器间接寻址存储指令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5%E5%AF%84%E5%AD%98%E5%99%A8%E5%AF%BB%E5%9D%80%E8%B7%B3%E8%BD%AC%E6%8C%87%E4%BB%A4"><span class="nav-number">2.6.</span> <span class="nav-text">链接寄存器寻址跳转指令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A1%86%E6%9E%B6"><span class="nav-number">3.</span> <span class="nav-text">设计框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6%E8%AE%BE%E8%AE%A1"><span class="nav-number">4.</span> <span class="nav-text">组件设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E7%BB%84"><span class="nav-number">4.1.</span> <span class="nav-text">寄存器组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E5%BF%97%E4%BD%8D%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">4.2.</span> <span class="nav-text">标志位寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ALU-%E7%AE%97%E6%95%B0%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E5%8D%95%E5%85%83"><span class="nav-number">4.3.</span> <span class="nav-text">ALU 算数逻辑运算单元</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E5%99%A8"><span class="nav-number">4.4.</span> <span class="nav-text">数据存储器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E5%AD%98%E5%82%A8%E5%99%A8"><span class="nav-number">4.5.</span> <span class="nav-text">指令存储器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E5%99%A8"><span class="nav-number">4.6.</span> <span class="nav-text">控制器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E5%B0%81%E8%A3%85"><span class="nav-number">4.7.</span> <span class="nav-text">整体封装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E9%AA%8C%E8%AF%81"><span class="nav-number">5.</span> <span class="nav-text">测试验证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E9%A1%B6%E5%B1%82%E4%BB%BF%E7%9C%9F%E6%A8%A1%E5%9D%97"><span class="nav-number">5.1.</span> <span class="nav-text">编写顶层仿真模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E6%AD%A5%E4%BB%BF%E7%9C%9F%E6%B5%8B%E8%AF%95"><span class="nav-number">5.2.</span> <span class="nav-text">初步仿真测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E8%BF%9B%E4%BB%BF%E7%9C%9F%E6%B5%8B%E8%AF%95"><span class="nav-number">5.3.</span> <span class="nav-text">改进仿真测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%9C%B0%E5%9D%80"><span class="nav-number">6.</span> <span class="nav-text">代码地址</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MaHaotian"
+      src="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+  <p class="site-author-name" itemprop="name">MaHaotian</p>
+  <div class="site-description" itemprop="description">给时光以生命，而不是给生命以时光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qy-liuhuo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qy-liuhuo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:maht2001@163.com" title="E-Mail → mailto:maht2001@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MaHaotian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>
