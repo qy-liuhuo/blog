@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="参考B站狂神说Docker教程，总结Docker学习">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://img.qylh.xyz/blog/1651053127230.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1651146686322.png">
 <meta property="article:published_time" content="2022-04-27T09:06:34.000Z">
-<meta property="article:modified_time" content="2022-11-27T05:53:01.960Z">
+<meta property="article:modified_time" content="2022-11-27T05:53:02.000Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary">
@@ -203,7 +203,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-27 13:53:01" itemprop="dateModified" datetime="2022-11-27T13:53:01+08:00">2022-11-27</time>
+                <time title="修改时间：2022-11-27 13:53:02" itemprop="dateModified" datetime="2022-11-27T13:53:02+08:00">2022-11-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -230,7 +230,7 @@
 <span id="more"></span>
 
 
-<h2 id="Docker-概述"><a href="#Docker-概述" class="headerlink" title="Docker 概述"></a>Docker 概述</h2><p><img src="https://img.qylh.xyz/blog/1651051541515.png" alt="Docker"></p>
+<h2 id="Docker-概述"><a href="#Docker-概述" class="headerlink" title="Docker 概述"></a>Docker 概述</h2><p><img data-src="https://img.qylh.xyz/blog/1651051541515.png" alt="Docker"></p>
 <p>一种小巧的虚拟化技术（虚拟机也是虚拟化技术，但比较笨重），基于GoLang开发</p>
 <h3 id="Docker出现原因"><a href="#Docker出现原因" class="headerlink" title="Docker出现原因"></a>Docker出现原因</h3><p>一款产品有两套环境</p>
 <ul>
@@ -249,7 +249,7 @@
 <li>容器内的应用直接运行在宿主机的内容，容器没有自己的内核，也没有虚拟硬件，更加轻便</li>
 <li>每个容器间石象湖隔离的，每个容器有自己的文件系统，互不影响</li>
 </ul>
-<p><img src="https://img.qylh.xyz/blog/1651052446028.png" alt="虚拟机"><br><img src="https://img.qylh.xyz/blog/1651052204289.png" alt="Docker"></p>
+<p><img data-src="https://img.qylh.xyz/blog/1651052446028.png" alt="虚拟机"><br><img data-src="https://img.qylh.xyz/blog/1651052204289.png" alt="Docker"></p>
 <h3 id="对DevOps（开发、运维）的意义"><a href="#对DevOps（开发、运维）的意义" class="headerlink" title="对DevOps（开发、运维）的意义"></a>对DevOps（开发、运维）的意义</h3><ol>
 <li>应用更快速的交付和部署</li>
 <li>更便捷的升级和扩缩容</li>
@@ -265,7 +265,7 @@
 <h4 id="仓库（Repository）"><a href="#仓库（Repository）" class="headerlink" title="仓库（Repository）"></a>仓库（Repository）</h4><blockquote>
 <p>仓库是存放镜像的地方</p>
 </blockquote>
-<p><img src="https://img.qylh.xyz/blog/1651053127230.png"></p>
+<p><img data-src="https://img.qylh.xyz/blog/1651053127230.png"></p>
 <h3 id="Docker安装"><a href="#Docker安装" class="headerlink" title="Docker安装"></a>Docker安装</h3><p><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/install/centos/">官方文档</a></p>
 <p>启动服务</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
@@ -284,7 +284,7 @@
 
 <h2 id="Docker工作原理"><a href="#Docker工作原理" class="headerlink" title="Docker工作原理"></a>Docker工作原理</h2><p>Docker是一个C&#x2F;S结构的系统，Docker的守护进程运行在主机上，通过Socket从客户端访问。</p>
 <p>DockerServer接收到DockerClient的命令就会执行。</p>
-<p><img src="https://img.qylh.xyz/blog/1651146686322.png" alt="工作原理"></p>
+<p><img data-src="https://img.qylh.xyz/blog/1651146686322.png" alt="工作原理"></p>
 <h3 id="Docker为什么比虚拟机快？"><a href="#Docker为什么比虚拟机快？" class="headerlink" title="Docker为什么比虚拟机快？"></a>Docker为什么比虚拟机快？</h3><ol>
 <li>Docker具有比虚拟机更少的抽象层</li>
 <li>Docker利用的是宿主机的内核，vm需要虚拟化一个单独的内核（创建容器时，不需要重新加载一个操作系统内核，不需要进行引导）</li>
