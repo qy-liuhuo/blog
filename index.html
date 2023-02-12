@@ -163,6 +163,79 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/38019.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coder_M">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/38019.html" class="post-title-link" itemprop="url">关于JS的length可以修改这件事</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-02-12 22:29:50 / 修改时间：22:40:14" itemprop="dateCreated datePublished" datetime="2023-02-12T22:29:50+08:00">2023-02-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>写了一个函数用于比对用户名和密码，函数内容大概如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> temp=<span class="keyword">await</span> <span class="variable language_">this</span>.<span class="property">userService</span>.<span class="title function_">selectUser</span>(body.<span class="property">userName</span>)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(temp[<span class="number">0</span>].<span class="property">password</span>!=body.<span class="property">password</span>)</span><br><span class="line"><span class="keyword">if</span>(temp.<span class="property">length</span>=<span class="number">0</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">ResponseErr</span>(<span class="title class_">ResponseCode</span>.<span class="property">ERR</span>,<span class="string">&quot;该用户名不存在&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(temp[<span class="number">0</span>].<span class="property">password</span>!=body.<span class="property">password</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">ResponseErr</span>(<span class="title class_">ResponseCode</span>.<span class="property">ERR</span>,<span class="string">&quot;密码错误&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="title class_">ResponseSuccess</span>()</span><br></pre></td></tr></table></figure>
+<p>然后发现，第二行也就是console.log是可以正常输出的，但是在第六行确报了password undefined的错误。这是我就很迷惑啊，以为是异步处理出现了什么问题。找了半天错了，最后发现错误很离谱…..</p>
+<h2 id="错误分析"><a href="#错误分析" class="headerlink" title="错误分析"></a>错误分析</h2><p>错误的根源在于第三行判断长度时，少写了一个等号！也就是<code>temp.length=0</code>应该是<code>temp.length==0</code>,这时我就想，难道length是可以重新赋值的？</p>
+<p>查了一下文档，果然是这样的，具体参考<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/length">Array.length</a>。</p>
+<p>仔细想了一下，也没什么奇怪的，毕竟是<code>x.length</code>而不是<code>x.length()</code>或者<code>len（x）</code>。length是array的一个属性而已。认为其不可改可能是受到其他语言习惯的影响，认为其原理是执行函数计算一下大小。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/5112.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -836,90 +909,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/posts/b6a7a87b.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/eb46ecd9.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
-      <meta itemprop="name" content="MaHaotian">
-      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Coder_M">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/eb46ecd9.html" class="post-title-link" itemprop="url">ip查询工具</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-05-15 23:37:28" itemprop="dateCreated datePublished" datetime="2022-05-15T23:37:28+08:00">2022-05-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-07 18:39:28" itemprop="dateModified" datetime="2022-08-07T18:39:28+08:00">2022-08-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/" itemprop="url" rel="index"><span itemprop="name">开发经验</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>实现两个功能：</p>
-<ol>
-<li>从服务器日志等文本中提取出IP</li>
-<li>调用接口获取IP位置<br>可根据实际需求自由选择
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/eb46ecd9.html#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
