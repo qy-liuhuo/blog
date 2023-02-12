@@ -21,15 +21,15 @@
     var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="起因写了一个函数用于比对用户名和密码，函数内容大概如下： var temp&#x3D;await this.userService.selectUser(body.userName)console.log(temp[0].password!&#x3D;body.password)if(temp.length&#x3D;0)&amp;#123;    return ResponseErr(ResponseCode.ERR,&quot;">
+  <meta name="description" content="js中的length居然是可以修改的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="关于JS的length可以修改这件事">
 <meta property="og:url" content="https://qylh.xyz/posts/38019.html">
 <meta property="og:site_name" content="Coder_M">
-<meta property="og:description" content="起因写了一个函数用于比对用户名和密码，函数内容大概如下： var temp&#x3D;await this.userService.selectUser(body.userName)console.log(temp[0].password!&#x3D;body.password)if(temp.length&#x3D;0)&amp;#123;    return ResponseErr(ResponseCode.ERR,&quot;">
+<meta property="og:description" content="js中的length居然是可以修改的">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-02-12T14:29:50.000Z">
-<meta property="article:modified_time" content="2023-02-12T14:41:10.103Z">
+<meta property="article:modified_time" content="2023-02-12T14:43:19.453Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="前端">
 <meta property="article:tag" content="js">
@@ -192,7 +192,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-02-12 22:29:50 / 修改时间：22:41:10" itemprop="dateCreated datePublished" datetime="2023-02-12T22:29:50+08:00">2023-02-12</time>
+              <time title="创建时间：2023-02-12 22:29:50 / 修改时间：22:43:19" itemprop="dateCreated datePublished" datetime="2023-02-12T22:29:50+08:00">2023-02-12</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -215,7 +215,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <span id="more"></span>
+        <p>js中的length居然是可以修改的</p>
+<span id="more"></span>
 <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>写了一个函数用于比对用户名和密码，函数内容大概如下：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> temp=<span class="keyword">await</span> <span class="variable language_">this</span>.<span class="property">userService</span>.<span class="title function_">selectUser</span>(body.<span class="property">userName</span>)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(temp[<span class="number">0</span>].<span class="property">password</span>!=body.<span class="property">password</span>)</span><br><span class="line"><span class="keyword">if</span>(temp.<span class="property">length</span>=<span class="number">0</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">ResponseErr</span>(<span class="title class_">ResponseCode</span>.<span class="property">ERR</span>,<span class="string">&quot;该用户名不存在&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(temp[<span class="number">0</span>].<span class="property">password</span>!=body.<span class="property">password</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">ResponseErr</span>(<span class="title class_">ResponseCode</span>.<span class="property">ERR</span>,<span class="string">&quot;密码错误&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="title class_">ResponseSuccess</span>()</span><br></pre></td></tr></table></figure>
 <p>然后发现，第二行也就是console.log是可以正常输出的，但是在第六行确报了password undefined的错误。这是我就很迷惑啊，以为是异步处理出现了什么问题。找了半天错了，最后发现错误很离谱…..</p>
