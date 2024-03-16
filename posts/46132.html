@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/mylogo.svg">
+  <link rel="mask-icon" href="/images/mylogo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="作为一种创建型设计模式，单例模式能够保证一个类只有一个实例。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="单例模式">
+<meta property="og:url" content="https://qylh.xyz/posts/46132.html">
+<meta property="og:site_name" content="Coder_M">
+<meta property="og:description" content="作为一种创建型设计模式，单例模式能够保证一个类只有一个实例。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-03-15T05:33:51.000Z">
+<meta property="article:modified_time" content="2024-03-16T09:56:09.338Z">
+<meta property="article:author" content="MaHaotian">
+<meta property="article:tag" content="设计模式">
+<meta property="article:tag" content="创建者模式">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://qylh.xyz/posts/46132.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>单例模式 | Coder_M</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Coder_M</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/46132.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coder_M">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          单例模式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-15 13:33:51" itemprop="dateCreated datePublished" datetime="2024-03-15T13:33:51+08:00">2024-03-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-16 17:56:09" itemprop="dateModified" datetime="2024-03-16T17:56:09+08:00">2024-03-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>作为一种创建型设计模式，单例模式能够保证一个类只有一个实例。</p>
+<span id="more"></span>
+
+<p>单例模式思路：</p>
+<ol>
+<li>将默认的构造函数设为私有。</li>
+<li>使用静态方法getInstance方法获取实例对象。</li>
+</ol>
+<h2 id="实现方案"><a href="#实现方案" class="headerlink" title="实现方案"></a>实现方案</h2><p>单例模式可分成两种：</p>
+<ol>
+<li>饿汉式：类加载时创建实例对象</li>
+<li>饿汉式：类加载时不会创建实例对象，首次使用时才会创建</li>
+</ol>
+<h3 id="饿汉式"><a href="#饿汉式" class="headerlink" title="饿汉式"></a>饿汉式</h3><h4 id="静态变量实现"><a href="#静态变量实现" class="headerlink" title="静态变量实现"></a>静态变量实现</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SingleTon</span> &#123;</span><br><span class="line">    <span class="comment">//私有构造方法</span></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">SingleTon</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 静态实例对象，初始化时创建</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">SingleTon</span> <span class="variable">instance</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SingleTon</span>();</span><br><span class="line">    <span class="comment">//public的静态方法来获取实例</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> SingleTon <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="静态代码块方式"><a href="#静态代码块方式" class="headerlink" title="静态代码块方式"></a>静态代码块方式</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SingleTon</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">SingleTon</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> SingleTon instance;</span><br><span class="line">    <span class="comment">//静态代码块在类加载时执行，注意与构造代码块的区别。</span></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        instance = <span class="keyword">new</span> <span class="title class_">SingleTon</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> SingleTon <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="枚举方式⭐"><a href="#枚举方式⭐" class="headerlink" title="枚举方式⭐"></a>枚举方式⭐</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> <span class="title class_">Singleton</span>&#123;</span><br><span class="line">    INSTANCE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>借助枚举类的线程安全和只会装载一次的特性，实现了单例中唯一一种不会被破坏的单例模式。</p>
+<p><strong>饿汉式在没有被使用时就已经创建了，会造成内存浪费问题。</strong></p>
+<h3 id="懒汉式"><a href="#懒汉式" class="headerlink" title="懒汉式"></a>懒汉式</h3><h4 id="线程不安全实现方式"><a href="#线程不安全实现方式" class="headerlink" title="线程不安全实现方式"></a>线程不安全实现方式</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SingleTon</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">SingleTon</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="comment">//线程不安全</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> SingleTon instance;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> SingleTon <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance==<span class="literal">null</span>)</span><br><span class="line">            instance = <span class="keyword">new</span> <span class="title class_">SingleTon</span>();</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">」</span><br></pre></td></tr></table></figure>
+
+<h4 id="线程安全的实现方式"><a href="#线程安全的实现方式" class="headerlink" title="线程安全的实现方式"></a>线程安全的实现方式</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SingleTon</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">SingleTon</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="comment">//线程安全</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> SingleTon instance;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> SingleTon <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance==<span class="literal">null</span>)</span><br><span class="line">            instance = <span class="keyword">new</span> <span class="title class_">SingleTon</span>();</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用<code>synchronized</code>保证并发场景下的线程安全，缺点也很明显，性能差。</p>
+<h4 id="双重检查实现线程安全"><a href="#双重检查实现线程安全" class="headerlink" title="双重检查实现线程安全"></a>双重检查实现线程安全</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SingleTon</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">SingleTon</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="comment">//双重检查</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> SingleTon instance; <span class="comment">//防止指令重排</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> SingleTon <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance==<span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (SingleTon.class)&#123;</span><br><span class="line">                <span class="keyword">if</span>(instance == <span class="literal">null</span>)</span><br><span class="line">                    instance = <span class="keyword">new</span> <span class="title class_">SingleTon</span>();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>双重检查锁可以降低锁的粒度，因为大多数事件instance是不为<code>null</code>的，因此第一次检查不使用<code>synchronize</code>，如果第一次检查是<code>null</code>，才需要使用锁。注意要使用<code>volatile</code>来防止指令重排。</p>
+<h4 id="静态内部类实现"><a href="#静态内部类实现" class="headerlink" title="静态内部类实现"></a>静态内部类实现</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//静态内部类实现懒汉式单例模式，由jvm保证线程安全性</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SingleTon</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">SingleTon</span><span class="params">()</span>&#123;&#125;;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">SingleTonHolder</span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">SingleTon</span> <span class="variable">singleTon</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SingleTon</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> SingleTon <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingleTonHolder.singleTon;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>JVM加载外部类的过程中，不会加载静态内部类，只有在静态内部类的属性和方法被调用时才会被加载，可以保证线程安全和唯一性。（由JVM保证）</p>
+<h3 id="破坏单例"><a href="#破坏单例" class="headerlink" title="破坏单例"></a>破坏单例</h3><h4 id="序列化与反序列化"><a href="#序列化与反序列化" class="headerlink" title="序列化与反序列化"></a>序列化与反序列化</h4><p>通过对单例对象的序列化再反序列化可破坏单例模式。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"> <span class="comment">//序列化破坏单例</span></span><br><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">    <span class="type">SingleTon</span> <span class="variable">singleTon</span> <span class="operator">=</span> SingleTon.getInstance();</span><br><span class="line">    <span class="type">ObjectOutputStream</span> <span class="variable">oos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(<span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;./test.txt&quot;</span>));</span><br><span class="line">    oos.writeObject(singleTon);</span><br><span class="line">    <span class="type">ObjectInputStream</span> <span class="variable">ois</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(<span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;./test.txt&quot;</span>));</span><br><span class="line">    <span class="type">SingleTon</span> <span class="variable">singleTon2</span> <span class="operator">=</span> (SingleTon) ois.readObject();</span><br><span class="line">    System.out.println(singleTon2==singleTon);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">    System.out.println(e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解决方法：增加readResolve()方法，在反序列化时如果发现存在该方法将直接返回原对象。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> Object <span class="title function_">readResolve</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h4><p>通过反射机制可以获得单例类的构造方法，进而更改构造方法的访问性，借此可在外部new 新对象。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">    <span class="type">Class</span> <span class="variable">singleTonClass</span> <span class="operator">=</span> SingleTon.class;</span><br><span class="line">    <span class="type">Constructor</span> <span class="variable">constructor</span> <span class="operator">=</span>  singleTonClass.getDeclaredConstructor();</span><br><span class="line">    constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line">    <span class="type">SingleTon</span> <span class="variable">singleTon1</span> <span class="operator">=</span> (SingleTon) constructor.newInstance();</span><br><span class="line">    <span class="type">SingleTon</span> <span class="variable">singleTon2</span> <span class="operator">=</span> (SingleTon) constructor.newInstance();</span><br><span class="line">    System.out.println(singleTon1 == singleTon2);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (NoSuchMethodException e)&#123;</span><br><span class="line">    System.out.println(e);</span><br><span class="line">&#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">&#125; <span class="keyword">catch</span> (InstantiationException e) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">&#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解决方法：在构造方法中判断是否已经存在instance了，如果存在则直接抛出异常。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="title function_">SingleTon</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(instance !=<span class="literal">null</span>)&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag"># 设计模式</a>
+              <a href="/tags/%E5%88%9B%E5%BB%BA%E8%80%85%E6%A8%A1%E5%BC%8F/" rel="tag"># 创建者模式</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/45121.html" rel="prev" title="设计原则">
+      <i class="fa fa-chevron-left"></i> 设计原则
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88"><span class="nav-number">1.</span> <span class="nav-text">实现方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A5%BF%E6%B1%89%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">饿汉式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8F%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.1.1.</span> <span class="nav-text">静态变量实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E4%BB%A3%E7%A0%81%E5%9D%97%E6%96%B9%E5%BC%8F"><span class="nav-number">1.1.2.</span> <span class="nav-text">静态代码块方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E6%96%B9%E5%BC%8F%E2%AD%90"><span class="nav-number">1.1.3.</span> <span class="nav-text">枚举方式⭐</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%87%92%E6%B1%89%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">懒汉式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E4%B8%8D%E5%AE%89%E5%85%A8%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.1.</span> <span class="nav-text">线程不安全实现方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.2.</span> <span class="nav-text">线程安全的实现方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E9%87%8D%E6%A3%80%E6%9F%A5%E5%AE%9E%E7%8E%B0%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="nav-number">1.2.3.</span> <span class="nav-text">双重检查实现线程安全</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%86%85%E9%83%A8%E7%B1%BB%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.4.</span> <span class="nav-text">静态内部类实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A0%B4%E5%9D%8F%E5%8D%95%E4%BE%8B"><span class="nav-number">1.3.</span> <span class="nav-text">破坏单例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">1.3.1.</span> <span class="nav-text">序列化与反序列化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84"><span class="nav-number">1.3.2.</span> <span class="nav-text">反射</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MaHaotian"
+      src="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+  <p class="site-author-name" itemprop="name">MaHaotian</p>
+  <div class="site-description" itemprop="description">给时光以生命，而不是给生命以时光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">66</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qy-liuhuo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qy-liuhuo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:maht2001@163.com" title="E-Mail → mailto:maht2001@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://8.130.47.249/" title="http:&#x2F;&#x2F;8.130.47.249" rel="noopener" target="_blank">坤哥的博客</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MaHaotian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>
