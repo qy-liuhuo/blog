@@ -28,11 +28,16 @@
 <meta property="og:site_name" content="Echo">
 <meta property="og:description" content="嵌入式硬件系统基础">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1712755464837.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1712755718592.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1712756120726.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1712757053925.png">
 <meta property="article:published_time" content="2024-04-10T06:55:32.000Z">
-<meta property="article:modified_time" content="2024-04-10T08:10:12.519Z">
+<meta property="article:modified_time" content="2024-04-10T13:59:49.290Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="嵌入式">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.qylh.xyz/blog/1712755464837.png">
 
 <link rel="canonical" href="https://qylh.xyz/posts/26814.html">
 
@@ -191,7 +196,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2024-04-10 14:55:32 / 修改时间：16:10:12" itemprop="dateCreated datePublished" datetime="2024-04-10T14:55:32+08:00">2024-04-10</time>
+              <time title="创建时间：2024-04-10 14:55:32 / 修改时间：21:59:49" itemprop="dateCreated datePublished" datetime="2024-04-10T14:55:32+08:00">2024-04-10</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -271,8 +276,12 @@
 </tr>
 </tbody></table>
 <p>主流的嵌入式微处理器体系结构：ARM、MIPS、PowerPC、SH、X86等。</p>
-<h4 id="总线"><a href="#总线" class="headerlink" title="总线"></a>总线</h4><p>嵌入式系统总线分类：</p>
-<ol>
+<h4 id="总线"><a href="#总线" class="headerlink" title="总线"></a>总线</h4><blockquote>
+<p>总线是CPU与存储器和设备通信的机制，是计算机各部件之间传送数据、地址和控制信息的公共通道。</p>
+</blockquote>
+<p>嵌入式系统总线分类：</p>
+<ul>
+<li>按照相对于CPU的位置划分<ul>
 <li>片内总线<ul>
 <li>AMBA</li>
 <li>AVALON</li>
@@ -280,19 +289,177 @@
 <li>WISHBONE</li>
 </ul>
 </li>
+<li>片外总线<ul>
 <li>片外并行总线<ul>
 <li>PCI</li>
 <li>ISA</li>
 </ul>
 </li>
-<li>片外串行总线<ul>
+<li>片外串行总线：串行总线是指按位传送数据的通路，其连接线少、接口简单、成本低、传送距离远，被广泛用于嵌入式系统与外设的连接和计算机网络。<ul>
 <li>UART</li>
 <li>SPI</li>
 <li>I2C</li>
 <li>USB</li>
 </ul>
 </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>按功能和信号类型分类<ul>
+<li>数据总线 Dbus</li>
+<li>地址总线 Abus</li>
+<li>控制总线 Cbus</li>
+</ul>
+</li>
+</ul>
+<p>由CPU Core选择片内总线的类型，由应用程序选择片外总线选型。</p>
+<p>总线参数：</p>
+<ol>
+<li>总线宽度（位宽）</li>
+<li>总线频率（MHz）</li>
+<li>总线带宽（数据传送率，每秒最大传输的数据量）（总线带宽&#x3D;（总线宽度&#x2F;8）*总线频率）</li>
 </ol>
+<p><img data-src="https://img.qylh.xyz/blog/1712755464837.png" alt="1712755464837.png" style="zoom:50%;" />****</p>
+<p>嵌入式系统可能含有多条总线。</p>
+<h5 id="AMBA总线"><a href="#AMBA总线" class="headerlink" title="AMBA总线"></a>AMBA总线</h5><blockquote>
+<p>AMBA（Advanced Microcontroller Bus Architecture）是ARM 公司研发的一种总线规范。</p>
+</blockquote>
+<p>AMBA总线规范中的三种总线：</p>
+<ol>
+<li>高级高性能总线 AHB（Advanced High-performance Bus）用于高性能系统模块的连接，支持突发模式数据传输和事务分割；可以有效地连接处理器、片上和片外存储器，支持流水线操作。</li>
+<li>高级系统总线 ASB（Advanced System Bus）也用于高性能系统模块的连接，为AHB总线替代</li>
+<li>高级外设总线 APB（Advanced Peripheral Bus）用于较低性能外设的简单连接，一般是接在AHB或ASB系统总线上的第二级总线。</li>
+</ol>
+<p><img data-src="https://img.qylh.xyz/blog/1712755718592.png" alt="1712755718592.png"></p>
+<h6 id="AHB总线"><a href="#AHB总线" class="headerlink" title="AHB总线"></a>AHB总线</h6><p>构成：</p>
+<ol>
+<li>主单元：只有主单元可在任何时刻使用总线。AHB可以有一个或多个主单元。主单元可以是RISC处理器、协处理器以及DMA控制器，以启动和控制总线操作。</li>
+<li>从单元：可以响应（并非启动）读或写总线操作；总线的从单元可以在给定的地址范围内对读写操作进行相应的反应。从单元向主单元发出成功、失败信号或等待各种反馈信号。从单元通常是其复杂程度不足以成为主单元的固定功能块，例如外存接口、总线桥接口以及任何内存都可以是从单元，系统的其他外设也包含在AHB的从单元中。 </li>
+<li>仲裁器：用来确定控制总线是哪个主单元，以保证在任何时候只有一个主单元可以启动数据传输。一般来说仲裁协议都是固定好的，例如最高优先级方法或平等方法，可根据实际的情况选择适当的仲裁协议。</li>
+<li>译码器：总线译码器用于传输译码工作，提供传输过程中从单元的片选信号。</li>
+</ol>
+<p>工作阶段：</p>
+<ol>
+<li>地址传送阶段(address phase)：它将只持续一个时钟周期。在HCLK的上升沿数据有效。所有的从单元都在这个上升沿来采样地址信息。</li>
+<li>数据传送阶段（data phase）：它需要一个或几个时钟周期。可以通过HREADY信号来延长数据传输时间，当HREADY信号为低电平时，就在数据传输中加入等待周期，直到HREADY信号为高电平才表示这次传输阶段结束。</li>
+</ol>
+<img data-src="https://img.qylh.xyz/blog/1712756120726.png" alt="1712756120726.png" style="zoom:80%;" />
+
+<h6 id="APB总线"><a href="#APB总线" class="headerlink" title="APB总线"></a>APB总线</h6><p>构成：</p>
+<ol>
+<li>APB桥：APB桥是APB中唯一的主单元，是AHB&#x2F;ASB的从单元。APB桥将系统总线AHB&#x2F;ASB和APB连接起来，并执行下列功能：<ol>
+<li>锁存地址并保持其有效，直到数据传送完成。</li>
+<li>译码地址并产生一个外部片选信号，在每次传送时只有一个片选信号（PSELx）有效。</li>
+<li>写传送（write transfer）时驱动数据到APB。</li>
+<li>读传送（read transfer）时驱动数据到系统总线AHB&#x2F;ASB。</li>
+</ol>
+</li>
+<li>APB从单元（Slave）：APB从单元具有简单灵活的接口，接口的具体实现是依赖于特定设计的，有许多不同的可能。当写传送时数据锁定在下列点：<ol>
+<li>当PSELx为高电平时，在每个PCLK的上升沿，在PENABLE的上升沿。</li>
+<li>片选信号PSELx和地址信号PADDR可合并起来决定需要操作的寄存器。</li>
+</ol>
+</li>
+</ol>
+<h5 id="PCI总线"><a href="#PCI总线" class="headerlink" title="PCI总线"></a>PCI总线</h5><p>1991年Intel公司联合IBM、Compaq、AST、HP、DEC等100多家公司成立了PCISIG（Peripheral Component Interconnect Special Interest Group）协会，它致力于促进<strong>PCI</strong>（Peripheral Component Interconnect）总线工业标准的发展。PCI总线的特点：</p>
+<ol>
+<li>PCI总线是地址、数据多路复用的高性能32位和64位总线。</li>
+<li>32位PCI 有120引脚，64 位有184引脚。</li>
+<li>从数据宽度上看，PCI 总线有32bit 、64bit 之分</li>
+<li>从总线速度上分，有33MHz、66MHz、133MHz</li>
+<li>总线带宽为133MB&#x2F;s到超过1GB&#x2F;s</li>
+</ol>
+<p>PCI 总线的地址总线与数据总线是分时复用（分时复用的好处是一方面可以节省接插件的管脚数，另一方面便于实现突发数据传输）的，支持即插即用(Plug and Play) 、中断共享等功能。</p>
+<p>数据传输时，由一个PCI 设备做发起者(主控、Initiator或Master)，而另一个PCI 设备做目标(从设备、Target 或Slave)。总线上所有时序的产生与控制都由Master来发起。PCI 总线在同一时刻只能供一对设备完成传输，这就要求有一个仲裁机构，来决定谁有权拿到总线的主控权。</p>
+<p>PCI总线信号定义：</p>
+<ol>
+<li>系统控制类：<ol>
+<li>CLK：PCI 时钟，上升沿有效 </li>
+<li>RST：Reset信号</li>
+</ol>
+</li>
+<li>传输控制：<ol>
+<li><p>FRAME #：标志传输开始与结束</p>
+</li>
+<li><p>IRDY#：Master 可以传输数据的标志 </p>
+</li>
+<li><p>DEVSEL #：当Slave 发现自己被寻址时设置低电平应答</p>
+</li>
+<li><p>TRDY#：Slave 可以传输数据的标志</p>
+</li>
+<li><p>STOP #：Slave主动结束传输数据</p>
+</li>
+<li><p>IDSEL：在即插即用系统启动时用于选中板卡的信号</p>
+</li>
+<li><p>地址与数据总线 </p>
+<ol>
+<li>AD[ 31 : :0 ]：地址&#x2F;数据分时复用总线</li>
+<li>C&#x2F; BE # [3 : :0 ]：命令&#x2F;字节使能信号</li>
+<li>PAR：奇偶校验信号</li>
+</ol>
+</li>
+<li><p>仲裁信号 </p>
+<ol>
+<li>REQ #：Master 用来请求总线使用权</li>
+<li>GNT #：仲裁机构允许Master得到总线使用权</li>
+</ol>
+</li>
+<li><p>错误报告 </p>
+<ol>
+<li>PERR #：数据奇偶校验错</li>
+<li>SERR #：系统奇偶校验错</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>PCI总线操作流程：</p>
+<ol>
+<li>发起者先置REQ #, 当得到仲裁器的许可时( GNT # )，将FRAME #置低电平，并在AD总线上放置Slave地址，同时C&#x2F; BE #放置命令信号，说明接下来的传输类型。</li>
+<li>PCI 总线上的所有设备都需对此地址译码，被选中的设备置DEVSEL #以声明自己被选中。然后当IRDY# 与TRDY# 都置低时，传输数据。</li>
+<li>Master在数据传输结束前，将FRAME #置高以标明只剩最后一组数据要传输，并在传完数据后放开IRDY#以释放总线控制权。</li>
+</ol>
+<img data-src="https://img.qylh.xyz/blog/1712757053925.png" alt="1712757053925.png" style="zoom:80%;" />
+
+<h5 id="PCI-EXpress总线"><a href="#PCI-EXpress总线" class="headerlink" title="PCI EXpress总线"></a>PCI EXpress总线</h5><p>PCI Express是一种完全不同于PCI总线的一种全新总线规范，与PCI总线共享并行架构相比，PCI Express总线是一种点对点<strong>串行连接</strong>的设备连接方式。点对点意味着每一个PCI E设备都拥有自己独立的数据连接，各个设备之间并发的数据传输互不影响。PCI Express规格从1条通道连接到32条通道连接，有非常强的伸缩性，以满足不同系统设备对数据传输带宽不同的需求。</p>
+<blockquote>
+<p>X1支持双向数据传输，每向数据传输带宽250MB&#x2F;s;  X16即16条点对点数据传输通道连接，X16也支持双向数据传输，每向数据传输带宽高达4GB&#x2F;s，双向数据传输带宽有8GB&#x2F;s之多</p>
+</blockquote>
+<h5 id=""><a href="#" class="headerlink" title=""></a></h5><h5 id="CPCI总线"><a href="#CPCI总线" class="headerlink" title="CPCI总线"></a>CPCI总线</h5><p>为了将PCI总线规范用在工业控制计算机系统上，1995年11月PCI工业计算机制造者联合会（PICMIG）颁布了CompactPCI（以后简称CPCI）规范1.0版。1997年推出了CPCI2.0规范。</p>
+<p>CPCI总线规范&#x3D;PCI总线的电气规范+标准针孔连接器（IEC-1076-4-101)+欧洲卡规范（IEC297&#x2F;IEEE 1011.1）</p>
+<h5 id="I2C"><a href="#I2C" class="headerlink" title="I2C"></a>I2C</h5><p>I2C(Inter－Integrated Circuit)总线产生于80年代，最初为音频和视频设备开发。特点是简单有效</p>
+<ol>
+<li>总线的长度可高达25英尺，并且能够以100Kbps的最大传输速率支持40个组件。</li>
+<li>支持多主控 (multi master)， 其中任何能够进行发送和接收的设备都可以成为主总线。</li>
+<li>一个主控能够控制信号的传输和时钟频率。</li>
+</ol>
+<p>总线的构成及信号类型 ：</p>
+<ol>
+<li>I2C总线是由数据线SDA和时钟SCL构成的串行总线</li>
+<li>在CPU与被控IC之间、IC与IC之间进行双向传送，最高传送速率100kbps。</li>
+<li>在信息的传输过程中，I2C总线上并接的每一模块电路既是主控器（或被控器），又是发送器（或接收器），这取决于它所要完成的功能。</li>
+<li>CPU发出的控制信号分为地址码和控制量两部分，地址码用来选址。</li>
+</ol>
+<p>I2C总线在传送数据过程中共有三种类型信号，它们分别是：开始信号、结束信号和应答信号。</p>
+<ol>
+<li>开始信号：SCL为高电平时，SDA由高电平向低电平跳变，开始传送数据。</li>
+<li>结束信号：SCL为低电平时，SDA由低电平向高电平跳变，结束传送数据。 </li>
+<li>应答信号：接收数据的IC在接收到8bit数据后，向发送数据的IC发出特定的低电平脉冲，表示已收到数据。</li>
+</ol>
+<h5 id="SPI总线"><a href="#SPI总线" class="headerlink" title="SPI总线"></a>SPI总线</h5><p>SPI总线接口一般使用4条线：</p>
+<ol>
+<li>串行时钟线（SCK）</li>
+<li>主机输入&#x2F;从机输出数据线MISO</li>
+<li>主机输出&#x2F;从机输入数据线MOST</li>
+<li>低电平有效的从机选择线SS</li>
+<li>有的SPI接口芯片带有中断信号线INT、或有的SPI接口芯片没有主机输出&#x2F;从机输入数据线MOSI</li>
+</ol>
+<h4 id="存储器"><a href="#存储器" class="headerlink" title="存储器"></a>存储器</h4><p>存储器包括主存和外存，大多数嵌入式系统的代码和数据都存储在处理器可以直接访问的存储空间即主存中。</p>
+<h4 id="输入输出设备和接口"><a href="#输入输出设备和接口" class="headerlink" title="输入输出设备和接口"></a>输入输出设备和接口</h4><ul>
+<li>中断控制器、DM、串行和并行接口</li>
+<li>定时器、计数器、看门狗、RTC、UARTs、PWM</li>
+<li>AD&#x2F;DA、显示器、键盘</li>
+</ul>
 
     </div>
 
@@ -373,7 +540,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%A1%AC%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90"><span class="nav-number">1.</span> <span class="nav-text">嵌入式硬件系统基本组成</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8"><span class="nav-number">1.1.</span> <span class="nav-text">微处理器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BA%BF"><span class="nav-number">1.2.</span> <span class="nav-text">总线</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%A1%AC%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90"><span class="nav-number">1.</span> <span class="nav-text">嵌入式硬件系统基本组成</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8"><span class="nav-number">1.1.</span> <span class="nav-text">微处理器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BA%BF"><span class="nav-number">1.2.</span> <span class="nav-text">总线</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AMBA%E6%80%BB%E7%BA%BF"><span class="nav-number">1.2.1.</span> <span class="nav-text">AMBA总线</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#AHB%E6%80%BB%E7%BA%BF"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">AHB总线</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#APB%E6%80%BB%E7%BA%BF"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">APB总线</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PCI%E6%80%BB%E7%BA%BF"><span class="nav-number">1.2.2.</span> <span class="nav-text">PCI总线</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PCI-EXpress%E6%80%BB%E7%BA%BF"><span class="nav-number">1.2.3.</span> <span class="nav-text">PCI EXpress总线</span></a></li><li class="nav-item nav-level-5"><a class="nav-link"><span class="nav-number">1.2.4.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CPCI%E6%80%BB%E7%BA%BF"><span class="nav-number">1.2.5.</span> <span class="nav-text">CPCI总线</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#I2C"><span class="nav-number">1.2.6.</span> <span class="nav-text">I2C</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SPI%E6%80%BB%E7%BA%BF"><span class="nav-number">1.2.7.</span> <span class="nav-text">SPI总线</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%99%A8"><span class="nav-number">1.3.</span> <span class="nav-text">存储器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E8%AE%BE%E5%A4%87%E5%92%8C%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.4.</span> <span class="nav-text">输入输出设备和接口</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
