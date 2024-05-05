@@ -21,12 +21,12 @@
     var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="概述多任务系统中任务之间&#x2F;任务与ISR(中断服务例程)的关系  相互独立：仅竞争CPU资源 竞争除CPU外的其他资源（互斥） 同步：协调彼此运行的步调，保证协同运行的各个任务具有正确的执行次序  通信：彼此间传递数据或信息，以协同完成某项工作  单向同步&#x2F;通信：一个任务与另一个任务或一个ISR同步或通信。  双向同步或通信：两个任务相互同步或通信。双向同步不能在任务与ISR之间">
+  <meta name="description" content="概述多任务系统中任务之间&#x2F;任务与ISR(中断服务例程)的关系  相互独立：仅竞争CPU资源 竞争除CPU外的其他资源（互斥） 同步：协调彼此运行的步调，保证协同运行的各个任务具有正确的执行次序  通信：彼此间传递数据或信息，以协同完成某项工作  单向同步&#x2F;通信：一个任务与另一个任务或一个ISR同步或通信。  双向同步或通信：两个任务相互同步或通信。双向同步不能在任务与ISR">
 <meta property="og:type" content="article">
 <meta property="og:title" content="同步互斥与通信">
 <meta property="og:url" content="https://qylh.xyz/posts/20085.html">
 <meta property="og:site_name" content="Echo">
-<meta property="og:description" content="概述多任务系统中任务之间&#x2F;任务与ISR(中断服务例程)的关系  相互独立：仅竞争CPU资源 竞争除CPU外的其他资源（互斥） 同步：协调彼此运行的步调，保证协同运行的各个任务具有正确的执行次序  通信：彼此间传递数据或信息，以协同完成某项工作  单向同步&#x2F;通信：一个任务与另一个任务或一个ISR同步或通信。  双向同步或通信：两个任务相互同步或通信。双向同步不能在任务与ISR之间">
+<meta property="og:description" content="概述多任务系统中任务之间&#x2F;任务与ISR(中断服务例程)的关系  相互独立：仅竞争CPU资源 竞争除CPU外的其他资源（互斥） 同步：协调彼此运行的步调，保证协同运行的各个任务具有正确的执行次序  通信：彼此间传递数据或信息，以协同完成某项工作  单向同步&#x2F;通信：一个任务与另一个任务或一个ISR同步或通信。  双向同步或通信：两个任务相互同步或通信。双向同步不能在任务与ISR">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://qylh.xyz/home/mahaotian/.config/Typora/typora-user-images/image-20240504170608625.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1714832009303.png">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://img.qylh.xyz/blog/1714876008673.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1714877634062.png">
 <meta property="article:published_time" content="2024-05-04T08:58:27.000Z">
-<meta property="article:modified_time" content="2024-05-05T03:44:20.519Z">
+<meta property="article:modified_time" content="2024-05-05T07:04:47.281Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="嵌入式">
 <meta name="twitter:card" content="summary">
@@ -203,7 +203,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-05-05 11:44:20" itemprop="dateModified" datetime="2024-05-05T11:44:20+08:00">2024-05-05</time>
+                <time title="修改时间：2024-05-05 15:04:47" itemprop="dateModified" datetime="2024-05-05T15:04:47+08:00">2024-05-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -226,7 +226,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>多任务系统中任务之间&#x2F;任务与ISR(中断服务例程)的关系</p>
+        <span id="more"></span>
+
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>多任务系统中任务之间&#x2F;任务与ISR(中断服务例程)的关系</p>
 <ul>
 <li>相互独立：仅竞争CPU资源</li>
 <li>竞争除CPU外的其他资源（互斥）</li>
