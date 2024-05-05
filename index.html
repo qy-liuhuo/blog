@@ -187,14 +187,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2024-05-04 16:58:27" itemprop="dateCreated datePublished" datetime="2024-05-04T16:58:27+08:00">2024-05-04</time>
+              <time title="创建时间：2024-05-04 16:58:21" itemprop="dateCreated datePublished" datetime="2024-05-04T16:58:21+08:00">2024-05-04</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-05-05 15:04:47" itemprop="dateModified" datetime="2024-05-05T15:04:47+08:00">2024-05-05</time>
+                <time title="修改时间：2024-05-05 15:08:02" itemprop="dateModified" datetime="2024-05-05T15:08:02+08:00">2024-05-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -217,161 +217,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>多任务系统中任务之间&#x2F;任务与ISR(中断服务例程)的关系</p>
-<ul>
-<li>相互独立：仅竞争CPU资源</li>
-<li>竞争除CPU外的其他资源（互斥）</li>
-<li>同步：协调彼此运行的步调，保证协同运行的各个任务具有正确的执行次序 </li>
-<li>通信：彼此间传递数据或信息，以协同完成某项工作</li>
-</ul>
-<p>单向同步&#x2F;通信：一个任务与另一个任务或一个ISR同步或通信。 </p>
-<p>双向同步或通信：两个任务相互同步或通信。<strong>双向同步不能在任务与ISR之间进行，因为ISR不能等待。</strong></p>
-<p> <img data-src="/home/mahaotian/.config/Typora/typora-user-images/image-20240504170608625.png" alt="image-20240504170608625"></p>
-<p>操作系统内核提供的同步互斥通信机制如下：</p>
-<ul>
-<li>信号量（semaphore），用于互斥与同步</li>
-<li>事件（组）（event group），用于同步</li>
-<li>异步信号（asynchronous signal），用于同步</li>
-<li>邮箱（mailbox）、消息队列（message queue），用于消息通信管道（pipe），提供非结构化数据交换和实现同步</li>
-</ul>
-<p>其他同步与通信的机制</p>
-<ul>
-<li>全局变量</li>
-<li>共享内存</li>
-<li>Socket</li>
-<li>RPC</li>
-</ul>
-<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><blockquote>
-<p>信号量用于实现任务与任务之间、任务与中断处理程序之间的同步与互斥。</p>
-</blockquote>
-<p>分类：</p>
-<ul>
-<li>互斥信号量：用于解决互斥问题。它比较特殊，可能会引起<strong>优先级反转</strong>问题。</li>
-<li>二值信号量：用于解决同步问题</li>
-<li>计数信号量：用于解决资源计数问题</li>
-</ul>
-<h3 id="互斥信号量"><a href="#互斥信号量" class="headerlink" title="互斥信号量"></a>互斥信号量</h3><blockquote>
-<p> 临界区: 用互斥信号量保护的代码区，临界区代码通常用于对共享资源（一段存储器空间、一个数据结构、IO设备等）的访问</p>
-</blockquote>
-<ol>
-<li>互斥信号量的初始值为1，表示没有任务进入且最多有一个任务进入</li>
-<li>第一个进入临界区的任务获得互斥信号，之后试图进入的其他任务必须等待</li>
-<li>离开临界区后将释放信号量</li>
-</ol>
-<p>互斥信号量是一种特殊的二值信号量，一般它支持所有权、递归访问、任务删除安全和一些避免优先级反转、饥饿、死锁等互斥所固有问题的协议。</p>
-<h4 id="所有权"><a href="#所有权" class="headerlink" title="所有权"></a>所有权</h4><p>当一个任务通过获取互斥信号量而将其锁定时，得到该互斥信号量的所有权。相反，当一个任务释放信号量时，失去对其的所有权。</p>
-<h4 id="递归资源访问"><a href="#递归资源访问" class="headerlink" title="递归资源访问"></a>递归资源访问</h4><p>如果Task1调用RoutineA，而RoutineA又调用RoutineB，并且三者访问相同的共享资源，就发生了递归共享资源的访问同步问题。一个递归的互斥信号量允许嵌套锁定互斥信号量，而不引起死锁。 </p>
-<img data-src="https://img.qylh.xyz/blog/1714832009303.png" alt="1714832009303.png" style="zoom:50%;" />
-
-<p>每个获取信号量的调用必须与释放信号量的调用相匹配。当最外层的获取信号量的调用与释放信号量的调用匹配时，该信号量才允许被其它任务访问。 </p>
-<p>用于同步的信号量不支持嵌套访问，任务如果对同步信号量使用上述操作是错误的，任务会被永久阻塞，并且阻塞条件永远不会解除。 </p>
-<h4 id="删除安全"><a href="#删除安全" class="headerlink" title="删除安全"></a>删除安全</h4><p> 在一个受信号量保护的临界区，经常需要保护在临界区执行的任务不会被意外地删除。</p>
-<p>删除一个在临界区执行的任务可能引起意想不到的后果，造成保护资源的信号量不可用，可能导致资源处于破坏状态，也就导致了其它所有要访问该资源的任务无法得到满足。 </p>
-<p>为了避免任务在临界区执行时不被意外删除提供了“任务保护”和“解除任务保护”原语对。同时互斥信号量可以设置为“删除安全”，任务获取信号量时将隐含的采用任务保护，释放信号量时将隐含地使用解除任务保护功能。</p>
-<h3 id="二值信号量"><a href="#二值信号量" class="headerlink" title="二值信号量"></a>二值信号量</h3><blockquote>
-<p>二值信号量主要用于任务与任务之间、任务与中断服务程序之间的同步</p>
-</blockquote>
-<ol>
-<li>用于同步的二值信号量初始为0，表示同步时间尚未产生</li>
-<li>任务申请信号量来等待该同步事件发生，申请不到则等待</li>
-<li>另一个任务到达同步点时，释放信号量（将值置为1）表示同步事件已经发生来唤醒等待的任务。</li>
-</ol>
-<p>比如，Task2优先级高于Task1，Task申请信号量sem1失败，切换到task1，task1执行一些操作后将信号量设置为1，task2得到sem1并抢占task1。</p>
-<h3 id="计数信号量"><a href="#计数信号量" class="headerlink" title="计数信号量"></a>计数信号量</h3><p>计数信号量用于控制系统中共享资源的多个实例的使用，允许多个任务同时访问同一种资源的多个实例。</p>
-<p>计数信号量被初始化为n（非负整数），n为该种共享资源的数目。</p>
-<img data-src="https://img.qylh.xyz/blog/1714875776104.png" alt="1714875776104.png" style="zoom:50%;" />
-
-<p>实例：有界缓冲问题</p>
-<p>两个进程共享一个公共的固定大小的缓冲区。其中的一个，生产者，将信息放入缓冲区；另一个，消费者，从缓冲区中取出信息。</p>
-<img data-src="https://img.qylh.xyz/blog/1714876008673.png" alt="1714876008673.png" style="zoom: 80%;" />
-
-<ul>
-<li>计数信号量full：已被填充的数据项数目，取值范围0－n，初始值为0</li>
-<li>计数信号量empty：空闲数据项数目，取值范围为0－n，初始值为n</li>
-<li>互斥信号量mutex：控制生产者任务和消费者任务对有界缓冲的访问，初始值为1。</li>
-</ul>
-<h3 id="信号量机制的主要数据结构"><a href="#信号量机制的主要数据结构" class="headerlink" title="信号量机制的主要数据结构"></a>信号量机制的主要数据结构</h3><ul>
-<li>信号量控制块（SCB）：管理所有创建的信号量，内核在系统运行时动态分配和回收信号量控制块</li>
-<li>信号量名称&#x2F;ID</li>
-<li>任务等待列表</li>
-</ul>
-<img data-src="https://img.qylh.xyz/blog/1714877634062.png" alt="1714877634062.png" style="zoom:80%;" />
-
-<p>互斥和二值信号量控制块结构: </p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Binary_Semaphore_Control_Block:</span><br><span class="line">wait_queue	//任务等待队列</span><br><span class="line">lock		//是否被占有</span><br><span class="line">holder	    //拥有者 </span><br><span class="line">nest_count	//嵌套层数</span><br><span class="line">attributes:</span><br><span class="line">	lock_nesting_behavior //试图嵌套获得时的规则 </span><br><span class="line">	wait_discipline	      //任务等待信号量的方式</span><br><span class="line">	priority_ceiling	  //优先级天花板值</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>计数信号量控制结构:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Counting_Semaphore_Control_Block:</span><br><span class="line">wait_queue	//任务等待队列</span><br><span class="line">count		//当前计数值</span><br><span class="line">attributes:</span><br><span class="line">        maximum_count	      //最大计数值</span><br><span class="line">        wait_discipline	      //任务等待信号量的方式</span><br><span class="line">   </span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="信号量操作"><a href="#信号量操作" class="headerlink" title="信号量操作"></a>信号量操作</h3><ul>
-<li>创建信号量</li>
-<li>获取（申请）信号量</li>
-<li>释放信号量</li>
-<li>删除信号量</li>
-<li>清除信号量的任务等待列表 </li>
-<li>获取有关信号量的各种信息</li>
-</ul>
-<h4 id="创建信号量"><a href="#创建信号量" class="headerlink" title="创建信号量"></a>创建信号量</h4><ul>
-<li><p>功能：根据应用传递的参数创建一个信号量</p>
-</li>
-<li><p>参数：信号量的名字、属性和初始值等。</p>
-</li>
-<li><p>内核动作：</p>
-<ul>
-<li><p>从空闲信号量控制块链中分配一个信号量控制块，并初始化信号量属性。</p>
-</li>
-<li><p>创建成功时，为其分配唯一的ID号返回给应用。</p>
-</li>
-<li><p>如果已创建信号量数量已达到用户配置的最大数量，就返回错误。</p>
-</li>
-</ul>
-</li>
-<li><p>属性：</p>
-<ul>
-<li><p>类型（互斥，二值，计数）</p>
-</li>
-<li><p>任务等待信号量的方式（即排列的顺序）（FIFO，PRIORITY）</p>
-</li>
-<li><p>与任务删除安全、递归访问以及解决优先级反转的策略相关的参数（只针对互斥信号量）。   （优先级继承、优先级天花板）</p>
-</li>
-</ul>
-</li>
-</ul>
-<h4 id="获取（申请）信号量"><a href="#获取（申请）信号量" class="headerlink" title="获取（申请）信号量"></a>获取（申请）信号量</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>    	信号量的值大于<span class="number">0</span></span><br><span class="line">then  	将信号量的值减<span class="number">1</span></span><br><span class="line"><span class="keyword">else</span>  	根据接收信号量的选项，将任务放到等待   队列中，或是直接返回</span><br></pre></td></tr></table></figure>
-
-<p>如申请的信号量不能立即获得可有几种选择：</p>
-<ol>
-<li>永远等待</li>
-<li>不等待，返回错误状态码</li>
-<li>制定等待时限（可有效避免死锁）</li>
-</ol>
-<p>注意：ISR中不允许选择等待</p>
-<blockquote>
-<p>如果任务等待一个使用优先级继承算法的互斥信号量，且它的优先级高于当前正占有此信号量的任务的优先级，那么占有信号量的任务将继承这个被阻塞的任务的优先级。<br>如果任务成功地获得一个采用优先级天花板算法的互斥信号量，它的优先级又低于优先级天花板，那么它的优先级将被抬升至天花板。  </p>
-</blockquote>
-<h4 id="释放信号量"><a href="#释放信号量" class="headerlink" title="释放信号量"></a>释放信号量</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">if    	没有任务等待这个信号量</span><br><span class="line">then  	信号量的值加1 </span><br><span class="line">else  	将信号量分配给一个等待任务（将相应的任务移出等待队列，使其就绪） </span><br></pre></td></tr></table></figure>
-
-<p>如果使用了优先级继承或优先级天花板算法，那么执行该功能（系统调用）的任务的优先级将恢复到原来的高度。 </p>
-<h4 id="删除信号量"><a href="#删除信号量" class="headerlink" title="删除信号量"></a>删除信号量</h4><ul>
-<li>功能：从系统中删除应用指定的一个信号量</li>
-<li>内核动作：将信号量控制块返还给系统</li>
-<li>删除信号量的不一定是创建信号量的任务。如果有任务正在等待获得该信号量，执行此功能将使所有等待这个信号量的任务回到就绪队列中，且返回一个状态码指示该信号量已被删除</li>
-<li>企图获取已删除的信号量将返回一个错误。</li>
-<li>在互斥信号量正被使用时（已经被某任务获取），不能删除它。因为该信号量正在保护一个共享资源或临界代码段，该动作可能造成数据崩溃或其他严重问题。</li>
-</ul>
-<h4 id="清除信号量的任务等待列表"><a href="#清除信号量的任务等待列表" class="headerlink" title="清除信号量的任务等待列表"></a>清除信号量的任务等待列表</h4><p>为了清除等待一个信号量的所有任务，某些内核支持Flush操作，以便释放信号量等待任务列表中的所有任务。当多个任务的执行必须在某些点相遇时，需要这样的机制。</p>
-<h4 id="获取有关信号量的各种信息"><a href="#获取有关信号量的各种信息" class="headerlink" title="获取有关信号量的各种信息"></a>获取有关信号量的各种信息</h4><p>系统可以通过两种方式获得信号量ID：</p>
-<ol>
-<li>在创建信号量的系统调用时，id可以被返回</li>
-<li>可以执行获取信号量ID的系统调用</li>
-</ol>
-<p>可以使用ID来访问信号量</p>
-<p>用用可以获取活动信号量的列表、每个信号量的细节信息</p>
-
+          <p>同步互斥与通信</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/20085.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -577,7 +431,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-04-10 22:01:27" itemprop="dateModified" datetime="2024-04-10T22:01:27+08:00">2024-04-10</time>
+                <time title="修改时间：2024-04-21 15:09:58" itemprop="dateModified" datetime="2024-04-21T15:09:58+08:00">2024-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
