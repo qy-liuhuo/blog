@@ -28,17 +28,24 @@
 <meta property="og:site_name" content="Echo">
 <meta property="og:description" content="同步互斥与通信">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.qylh.xyz/blog/synchronous-mutual-exclusion-and-communication-of-.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1714892940142.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1714832009303.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1714875776104.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1714876008673.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1714877634062.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1715760325598.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1715760299320.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1715760258043.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1715760540115.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1715762061370.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1715762104682.png">
 <meta property="article:published_time" content="2024-05-04T08:58:21.000Z">
-<meta property="article:modified_time" content="2024-05-05T07:09:20.386Z">
+<meta property="article:modified_time" content="2024-05-15T08:40:43.348Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="嵌入式">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img.qylh.xyz/blog/1714892940142.png">
+<meta name="twitter:image" content="https://img.qylh.xyz/blog/synchronous-mutual-exclusion-and-communication-of-.png">
 
 <link rel="canonical" href="https://qylh.xyz/posts/20085.html">
 
@@ -203,7 +210,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-05-05 15:09:20" itemprop="dateModified" datetime="2024-05-05T15:09:20+08:00">2024-05-05</time>
+                <time title="修改时间：2024-05-15 16:40:43" itemprop="dateModified" datetime="2024-05-15T16:40:43+08:00">2024-05-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -227,6 +234,8 @@
 
       
         <p>同步互斥与通信</p>
+<img data-src="https://img.qylh.xyz/blog/synchronous-mutual-exclusion-and-communication-of-.png" alt="synchronous-mutual-exclusion-and-communication-of-.png" style="zoom:50%;" />
+
 <span id="more"></span>
 
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>多任务系统中任务之间&#x2F;任务与ISR(中断服务例程)的关系</p>
@@ -384,6 +393,133 @@
 </ol>
 <p>可以使用ID来访问信号量</p>
 <p>用用可以获取活动信号量的列表、每个信号量的细节信息</p>
+<h2 id="通信"><a href="#通信" class="headerlink" title="通信"></a>通信</h2><h3 id="任务间通信的方式"><a href="#任务间通信的方式" class="headerlink" title="任务间通信的方式"></a>任务间通信的方式</h3><ol>
+<li>直接通信：在通信过程中双方必须明确地知道（命名）彼此</li>
+<li>间接通信：通信双方不需要指出消息的来源或去向，而通过中间机制来通信。（如消息队列）</li>
+</ol>
+<blockquote>
+<p>消息：内存空间中一段长度可变的缓冲区，其长度和内容均可以由用户定义，其内容可以是实际的数据、数据块的指针或空。</p>
+<ul>
+<li>从操作系统观点看，消息没有定义的格式，所有的消息都是字节流，没有特定的含义。</li>
+<li>从应用观点看，根据应用定义的消息格式，消息被解释成特定的含义。</li>
+<li>应用可以只把消息当成一个标志，这时消息机制用于实现同步</li>
+</ul>
+</blockquote>
+<p>一些操作系统内核把消息进一步分为：</p>
+<ol>
+<li>邮箱（仅能存放单条消息，它提供了一种低开销的机制来传送信息。每个邮箱可以保存一条大小为若干个字节的消息。）</li>
+<li>消息队列（消息队列可存放若干消息，提供了一种任务间缓冲通信的方法。）</li>
+</ol>
+<p>消息机制可支持定长与可变长度两种模式的消息，可变长度的消息队列需要对队列中的每一条消息增加额外的存储开销。</p>
+<h3 id="消息队列机制"><a href="#消息队列机制" class="headerlink" title="消息队列机制"></a>消息队列机制</h3><p>消息队列机制的主要数据结构：</p>
+<ol>
+<li>消息队列控制块：管理所有创建的消息队列，系统运行时动态分配和回收消息队列控制块</li>
+<li>消息队列缓冲区：存放者发送到该队列的消息，接收者从缓冲区中取出消息。</li>
+</ol>
+<p>消息的发送或接收有两种方法（影响消息缓冲区结构）：</p>
+<ul>
+<li>将数据从发送任务的空间完全拷贝到接收任务的空间中（效率较低，执行时间与消息大小有关）</li>
+<li>只传递指向数据存储空间的指针（提高系统性能）</li>
+</ul>
+<p><img data-src="https://img.qylh.xyz/blog/1715760325598.png" alt="1715760325598.png"></p>
+<p>逻辑上消息队列需要被组织为环形缓冲区被操作系统维护</p>
+<p><img data-src="https://img.qylh.xyz/blog/1715760299320.png" alt="1715760299320.png"></p>
+<h4 id="消息队列操作"><a href="#消息队列操作" class="headerlink" title="消息队列操作"></a>消息队列操作</h4><ol>
+<li>创建消息队列（FIFO或PRIORITY）</li>
+<li>发送普通消息（满了的话操作：1. 挂起，2. 丢弃）</li>
+<li>发送紧急消息（发送紧急消息将消息放在队列头。）</li>
+<li>发送广播消息 ：在此之前所有试图从队列中接收消息的任务此时都将获得相同的消息。该功能拷贝消息到各任务的消息缓冲中（或者让所有的等待任务得到指向消息的指针），并唤醒所有的等待任务。</li>
+<li>接收消息：如果指定的消息队列中有消息，则将其中的第一条消息拷贝到调用者的缓冲区（或者将第一条消息指针传递给调用者），并从消息队列中删除它。若没有消息可能采取措施：<ol>
+<li>永远等待消息到达</li>
+<li>等待消息并设置时限，可有效预防死锁</li>
+<li>不等待强制返回，比如中断服务</li>
+</ol>
+</li>
+<li>删除消息队列：从系统中删除指定的消息队列，释放消息队列控制块及消息队列缓冲区。任何知道此消息队列ID号的代码都可以删除它。所有等待从这个消息队列接收消息的任务都回到就绪态，并得到一个错误信息表明消息队列已被删除。</li>
+<li>获取有关消息队列的各种信息</li>
+</ol>
+<h2 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><blockquote>
+<p>在嵌入式实时内核中，事件是指一种表明预先定义的系统事件已经发生的机制。事件机制用于任务与任务之间、任务与ISR之间的同步。其主要的特点是可实现一对多的同步。 </p>
+<p>一个事件就是一个标志，不具备其它信息。</p>
+<p>一个或多个事件构成一个事件集。事件集可以用一个指定长度的变量（比如一个8bit, 16bit或32bit的无符号整型变量，不同的操作系统其具体实现不一样）来表示，而每个事件由在事件集变量中的某一位来代表。</p>
+</blockquote>
+<p>事件及事件集有以下特点： </p>
+<ol>
+<li>事件间相互独立</li>
+<li>事件仅用于同步，不提供数据传输功能</li>
+<li>事件无队列，即多次发送同一事件，在未经过任何处理的情况下，其效果等同于只发送一次。</li>
+</ol>
+<ul>
+<li>独立型同步：任务需要与一组事件中的任意一个发生同步（或）</li>
+<li>关联型同步：任务等待若干事件都发生时才同步（与）</li>
+</ul>
+<img data-src="https://img.qylh.xyz/blog/1715760258043.png" alt="1715760258043.png" style="zoom:80%;" />
+
+<p><img data-src="https://img.qylh.xyz/blog/1715760540115.png" alt="1715760540115.png"></p>
+<ul>
+<li>发送事件集 ：“指在一次发送过程中发往接收者（比如任务）的一个或多个事件的组合。</li>
+<li>待处理事件集：指已被发送到一个接收者但还没有被接收（即正在等待处理）的所有事件的集合。 </li>
+<li>事件条件：指事件接收者在一次接收过程中期待接收的一个或多个事件的集合。<ul>
+<li>“或”同步：待处理事件集只要包括事件条件中的任一事件即可满足要求；</li>
+<li>“与”同步：待处理事件集必须包括事件条件中的全部事件方可满足要求。</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>某些系统中事件集附属于任务，不需创建，其相关参数成为任务控制块的一部分</p>
+<p>事件集控制块：管理所有创建的事件集</p>
+<h3 id="事件操作"><a href="#事件操作" class="headerlink" title="事件操作"></a>事件操作</h3><ol>
+<li>创建事件集：申请空闲事件集控制块，设置事件集属性，初始化控制块中的域，分配ID号</li>
+<li>删除事件集</li>
+<li>发送事件（集）</li>
+<li>接收事件（集）</li>
+<li>获取有关事件集的各种信息</li>
+</ol>
+<h2 id="异步信号"><a href="#异步信号" class="headerlink" title="异步信号"></a>异步信号</h2><h3 id="概述-2"><a href="#概述-2" class="headerlink" title="概述"></a>概述</h3><p>异步信号机制用于任务与任务之间、任务与ISR之间的异步操作，它被任务（或ISR）用来通知其它任务某个事件的出现。</p>
+<p>异步信号标志可以依附于任务。需要处理异步信号的任务由两部分组成，一个是与异步信号无关的任务主体，另一个是ASR（异步信号服务例程）。</p>
+<p>一个ASR对应于一个任务。当向任务发送一个异步信号，如果该任务正在运行则中止其自身代码的运行，转而运行与该异步信号相关的服务例程；或者当该任务被激活时，在投入运行前执行ASR。<br>异步信号机制也可以称作软中断机制，异步信号又被称为<strong>软中断信号</strong>。</p>
+<p>异步信号与中断机制的对比：</p>
+<ul>
+<li>相同点：<ul>
+<li>具有中断性：对中断的处理和对异步信号的处理都要先暂时地中断当前任务的运行。</li>
+<li>有相应的服务程序： ISR 和 ASR</li>
+<li>可以屏蔽响应</li>
+</ul>
+</li>
+<li>不同点<ul>
+<li>性质不同：中断由硬件或者特定的指令产生，不受任务调度的控制</li>
+<li>处理时机（或响应时间）不同</li>
+<li>执行的环境不同<ul>
+<li>一般地，ISR在独立的上下文中运行，操作系统为之提供专门的堆栈空间。</li>
+<li>ASR在相关任务的上下文中运行，所以ASR也是任务的一个组成部分。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>异步信号与事件机制的对比：</p>
+<p>同样是标志着某个事件的发生，事件机制的使用是同步的，而异步信号机制是异步的。</p>
+<h2 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h2><h3 id="概述-3"><a href="#概述-3" class="headerlink" title="概述"></a>概述</h3><p>管道（pipe）是提供非结构化数据交换和实现任务间同步的内核对象。在传统的实现中，管道是单向数据交换设施。</p>
+<p><img data-src="https://img.qylh.xyz/blog/1715762061370.png" alt="1715762061370.png"></p>
+<p>数据在管道内像一个非结构字节流，按FIFO的次序从管道中读出。当管道空时，阻塞读者，当管道满时，阻塞写者。</p>
+<p>管道允许有多个读者和写者。 </p>
+<p><img data-src="https://img.qylh.xyz/blog/1715762104682.png" alt="1715762104682.png"></p>
+<p>管道与消息队列的区别</p>
+<ol>
+<li>管道不存储多个消息，它存储的数据是非结构化的字节流；</li>
+<li>管道中的数据严格地遵循先进先出的顺序；</li>
+<li>管道支持选择（select）操作，而消息队列不支持。</li>
+</ol>
+<p>命名管道和无名管道：</p>
+<ol>
+<li>一个命名管道具有一个类似于文件名的名字，并像一个文件或设备出现在文件中。任务或ISR可以用名字对其进行引用。</li>
+<li>无名管道没有名字且不在文件系统中出现，它必须使用创建管道时系统返回调用者的描述符才能引用。</li>
+</ol>
+<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><ol>
+<li>创建和删除一个管道；</li>
+<li>读或写管道；</li>
+<li>管道上的选择操作；</li>
+<li>Flush操作。</li>
+</ol>
 
     </div>
 
@@ -464,7 +600,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%92%E6%96%A5%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.1.</span> <span class="nav-text">互斥信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%80%E6%9C%89%E6%9D%83"><span class="nav-number">2.1.1.</span> <span class="nav-text">所有权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%92%E5%BD%92%E8%B5%84%E6%BA%90%E8%AE%BF%E9%97%AE"><span class="nav-number">2.1.2.</span> <span class="nav-text">递归资源访问</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%AE%89%E5%85%A8"><span class="nav-number">2.1.3.</span> <span class="nav-text">删除安全</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%80%BC%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.2.</span> <span class="nav-text">二值信号量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E6%95%B0%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.3.</span> <span class="nav-text">计数信号量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%E6%9C%BA%E5%88%B6%E7%9A%84%E4%B8%BB%E8%A6%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.4.</span> <span class="nav-text">信号量机制的主要数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%E6%93%8D%E4%BD%9C"><span class="nav-number">2.5.</span> <span class="nav-text">信号量操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.5.1.</span> <span class="nav-text">创建信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%EF%BC%88%E7%94%B3%E8%AF%B7%EF%BC%89%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.5.2.</span> <span class="nav-text">获取（申请）信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8A%E6%94%BE%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.5.3.</span> <span class="nav-text">释放信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.5.4.</span> <span class="nav-text">删除信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B8%85%E9%99%A4%E4%BF%A1%E5%8F%B7%E9%87%8F%E7%9A%84%E4%BB%BB%E5%8A%A1%E7%AD%89%E5%BE%85%E5%88%97%E8%A1%A8"><span class="nav-number">2.5.5.</span> <span class="nav-text">清除信号量的任务等待列表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%9C%89%E5%85%B3%E4%BF%A1%E5%8F%B7%E9%87%8F%E7%9A%84%E5%90%84%E7%A7%8D%E4%BF%A1%E6%81%AF"><span class="nav-number">2.5.6.</span> <span class="nav-text">获取有关信号量的各种信息</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%92%E6%96%A5%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.1.</span> <span class="nav-text">互斥信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%80%E6%9C%89%E6%9D%83"><span class="nav-number">2.1.1.</span> <span class="nav-text">所有权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%92%E5%BD%92%E8%B5%84%E6%BA%90%E8%AE%BF%E9%97%AE"><span class="nav-number">2.1.2.</span> <span class="nav-text">递归资源访问</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%AE%89%E5%85%A8"><span class="nav-number">2.1.3.</span> <span class="nav-text">删除安全</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%80%BC%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.2.</span> <span class="nav-text">二值信号量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E6%95%B0%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.3.</span> <span class="nav-text">计数信号量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%E6%9C%BA%E5%88%B6%E7%9A%84%E4%B8%BB%E8%A6%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.4.</span> <span class="nav-text">信号量机制的主要数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%E6%93%8D%E4%BD%9C"><span class="nav-number">2.5.</span> <span class="nav-text">信号量操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.5.1.</span> <span class="nav-text">创建信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%EF%BC%88%E7%94%B3%E8%AF%B7%EF%BC%89%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.5.2.</span> <span class="nav-text">获取（申请）信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8A%E6%94%BE%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.5.3.</span> <span class="nav-text">释放信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.5.4.</span> <span class="nav-text">删除信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B8%85%E9%99%A4%E4%BF%A1%E5%8F%B7%E9%87%8F%E7%9A%84%E4%BB%BB%E5%8A%A1%E7%AD%89%E5%BE%85%E5%88%97%E8%A1%A8"><span class="nav-number">2.5.5.</span> <span class="nav-text">清除信号量的任务等待列表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%9C%89%E5%85%B3%E4%BF%A1%E5%8F%B7%E9%87%8F%E7%9A%84%E5%90%84%E7%A7%8D%E4%BF%A1%E6%81%AF"><span class="nav-number">2.5.6.</span> <span class="nav-text">获取有关信号量的各种信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1"><span class="nav-number">3.</span> <span class="nav-text">通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E9%97%B4%E9%80%9A%E4%BF%A1%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">任务间通信的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E6%9C%BA%E5%88%B6"><span class="nav-number">3.2.</span> <span class="nav-text">消息队列机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E6%93%8D%E4%BD%9C"><span class="nav-number">3.2.1.</span> <span class="nav-text">消息队列操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">事件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0-1"><span class="nav-number">4.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">4.2.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-number">4.3.</span> <span class="nav-text">事件操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E4%BF%A1%E5%8F%B7"><span class="nav-number">5.</span> <span class="nav-text">异步信号</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0-2"><span class="nav-number">5.1.</span> <span class="nav-text">概述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E9%81%93"><span class="nav-number">6.</span> <span class="nav-text">管道</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0-3"><span class="nav-number">6.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C"><span class="nav-number">6.2.</span> <span class="nav-text">操作</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
