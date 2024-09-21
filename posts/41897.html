@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/mylogo.svg">
+  <link rel="mask-icon" href="/images/mylogo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="DeviceShare是一个基于python的跨设备共享Hid Input设备的软件，该项目为中国研究生操作系统开源创新大赛参赛作品。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DeviceShare项目介绍">
+<meta property="og:url" content="https://qylh.xyz/posts/41897.html">
+<meta property="og:site_name" content="Echo">
+<meta property="og:description" content="DeviceShare是一个基于python的跨设备共享Hid Input设备的软件，该项目为中国研究生操作系统开源创新大赛参赛作品。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1723257064070.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1723181787105.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1723181806729.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1723181908743.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1723181937936.png">
+<meta property="article:published_time" content="2024-09-21T14:54:40.000Z">
+<meta property="article:modified_time" content="2024-09-21T15:12:41.102Z">
+<meta property="article:author" content="MaHaotian">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="竞赛">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.qylh.xyz/blog/1723257064070.png">
+
+<link rel="canonical" href="https://qylh.xyz/posts/41897.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>DeviceShare项目介绍 | Echo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Echo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/41897.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Echo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DeviceShare项目介绍
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-09-21 22:54:40 / 修改时间：23:12:41" itemprop="dateCreated datePublished" datetime="2024-09-21T22:54:40+08:00">2024-09-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>DeviceShare是一个基于python的跨设备共享Hid Input设备的软件，该项目为中国研究生操作系统开源创新大赛参赛作品。</p>
+<span id="more"></span>
+
+<h1 id="DeviceShare-——-跨平台多主机输入设备共享"><a href="#DeviceShare-——-跨平台多主机输入设备共享" class="headerlink" title="DeviceShare —— 跨平台多主机输入设备共享"></a>DeviceShare —— 跨平台多主机输入设备共享</h1><h2 id="功能特性"><a href="#功能特性" class="headerlink" title="功能特性"></a>功能特性</h2><ol>
+<li><strong>跨平台支持</strong>：支持 Windows、Linux、MacOS 等操作系统。</li>
+<li><strong>多主机支持</strong>：支持多台主机之间的输入设备共享。</li>
+<li><strong>鼠标共享</strong>：支持鼠标在多台主机之间的共享。</li>
+<li><strong>键盘共享</strong>：支持键盘在多台主机之间的共享。</li>
+<li><strong>剪贴板共享</strong>：支持剪贴板在多台主机之间的共享。</li>
+<li><strong>屏幕位置配置</strong>：支持配置屏幕位置，方便多台主机之间的切换。</li>
+<li><strong>主机发现机制</strong>：支持自动发现局域网内的主机。</li>
+<li><strong>安全性</strong>：支持公私钥加密机制，支持对剪贴板内容加密传输。</li>
+<li><strong>易用性</strong>：支持一键启动，无需复杂配置。</li>
+<li><strong>开源免费</strong>：支持开源免费使用。</li>
+</ol>
+<h2 id="项目演示"><a href="#项目演示" class="headerlink" title="项目演示"></a>项目演示</h2><p>项目在Windows10、Debian12、Ubuntu20.4、MacOS、openKylin等多个平台进行运行演示，服务端主机连接usb键鼠，所有主机以无线局域网的形式连接，测试环境如下图所示：</p>
+<p><img data-src="https://img.qylh.xyz/blog/1723257064070.png" alt="1723257064070.png"></p>
+<p>演示视频：<a target="_blank" rel="noopener" href="https://img.qylh.xyz/mobinets_demo.mp4">https://img.qylh.xyz/mobinets_demo.mp4</a></p>
+<h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><p>针对x86架构的Windows、OpenKylin操作系统，我们打包构建了可执行程序，可在Release界面下载合适的版本。 </p>
+<ol>
+<li>若在Linux下运行，采用脚本<code>run.sh</code>启动程序，将<code>run.sh</code>复制到dist目录下，执行<code>sudo chmod 777 run.sh</code>赋予执行权限，执行<code>bash run.sh</code>启动程序</li>
+<li>若为windows环境,直接运行exe文件即可</li>
+</ol>
+<h3 id="Build说明"><a href="#Build说明" class="headerlink" title="Build说明"></a>Build说明</h3><p>若构建的版本无法支持目标机器，可选择源码运行或自行打包。该方案需具备Python3 环境，具体步骤如下：</p>
+<ol>
+<li>获取项目代码</li>
+<li>使用<code>pip install -r requirements.txt</code>命令安装依赖</li>
+<li>执行<code>python deviceShare.py</code>启动程序</li>
+<li>安装<code>pyinstaller</code>: <code>pip install pyinstaller</code></li>
+<li>使用<code>pyinstaller</code>打包目标程序: <code>pyinstaller deviceShare.spec</code></li>
+<li>运行<code>dist</code>目录下生成的可执行文件</li>
+<li>将<code>resources</code>目录复制到dist目录下</li>
+</ol>
+<p><strong>注意</strong>Kylin操作系统在安装python的evdev依赖时可能出现错误，请选择安装预编译版本evdev-binary，参考 <a target="_blank" rel="noopener" href="https://python-evdev.readthedocs.io/en/latest/install.html">https://python-evdev.readthedocs.io/en/latest/install.html</a></p>
+<h2 id="使用说明"><a href="#使用说明" class="headerlink" title="使用说明"></a>使用说明</h2><ol>
+<li>将主控机和被控机连接到同一局域网环境下，保证两台机器能够互相ping通，分别按照要求启动软件，选择各自的角色（注意局域网防火墙配置）</li>
+<li>右键单击主控机右下角的桌面托盘，点击设置，可以看到被控机屏幕位置示意图，可拖动修改位置，修改完成后点击确定。</li>
+<li>   在主控机上将光标移动到靠近被控机方向的边缘即可进入被控机。</li>
+<li>   在被控机上将光标移动到靠近主控机方向的边缘即可回到主控机。</li>
+<li>   在主控机和被控机上分别右键单机托盘图标选择退出即可关闭软件</li>
+</ol>
+<h2 id="控制原理"><a href="#控制原理" class="headerlink" title="控制原理"></a>控制原理</h2><ol>
+<li>主要基于<code>pynput</code>进行鼠标和键盘的控制，基于<code>pyperclip</code>进行剪切板的控制。</li>
+<li>在<code>wayland</code>环境下，基于<code>evdev</code>和<code>uinput</code>进行鼠标和键盘的控制，基于<code>wl-clipboard</code>进行剪切板的控制。</li>
+</ol>
+<h2 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h2><p><img data-src="https://img.qylh.xyz/blog/1723181787105.png" alt="1723181787105.png"></p>
+<p>项目的整体设计框架如上图所示，整体由四个部分构成：</p>
+<ul>
+<li>服务端为Hid Input设备的拥有者，可向其他客户端主机共享其拥有的输入设备。</li>
+<li>客户端可使用主机共享的输入设备。</li>
+<li>网络通信模块用于服务端和客户端的数据传输。</li>
+<li>设备控制模块用于读取Hid Input设备信息及控制Hid Input设备。</li>
+</ul>
+<p>项目目录结构</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DeviceShare</span><br><span class="line">├── resources # 资源文件</span><br><span class="line">├── src # 源码</span><br><span class="line">│   ├── communication # 网络通信模块</span><br><span class="line">│   │   ├── client_state.py # 客户端状态</span><br><span class="line">│   │   ├── message.py # 消息定义</span><br><span class="line">│   │   └── my_socket.py # socket封装</span><br><span class="line">│   ├── controller # 设备控制模块</span><br><span class="line">│   │   ├── clipboard_controller.py # 剪切板控制</span><br><span class="line">│   │   ├── keyboard_controller.py # 键盘控制</span><br><span class="line">│   │   └── mouse_controller.py # 鼠标控制</span><br><span class="line">│   ├── gui # GUI界面</span><br><span class="line">│   │   ├── client_gui.py # 客户端GUI</span><br><span class="line">│   │   ├── position.py # 屏幕位置</span><br><span class="line">│   │   ├── screen.py # 屏幕管理</span><br><span class="line">│   │   └── server_gui.py # 服务端GUI </span><br><span class="line">│   ├── utils # 工具模块</span><br><span class="line">│   │   ├── device.py # 设备信息</span><br><span class="line">│   │   ├── device_name.py #  设备名称</span><br><span class="line">│   │   ├── device_storage.py # 设备存储 </span><br><span class="line">│   │   ├── key_code.py # 键盘按键 </span><br><span class="line">│   │   ├── key_storage.py # 键盘存储</span><br><span class="line">│   │   ├── net.py # 网络工具 </span><br><span class="line">│   │   ├── plantform.py # 平台信息</span><br><span class="line">│   │   ├── rsautil.py # RSA加密工具 </span><br><span class="line">│   │   └── service_listener.py # 服务监听</span><br><span class="line">│   ├── client.py # 客户端,被控设备</span><br><span class="line">│   └── server.py # 服务端,主控设备</span><br><span class="line">├── deviceShare.py # 启动程序</span><br><span class="line">├── run.sh # linux启动脚本</span><br><span class="line">├── deviceShare.spec # pyinstaller打包配置</span><br><span class="line">├── keys.db # RSA密钥存储，自动生成</span><br><span class="line">├── readme.md # 说明文档</span><br><span class="line">├── requirements.txt # 依赖</span><br><span class="line">└── temp.db # 设备信息存储, 自动生成</span><br></pre></td></tr></table></figure>
+
+
+<p>软件的运行流程如下图所示，客户端与服务端作为两个独立模块单独启动，客户端启动后会向局域网中广播自身信息，<br>服务端收到广播信息后将其加入主机列表，并配置屏幕间的相对位置信息。当服务端主机的光标移出屏幕范围后，会自动判断接下来被控的主机，<br>并将本机输入设备产生的输入拦截，通过网络模块转发给客户端，客户端收到输入信息后响应相应的控制信号。当客户端的光标移出范围后向服务端主机发送事件标志，<br>服务端主机停止控制信号的转发，并恢复输入事件的响应。</p>
+<p><img data-src="https://img.qylh.xyz/blog/1723181806729.png" alt="1723181806729.png"></p>
+<p>服务端为具备Hid Input设备的主机，由以下几个线程构成：</p>
+<ul>
+<li>主线程：服务注册及启动其他线程</li>
+<li>TCP监听线程：用于监听处理TCP连接，并为每一个连接创建子线程。</li>
+<li>TCP 处理线程，用于处理与客户端的TCP连接</li>
+<li>消息监听线程：监听客户端消息，主要为心跳信息和剪切板信息</li>
+<li>设备监听线程：监听Hid Input设备的输入信息和剪切板信息。</li>
+<li>GUI线程： GUI界面的显示和处理。</li>
+</ul>
+<p><img data-src="https://img.qylh.xyz/blog/1723181908743.png" alt="1723181908743.png"></p>
+<p>客户端为需要使用服务主机的Hid Input设备的主机，由以下几个线程构成：</p>
+<ul>
+<li>主线程：处理服务发现，发起连接请求，启动其他线程。</li>
+<li>心跳包线程：定期发送心跳包。</li>
+<li>消息监听线程：用于接收并响应主机传递的控制信息。</li>
+<li>GUI线程： GUI界面的显示和处理。</li>
+<li>设备监听线程：用于监听鼠标移出事件及剪切板更新事件。</li>
+</ul>
+<p><img data-src="https://img.qylh.xyz/blog/1723181937936.png" alt="1723181937936.png"></p>
+<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><ul>
+<li><input checked="" disabled="" type="checkbox"> 主机发现机制</li>
+<li><input checked="" disabled="" type="checkbox"> 屏幕位置配置</li>
+<li><input checked="" disabled="" type="checkbox"> 鼠标共享功能</li>
+<li><input checked="" disabled="" type="checkbox"> 键盘共享功能</li>
+<li><input checked="" disabled="" type="checkbox"> 剪切板共享功能</li>
+<li><input checked="" disabled="" type="checkbox"> 剪切板内容加密传输</li>
+<li><input checked="" disabled="" type="checkbox"> 优化屏幕管理功能</li>
+<li><input checked="" disabled="" type="checkbox"> 优化代码质量，提升代码可读性，提升软件性能和稳定性</li>
+<li><input checked="" disabled="" type="checkbox"> 测试更多类型操作系统</li>
+<li><input checked="" disabled="" type="checkbox"> 优化文档</li>
+<li><input disabled="" type="checkbox"> 文件拖拽共享功能(实现中)</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E7%AB%9E%E8%B5%9B/" rel="tag"># 竞赛</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/20085.html" rel="prev" title="同步互斥与通信">
+      <i class="fa fa-chevron-left"></i> 同步互斥与通信
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DeviceShare-%E2%80%94%E2%80%94-%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%A4%9A%E4%B8%BB%E6%9C%BA%E8%BE%93%E5%85%A5%E8%AE%BE%E5%A4%87%E5%85%B1%E4%BA%AB"><span class="nav-number">1.</span> <span class="nav-text">DeviceShare —— 跨平台多主机输入设备共享</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E7%89%B9%E6%80%A7"><span class="nav-number">1.1.</span> <span class="nav-text">功能特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E6%BC%94%E7%A4%BA"><span class="nav-number">1.2.</span> <span class="nav-text">项目演示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-number">1.3.</span> <span class="nav-text">说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Build%E8%AF%B4%E6%98%8E"><span class="nav-number">1.3.1.</span> <span class="nav-text">Build说明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"><span class="nav-number">1.4.</span> <span class="nav-text">使用说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E5%8E%9F%E7%90%86"><span class="nav-number">1.5.</span> <span class="nav-text">控制原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84"><span class="nav-number">1.6.</span> <span class="nav-text">系统架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TODO"><span class="nav-number">1.7.</span> <span class="nav-text">TODO</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MaHaotian"
+      src="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+  <p class="site-author-name" itemprop="name">MaHaotian</p>
+  <div class="site-description" itemprop="description">给时光以生命，而不是给生命以时光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qy-liuhuo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qy-liuhuo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:maht2001@163.com" title="E-Mail → mailto:maht2001@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wangzekun.cn/" title="http:&#x2F;&#x2F;wangzekun.cn&#x2F;" rel="noopener" target="_blank">坤哥的博客</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://8.142.79.40:9101/" title="http:&#x2F;&#x2F;8.142.79.40:9101" rel="noopener" target="_blank">坤姐的博客</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MaHaotian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>
