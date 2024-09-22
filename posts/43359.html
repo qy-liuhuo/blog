@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/mylogo.svg">
+  <link rel="mask-icon" href="/images/mylogo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="参与犀牛鸟开源人才培养计划Apache-InLong项目整理总结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="腾讯犀牛鸟Apache-InLong项目总结">
+<meta property="og:url" content="https://qylh.xyz/posts/43359.html">
+<meta property="og:site_name" content="Echo">
+<meta property="og:description" content="参与犀牛鸟开源人才培养计划Apache-InLong项目整理总结">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://inlong.apache.org/img/inlong-structure-zh.png">
+<meta property="og:image" content="https://inlong.apache.org/zh-CN/assets/images/agent_basic_concepts-c2cd3ff06ca353ab79e5c9bf20964d11.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1726994205981.png">
+<meta property="article:published_time" content="2024-09-21T15:19:02.000Z">
+<meta property="article:modified_time" content="2024-09-22T08:44:54.366Z">
+<meta property="article:author" content="MaHaotian">
+<meta property="article:tag" content="开源">
+<meta property="article:tag" content="InLong">
+<meta property="article:tag" content="犀牛鸟">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://inlong.apache.org/img/inlong-structure-zh.png">
+
+<link rel="canonical" href="https://qylh.xyz/posts/43359.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>腾讯犀牛鸟Apache-InLong项目总结 | Echo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Echo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/43359.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Echo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          腾讯犀牛鸟Apache-InLong项目总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-09-21 23:19:02" itemprop="dateCreated datePublished" datetime="2024-09-21T23:19:02+08:00">2024-09-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-09-22 16:44:54" itemprop="dateModified" datetime="2024-09-22T16:44:54+08:00">2024-09-22</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>参与犀牛鸟开源人才培养计划Apache-InLong项目整理总结</p>
+<span id="more"></span>
+
+<p>在今年七月学院老师发了<a target="_blank" rel="noopener" href="https://opensource.tencent.com/summer-of-code">腾讯犀牛鸟开源人才培养计划</a>，我也早就有去参与一些较大开源项目的意愿，所以就马上报了名，该项目有很多子项目供选择，当时仔细考虑发现对Apache InLong项目最为感兴趣，也和自己的方向比较契合，所以就报名参加了InLong项目的开源课题实践。主要以<code>Issue</code>的形式参与开源项目，在参与的过程中，对InLong项目的理解更加深入，而且熟悉了开源项目的贡献流程。编码能力提高的同时，代码规范性也获得了提升。</p>
+<h2 id="InLong介绍"><a href="#InLong介绍" class="headerlink" title="InLong介绍"></a>InLong介绍</h2><p>官方对InLong的介绍如下：</p>
+<blockquote>
+<p>InLong(应龙)，中国神话故事里的神兽，引流入海，借喻 InLong 系统提供数据集成能力。</p>
+<p>Apache InLong（应龙）是一站式、全场景的海量数据集成框架，同时支持数据接入、数据同步和数据订阅，提供自动、安全、可靠和高性能的数据传输能力，方便业务构建基于流式的数据分析、建模和应用。 InLong 项目原名 TubeMQ ，专注于高性能、低成本的消息队列服务。为了进一步释放 TubeMQ 周边的生态能力，我们将项目升级为 InLong，专注打造一站式、全场景海量数据集成框架。 Apache InLong 依托 10 万亿级别的数据接入和处理能力，整合了数据采集、汇聚、存储、分拣数据处理全流程，拥有简单易用、灵活扩展、稳定可靠等特性。 该项目最初于 2019 年 11 月由腾讯大数据团队捐献到 Apache 孵化器，2022 年 6 月正式毕业成为 Apache 顶级项目。目前 InLong 正广泛应用于广告、支付、社交、游戏、人工智能等各个行业领域，为多领域客户提供高效化便捷化服务。</p>
+</blockquote>
+<p>该项目的架构如下：</p>
+<p><img data-src="https://inlong.apache.org/img/inlong-structure-zh.png" alt="Apache InLong"></p>
+<p>主要是由几大模块构成：</p>
+<ul>
+<li><code>Agent</code>：用来采集数据</li>
+<li><code>DataProxy</code>：数据转发</li>
+<li><code>MQ</code>：消息队列</li>
+<li><code>Sort</code>：基于<code>Flink</code>的<code>ETL</code>处理</li>
+<li><code>Manager</code>：整个服务的管控，提供了OpenAPI</li>
+<li><code>Dashboard</code>：管理系统前端页面，调用manager后端接口</li>
+<li><code>Audit</code>：审计模块</li>
+</ul>
+<p>在项目参与过程中主要参与了<code>Agent</code>、<code>Sort</code>和<code>DataProxy SDK</code>模块的开发。</p>
+<h2 id="MQTT-Source开发"><a href="#MQTT-Source开发" class="headerlink" title="MQTT Source开发"></a>MQTT Source开发</h2><ul>
+<li><p>Issue：<a target="_blank" rel="noopener" href="https://github.com/apache/inlong/issues/10286">[Improve][Agent] Update the MQTT Source</a></p>
+</li>
+<li><p>pr：<a target="_blank" rel="noopener" href="https://github.com/apache/inlong/pull/10727">[INLONG-10286][Agent] Update the MQTT Source</a></p>
+</li>
+</ul>
+<p>该Issue是我参与的第一个InLong Issue，是为<code>Agent</code>模块编写支持从<code>MQTT</code>数据源读取数据的<code>Source</code>，之所以选择这个Issue主要是之前做数字孪生项目时有用过<code>MQTT</code>。虽然需求很简单，但是我花费了很长的时间在阅读项目源码，梳理运行逻辑以及部署测试环境上。</p>
+<p>主要参考InLong文档中的Agent插件开发说明进行开发。</p>
+<p><img data-src="https://inlong.apache.org/zh-CN/assets/images/agent_basic_concepts-c2cd3ff06ca353ab79e5c9bf20964d11.png" alt="img"></p>
+<p>主要的逻辑在<code>MqttSource</code>类中，主要逻辑还是比较简单的，在<code>initSource</code>函数中初始化mqtt连接的相关参数，并初始化<code>connect</code>，当有新的订阅消息到来时，会被放到<code>LinkedBlockingQueue</code>阻塞队列中去，之后可以调用<code>readFromSource</code>方法从阻塞队列中读取数据。之所以采用阻塞队列，因为这个场景是一种典型的生产者-消费者模型，可以使用队列作为中间缓冲，可以平衡生产者（mqtt消息）和消费者（readFromSource）的处理能力，当生产者效率高于消费者时，还能起到削峰填谷的作用。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MqttSource</span> <span class="keyword">extends</span> <span class="title class_">AbstractSource</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">LOGGER</span> <span class="operator">=</span> LoggerFactory.getLogger(MqttSource.class);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> MqttClient client;</span><br><span class="line">    <span class="keyword">private</span> LinkedBlockingQueue&lt;DefaultMessage&gt; mqttMessagesQueue;</span><br><span class="line">    <span class="keyword">private</span> String serverURI;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String topic;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> qos;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String clientId;</span><br><span class="line"></span><br><span class="line">    MqttConnectOptions options;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">MqttSource</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> String <span class="title function_">getThreadName</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;mqtt-source-&quot;</span> + taskId + <span class="string">&quot;-&quot;</span> + instanceId;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">initSource</span><span class="params">(InstanceProfile profile)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            LOGGER.info(<span class="string">&quot;MqttSource init: &#123;&#125;&quot;</span>, profile.toJsonStr());</span><br><span class="line">            mqttMessagesQueue = <span class="keyword">new</span> <span class="title class_">LinkedBlockingQueue</span>&lt;&gt;(profile.getInt(TaskConstants.TASK_MQTT_QUEUE_SIZE, <span class="number">1000</span>));</span><br><span class="line">            serverURI = profile.get(TaskConstants.TASK_MQTT_SERVER_URI);</span><br><span class="line">            instanceId = profile.getInstanceId();</span><br><span class="line">            topic = profile.get(TaskConstants.TASK_MQTT_TOPIC);</span><br><span class="line">            qos = profile.getInt(TaskConstants.TASK_MQTT_QOS, <span class="number">1</span>);</span><br><span class="line">            clientId = profile.get(TaskConstants.TASK_MQTT_CLIENT_ID_PREFIX, <span class="string">&quot;mqtt_client&quot;</span>) + <span class="string">&quot;_&quot;</span> + UUID.randomUUID();</span><br><span class="line">            initConnectOptions(profile);</span><br><span class="line">            mqttConnect();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            stopRunning();</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">FileException</span>(<span class="string">&quot;error init stream for &#123;&#125;&quot;</span> + topic, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">initConnectOptions</span><span class="params">(InstanceProfile profile)</span> &#123;</span><br><span class="line">        options = <span class="keyword">new</span> <span class="title class_">MqttConnectOptions</span>();</span><br><span class="line">        options.setCleanSession(profile.getBoolean(TaskConstants.TASK_MQTT_CLEAN_SESSION, <span class="literal">false</span>));</span><br><span class="line">        options.setConnectionTimeout(profile.getInt(TaskConstants.TASK_MQTT_CONNECTION_TIMEOUT, <span class="number">10</span>));</span><br><span class="line">        options.setKeepAliveInterval(profile.getInt(TaskConstants.TASK_MQTT_KEEPALIVE_INTERVAL, <span class="number">20</span>));</span><br><span class="line">        options.setUserName(profile.get(TaskConstants.TASK_MQTT_USERNAME, <span class="string">&quot;&quot;</span>));</span><br><span class="line">        options.setPassword(profile.get(TaskConstants.TASK_MQTT_PASSWORD, <span class="string">&quot;&quot;</span>).toCharArray());</span><br><span class="line">        options.setAutomaticReconnect(profile.getBoolean(TaskConstants.TASK_MQTT_AUTOMATIC_RECONNECT, <span class="literal">true</span>));</span><br><span class="line">        options.setMqttVersion(</span><br><span class="line">                profile.getInt(TaskConstants.TASK_MQTT_VERSION, MqttConnectOptions.MQTT_VERSION_DEFAULT));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">mqttConnect</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            client = <span class="keyword">new</span> <span class="title class_">MqttClient</span>(serverURI, clientId, <span class="keyword">new</span> <span class="title class_">MemoryPersistence</span>());</span><br><span class="line">            client.setCallback(<span class="keyword">new</span> <span class="title class_">MqttCallback</span>() &#123;</span><br><span class="line"></span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">connectionLost</span><span class="params">(Throwable cause)</span> &#123;</span><br><span class="line">                    LOGGER.error(<span class="string">&quot;the mqtt jobId:&#123;&#125;, serverURI:&#123;&#125;, connection lost, &#123;&#125; &quot;</span>, instanceId,</span><br><span class="line">                            serverURI, cause);</span><br><span class="line">                    reconnect();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">messageArrived</span><span class="params">(String topic, MqttMessage message)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                    Map&lt;String, String&gt; headerMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">                    headerMap.put(<span class="string">&quot;record.topic&quot;</span>, topic);</span><br><span class="line">                    headerMap.put(<span class="string">&quot;record.messageId&quot;</span>, String.valueOf(message.getId()));</span><br><span class="line">                    headerMap.put(<span class="string">&quot;record.qos&quot;</span>, String.valueOf(message.getQos()));</span><br><span class="line">                    <span class="type">byte</span>[] recordValue = message.getPayload();</span><br><span class="line">                    mqttMessagesQueue.offer(<span class="keyword">new</span> <span class="title class_">DefaultMessage</span>(recordValue, headerMap), <span class="number">1</span>, TimeUnit.SECONDS);</span><br><span class="line"></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">deliveryComplete</span><span class="params">(IMqttDeliveryToken token)</span> &#123;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            client.connect(options);</span><br><span class="line">            client.subscribe(topic, qos);</span><br><span class="line">            LOGGER.info(<span class="string">&quot;the mqtt subscribe topic is [&#123;&#125;], qos is [&#123;&#125;]&quot;</span>, topic, qos);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.error(<span class="string">&quot;init mqtt client error &#123;&#125;. jobId:&#123;&#125;,serverURI:&#123;&#125;,clientId:&#123;&#125;&quot;</span>, e, instanceId, serverURI,</span><br><span class="line">                    clientId);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">reconnect</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!client.isConnected()) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                client.connect(options);</span><br><span class="line">                LOGGER.info(<span class="string">&quot;the mqtt client reconnect success. jobId:&#123;&#125;, serverURI:&#123;&#125;, clientId:&#123;&#125;&quot;</span>, instanceId,</span><br><span class="line">                        serverURI, clientId);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                LOGGER.error(<span class="string">&quot;reconnect mqtt client error &#123;&#125;. jobId:&#123;&#125;, serverURI:&#123;&#125;, clientId:&#123;&#125;&quot;</span>, e, instanceId,</span><br><span class="line">                        serverURI, clientId);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">disconnect</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            client.disconnect();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (MqttException e) &#123;</span><br><span class="line">            LOGGER.error(<span class="string">&quot;disconnect mqtt client error &#123;&#125;. jobId:&#123;&#125;,serverURI:&#123;&#125;,clientId:&#123;&#125;&quot;</span>, e, instanceId, serverURI,</span><br><span class="line">                    clientId);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">printCurrentState</span><span class="params">()</span> &#123;</span><br><span class="line">        LOGGER.info(<span class="string">&quot;mqtt topic is &#123;&#125;&quot;</span>, topic);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="type">boolean</span> <span class="title function_">doPrepareToRead</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> List&lt;SourceData&gt; <span class="title function_">readFromSource</span><span class="params">()</span> &#123;</span><br><span class="line">        List&lt;SourceData&gt; dataList = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span> (size &lt; BATCH_READ_LINE_TOTAL_LEN) &#123;</span><br><span class="line">                <span class="type">Message</span> <span class="variable">msg</span> <span class="operator">=</span> mqttMessagesQueue.poll(<span class="number">1</span>, TimeUnit.SECONDS);</span><br><span class="line">                <span class="keyword">if</span> (msg != <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="type">SourceData</span> <span class="variable">sourceData</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SourceData</span>(msg.getBody(), <span class="string">&quot;0L&quot;</span>);</span><br><span class="line">                    size += sourceData.getData().length;</span><br><span class="line">                    dataList.add(sourceData);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            LOGGER.error(<span class="string">&quot;poll &#123;&#125; data from mqtt queue interrupted.&quot;</span>, instanceId);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dataList;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="type">boolean</span> <span class="title function_">isRunnable</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> runnable;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">releaseSource</span><span class="params">()</span> &#123;</span><br><span class="line">        LOGGER.info(<span class="string">&quot;release mqtt source&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (client.isConnected()) &#123;</span><br><span class="line">            disconnect();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">sourceExist</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>为了提高读数据的效率，每次可以获取一批数据，而不是一条数据，所以这里做了一些优化：借助阻塞队列的<code>poll(long timeout, TimeUnit unit)</code>方法，尝试循环获取多条数据，如果超时说明队列中可能没有数据了，则返回。</p>
+<p>在整理的时候发现如果消息入队设置了超时机制会导致队列满时消息丢失问题，所以<code>mqttMessagesQueue.offer(new DefaultMessage(recordValue, headerMap), 1, TimeUnit.SECONDS);</code>应该修改为<code>mqttMessagesQueue.offer(new DefaultMessage(recordValue, headerMap));</code> 具体参见 <a target="_blank" rel="noopener" href="https://github.com/apache/inlong/pull/11176">[INLONG-11175][Agent] Fix the problem of mqttsource message loss #11176</a>.</p>
+<h2 id="OpenTelemetry集成"><a href="#OpenTelemetry集成" class="headerlink" title="OpenTelemetry集成"></a>OpenTelemetry集成</h2><p>这部分内容是项目的第三阶段开源实践的任务，也是我花费时间精力比较多的地方，有三个课题供选择，需要报名和选拔后组队完成，我选择了<code>Integrate Sort with OpenTelemetry </code>课题，该课题需求为采用OpenTelemetry来实现Sort日志的集中上报。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/apache/inlong/issues/10798">[Umbrella] Tencent Rhino-bird: Integrate Sort with OpenTelemetry #10798</a></p>
+<p>待编写</p>
+<h2 id="DataProxy-SDK-超长字段处理优化"><a href="#DataProxy-SDK-超长字段处理优化" class="headerlink" title="DataProxy SDK 超长字段处理优化"></a>DataProxy SDK 超长字段处理优化</h2><ul>
+<li>Issue <a target="_blank" rel="noopener" href="https://github.com/apache/inlong/issues/10463">[Improve][SDK] Optimization of ultra-long field processing in InlongSDK #10463</a></li>
+<li>Pr <a target="_blank" rel="noopener" href="https://github.com/apache/inlong/pull/11119">[INLONG-10463][SDK] Optimization of ultra-long field processing in InlongSDK #11119</a></li>
+</ul>
+<p><code>DataProxy</code>一次最多只能处理500k bytes的消息长度，而SDK并没有限制上报数据的大小，会导致传输时数据截断，<code>DataProxy</code>无法接收到完整的数据结构，导致无法反序列化恢复数据造成<code>message invalid</code>错误。</p>
+<p><img data-src="https://img.qylh.xyz/blog/1726994205981.png" alt="1726994205981.png"></p>
+<p>因此该Issue需要为SDK提供超长数据自动截断功能，把用户发送的超长数据截断，保证数据结构的完整性，具体需求如下：</p>
+<ul>
+<li>在 SDK 中支持自动超长数据截断</li>
+<li>用户可配置的自动截断</li>
+<li>提供允许的数据长度的默认值</li>
+</ul>
+<p>为了实现上述需求，主要做了以下工作：</p>
+<ol>
+<li>在 <code>inlong-sdk/data-sdk/src/main/java/org/apache/inlong/sdk/data/ConfigConstants.java </code>中添加了 <code>MAX _ MESSAGE _ LENGTH</code> 常量，来配置允许的数据长度。</li>
+<li>提供了一个 <code>DataTruncationUtil</code> 来实现数据截断。</li>
+<li>为<code>DefaultMessageSender.java</code> 添加了 <code>enableDataTruncation</code> 属性，以设置是否启用自动截断函数。并添加了一个用户可以调用的配置函数。</li>
+<li>将数据截断逻辑添加到所有 <code>sendMessage</code> 和<code> syncSendMessage</code> 接口。</li>
+</ol>
+<p>主要内容为<code>DataTruncationUtil</code>工具类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DataTruncationUtil</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * truncate data body if it is too long</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> body</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> byte[]</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">byte</span>[] truncateData(<span class="type">byte</span>[] body) &#123;</span><br><span class="line">        <span class="keyword">if</span> (body.length &gt; ConfigConstants.MAX_MESSAGE_LENGTH) &#123;</span><br><span class="line">            <span class="type">byte</span>[] newBody = <span class="keyword">new</span> <span class="title class_">byte</span>[ConfigConstants.MAX_MESSAGE_LENGTH];</span><br><span class="line">            System.arraycopy(body, <span class="number">0</span>, newBody, <span class="number">0</span>, ConfigConstants.MAX_MESSAGE_LENGTH);</span><br><span class="line">            <span class="keyword">return</span> newBody;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> body;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * truncate data body list if it is too long</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> bodyList</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> List&lt;byte[]&gt;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> List&lt;<span class="type">byte</span>[]&gt; truncateData(List&lt;<span class="type">byte</span>[]&gt; bodyList) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        List&lt;<span class="type">byte</span>[]&gt; newBodyList = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">byte</span>[] body : bodyList) &#123;</span><br><span class="line">            <span class="keyword">if</span> (body.length + size &lt;= ConfigConstants.MAX_MESSAGE_LENGTH) &#123;</span><br><span class="line">                newBodyList.add(body);</span><br><span class="line">                size += body.length;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="type">byte</span>[] newBody = <span class="keyword">new</span> <span class="title class_">byte</span>[ConfigConstants.MAX_MESSAGE_LENGTH - size];</span><br><span class="line">                System.arraycopy(body, <span class="number">0</span>, newBody, <span class="number">0</span>, ConfigConstants.MAX_MESSAGE_LENGTH - size);</span><br><span class="line">                newBodyList.add(newBody);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> newBodyList;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>针对单个的数据<code>body</code>，只需要在超出长度时进行截断即可，而对于一组body<code>List&lt;byte[]&gt; bodyList</code>需要进行累加处理。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%BC%80%E6%BA%90/" rel="tag"># 开源</a>
+              <a href="/tags/InLong/" rel="tag"># InLong</a>
+              <a href="/tags/%E7%8A%80%E7%89%9B%E9%B8%9F/" rel="tag"># 犀牛鸟</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/41897.html" rel="prev" title="DeviceShare项目介绍">
+      <i class="fa fa-chevron-left"></i> DeviceShare项目介绍
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#InLong%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">InLong介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT-Source%E5%BC%80%E5%8F%91"><span class="nav-number">2.</span> <span class="nav-text">MQTT Source开发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OpenTelemetry%E9%9B%86%E6%88%90"><span class="nav-number">3.</span> <span class="nav-text">OpenTelemetry集成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DataProxy-SDK-%E8%B6%85%E9%95%BF%E5%AD%97%E6%AE%B5%E5%A4%84%E7%90%86%E4%BC%98%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">DataProxy SDK 超长字段处理优化</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MaHaotian"
+      src="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+  <p class="site-author-name" itemprop="name">MaHaotian</p>
+  <div class="site-description" itemprop="description">给时光以生命，而不是给生命以时光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">71</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qy-liuhuo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qy-liuhuo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:maht2001@163.com" title="E-Mail → mailto:maht2001@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wangzekun.cn/" title="http:&#x2F;&#x2F;wangzekun.cn&#x2F;" rel="noopener" target="_blank">坤哥的博客</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://8.142.79.40:9101/" title="http:&#x2F;&#x2F;8.142.79.40:9101" rel="noopener" target="_blank">坤姐的博客</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MaHaotian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>
