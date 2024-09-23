@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://img.qylh.xyz/blog/1727015789844.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1727015897624.png">
 <meta property="article:published_time" content="2024-09-23T02:04:24.000Z">
-<meta property="article:modified_time" content="2024-09-23T14:41:11.205Z">
+<meta property="article:modified_time" content="2024-09-23T14:44:04.307Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="物联网">
 <meta property="article:tag" content="MQTT">
@@ -201,7 +201,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2024-09-23 10:04:24 / 修改时间：22:41:11" itemprop="dateCreated datePublished" datetime="2024-09-23T10:04:24+08:00">2024-09-23</time>
+              <time title="创建时间：2024-09-23 10:04:24 / 修改时间：22:44:04" itemprop="dateCreated datePublished" datetime="2024-09-23T10:04:24+08:00">2024-09-23</time>
             </span>
 
           
@@ -222,15 +222,15 @@
 
 
 
-<h2 id="MQTT-QoS"><a href="#MQTT-QoS" class="headerlink" title="MQTT QoS"></a>MQTT QoS</h2><p>在网络受限的环境下，MQTT如果只依靠底层的 TCP 传输协议，并不能完全保证消息的可靠到达。因此，MQTT 提供了 QoS 机制，其核心是设计了多种消息交互机制来提供不同的服务质量，来满足用户在各种场景下对消息可靠性的要求。</p>
+<h1 id="MQTT-QoS"><a href="#MQTT-QoS" class="headerlink" title="MQTT QoS"></a>MQTT QoS</h1><p>在网络受限的环境下，MQTT如果只依靠底层的 TCP 传输协议，并不能完全保证消息的可靠到达。因此，MQTT 提供了 QoS 机制，其核心是设计了多种消息交互机制来提供不同的服务质量，来满足用户在各种场景下对消息可靠性的要求。</p>
 <p><code>QoS</code>由发布者在<code>PUBLISH</code>报文中指定，消息的 QoS 等级可能会在转发的时候发生降级（比如订阅者在订阅时要求 Broker 可以向其转发的消息的最大 QoS 等级为 QoS 1，那么后续所有 QoS 2 消息都会降级至 QoS 1 转发给此订阅者，而所有 QoS 0 和 QoS 1 消息则会保持原始的 QoS 等级转发）</p>
 <p><img data-src="https://img.qylh.xyz/blog/1727007541789.png" alt="1727007541789.png"></p>
-<h4 id="QoS-0"><a href="#QoS-0" class="headerlink" title="QoS 0"></a>QoS 0</h4><p><code>QoS 0</code> 消息可靠性依赖完全底层<code>TCP</code>协议，消息即发即弃，不需要等待确认，不需要存储和重传，因此对于接收方来说，永远都不需要担心收到重复的消息。</p>
-<h5 id="消息丢失问题"><a href="#消息丢失问题" class="headerlink" title="消息丢失问题"></a>消息丢失问题</h5><p> 但<code>TCP</code>只能保证连接不管逼得情况下消息的可靠性，在连接关闭、重置等情况下会导致消息丢失。</p>
+<h3 id="QoS-0"><a href="#QoS-0" class="headerlink" title="QoS 0"></a>QoS 0</h3><p><code>QoS 0</code> 消息可靠性依赖完全底层<code>TCP</code>协议，消息即发即弃，不需要等待确认，不需要存储和重传，因此对于接收方来说，永远都不需要担心收到重复的消息。</p>
+<h4 id="消息丢失问题"><a href="#消息丢失问题" class="headerlink" title="消息丢失问题"></a>消息丢失问题</h4><p> 但<code>TCP</code>只能保证连接不管逼得情况下消息的可靠性，在连接关闭、重置等情况下会导致消息丢失。</p>
 <p><img data-src="https://img.qylh.xyz/blog/1727007618068.png" alt="1727007618068.png"></p>
-<h4 id="QoS-1"><a href="#QoS-1" class="headerlink" title="QoS 1"></a>QoS 1</h4><p><code>QoS 1</code> 加入了应答与重传机制，发送方只有在接收到<code>PUBACK</code>后才能认为消息投递成功， 在此之前发送法需要存储该<code>PUBLISH</code>报文以便下次重传，<code>QoS 1</code>采用<code>Packet ID</code>来标示报文，<code>PUBACK</code>需要采用和<code>PUBLISH</code>报文一致的<code>Packet ID</code></p>
+<h3 id="QoS-1"><a href="#QoS-1" class="headerlink" title="QoS 1"></a>QoS 1</h3><p><code>QoS 1</code> 加入了应答与重传机制，发送方只有在接收到<code>PUBACK</code>后才能认为消息投递成功， 在此之前发送法需要存储该<code>PUBLISH</code>报文以便下次重传，<code>QoS 1</code>采用<code>Packet ID</code>来标示报文，<code>PUBACK</code>需要采用和<code>PUBLISH</code>报文一致的<code>Packet ID</code></p>
 <p><img data-src="https://img.qylh.xyz/blog/1727007959670.png" alt="1727007959670.png"></p>
-<h5 id="重复消息问题"><a href="#重复消息问题" class="headerlink" title="重复消息问题"></a>重复消息问题</h5><p>但是<code>QoS 1</code>可能会造成重复消费消息问题，<code>PUBLISH</code>已经到达接收方，但接收方的<code>PUBACK</code>没有传回给发送法，发送方可能触发重传，导致重复消息。</p>
+<h4 id="重复消息问题"><a href="#重复消息问题" class="headerlink" title="重复消息问题"></a>重复消息问题</h4><p>但是<code>QoS 1</code>可能会造成重复消费消息问题，<code>PUBLISH</code>已经到达接收方，但接收方的<code>PUBACK</code>没有传回给发送法，发送方可能触发重传，导致重复消息。</p>
 <p><img data-src="https://img.qylh.xyz/blog/1727015533394.png" alt="1727015533394.png"></p>
 <p>虽然重传时<code> PUBLISH</code> 报文中的 <code>DUP</code> 标志会被设置为 1，用以表示这是一个重传的报文。但是接收方并不能因此假定自己曾经接收过这个消息，仍然需要将其视作一个全新的消息。因为对于接收方来说，可能存在以下两种情况：</p>
 <ol>
@@ -244,7 +244,7 @@
 <blockquote>
 <p>可以基于QoS 1 自行去重，如在报文中增加时间戳或单调计数器，接收方根据计数关系判断是否是一个新消息</p>
 </blockquote>
-<h4 id="QoS-2"><a href="#QoS-2" class="headerlink" title="QoS 2"></a>QoS 2</h4><p>QoS 2 解决了消息丢失和消息重复问题，但也带来了很大的开销，因为每一次QoS 2 消息传递，至少要进行两次请求响应流程。</p>
+<h3 id="QoS-2"><a href="#QoS-2" class="headerlink" title="QoS 2"></a>QoS 2</h3><p>QoS 2 解决了消息丢失和消息重复问题，但也带来了很大的开销，因为每一次QoS 2 消息传递，至少要进行两次请求响应流程。</p>
 <p><img data-src="https://img.qylh.xyz/blog/1727015897624.png" alt="1727015897624.png"></p>
 <p>流程如下：</p>
 <ol>
@@ -253,10 +253,10 @@
 <li>当接收方收到 <code>PUBREL</code> 报文，也可以确认在这一次的传输流程中不会再有重传的 <code>PUBLISH</code> 报文到达，因此回复<code> PUBCOMP</code> 报文表示自己也准备好将当前的 <code>Packet ID</code> 用于新的消息了。</li>
 <li>当发送方收到 <code>PUBCOMP</code> 报文，这一次的 <code>QoS 2</code> 消息传输就算正式完成了。在这之后，发送方可以再次使用当前的<code>Packet ID</code>发送新的消息，而接收方再次收到使用这个<code> Packet ID</code> 的 <code>PUBLISH </code>报文时，也会将它视为一个全新的消息。</li>
 </ol>
-<h5 id="消息重复解决"><a href="#消息重复解决" class="headerlink" title="消息重复解决"></a>消息重复解决</h5><p>在<a href="#%E9%87%8D%E5%A4%8D%E6%B6%88%E6%81%AF%E9%97%AE%E9%A2%98">消息重复问题</a>中不难发现重复问题的根源是对<code>Packet ID</code>的使用没有达成共识，那么解决方案就是让通信双方正确同步地释放<code>Packet ID</code>，也就是对<code>Packet ID</code>的使用达成共识。<code>QoS 2</code>中增加的<code>PUBREL</code> 和<code>PUBCOMP</code>就是为了解决这个问题设置的。</p>
+<h4 id="消息重复解决"><a href="#消息重复解决" class="headerlink" title="消息重复解决"></a>消息重复解决</h4><p>在<a href="#%E9%87%8D%E5%A4%8D%E6%B6%88%E6%81%AF%E9%97%AE%E9%A2%98">消息重复问题</a>中不难发现重复问题的根源是对<code>Packet ID</code>的使用没有达成共识，那么解决方案就是让通信双方正确同步地释放<code>Packet ID</code>，也就是对<code>Packet ID</code>的使用达成共识。<code>QoS 2</code>中增加的<code>PUBREL</code> 和<code>PUBCOMP</code>就是为了解决这个问题设置的。</p>
 <p><code>QoS 2</code> 规定，发送方只有在收到<code>PUBREC</code>报文之前可以重传<code> PUBLISH</code> 报文。一旦收到 <code>PUBREC </code>报文并发出 <code>PUBREL</code> 报文，发送方就进入了<code>Packet ID</code>释放流程，不可以再使用当前 <code>Packet ID</code> 重传<code> PUBLISH</code> 报文。同时，在收到对端回复的 <code>PUBCOMP </code>报文确认双方都完成 <code>Packet ID</code> 释放之前，也不可以使用当前 <code>Packet ID</code> 发送新的消息。（<code>PUBREL</code>如果丢失也会进行重传）</p>
-<h4 id="QoS性能差距"><a href="#QoS性能差距" class="headerlink" title="QoS性能差距"></a>QoS性能差距</h4><p>通常<code> QoS 0</code> 与 <code>QoS 1 </code>能够达到的吞吐比较接近，但 <code>QoS 1</code> 的 CPU 占用会略高于<code> QoS 0</code>，负载较高时<code>QoS 1 </code>的消息延迟也会进一步增加。而<code>QoS 2 </code>仅能达到<code>QoS 1 </code>一半的性能。</p>
-<h4 id="如何选择QoS"><a href="#如何选择QoS" class="headerlink" title="如何选择QoS"></a>如何选择QoS</h4><p><code>QoS 0</code>： 高频可容忍丢失的数据，如传感器数据</p>
+<h3 id="QoS性能差距"><a href="#QoS性能差距" class="headerlink" title="QoS性能差距"></a>QoS性能差距</h3><p>通常<code> QoS 0</code> 与 <code>QoS 1 </code>能够达到的吞吐比较接近，但 <code>QoS 1</code> 的 CPU 占用会略高于<code> QoS 0</code>，负载较高时<code>QoS 1 </code>的消息延迟也会进一步增加。而<code>QoS 2 </code>仅能达到<code>QoS 1 </code>一半的性能。</p>
+<h3 id="如何选择QoS"><a href="#如何选择QoS" class="headerlink" title="如何选择QoS"></a>如何选择QoS</h3><p><code>QoS 0</code>： 高频可容忍丢失的数据，如传感器数据</p>
 <p><code>QoS 1</code>  :  幂等操作的数据，或可以自行去重的场景</p>
 <p><code>QoS 2</code>  :   重要数据，不允许丢失，不允许重复</p>
 
@@ -344,7 +344,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT-QoS"><span class="nav-number">1.</span> <span class="nav-text">MQTT QoS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#QoS-0"><span class="nav-number">1.0.1.</span> <span class="nav-text">QoS 0</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E4%B8%A2%E5%A4%B1%E9%97%AE%E9%A2%98"><span class="nav-number">1.0.1.1.</span> <span class="nav-text">消息丢失问题</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#QoS-1"><span class="nav-number">1.0.2.</span> <span class="nav-text">QoS 1</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D%E6%B6%88%E6%81%AF%E9%97%AE%E9%A2%98"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">重复消息问题</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#QoS-2"><span class="nav-number">1.0.3.</span> <span class="nav-text">QoS 2</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%87%8D%E5%A4%8D%E8%A7%A3%E5%86%B3"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">消息重复解决</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#QoS%E6%80%A7%E8%83%BD%E5%B7%AE%E8%B7%9D"><span class="nav-number">1.0.4.</span> <span class="nav-text">QoS性能差距</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9QoS"><span class="nav-number">1.0.5.</span> <span class="nav-text">如何选择QoS</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MQTT-QoS"><span class="nav-number">1.</span> <span class="nav-text">MQTT QoS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#QoS-0"><span class="nav-number">1.0.1.</span> <span class="nav-text">QoS 0</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E4%B8%A2%E5%A4%B1%E9%97%AE%E9%A2%98"><span class="nav-number">1.0.1.1.</span> <span class="nav-text">消息丢失问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QoS-1"><span class="nav-number">1.0.2.</span> <span class="nav-text">QoS 1</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D%E6%B6%88%E6%81%AF%E9%97%AE%E9%A2%98"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">重复消息问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QoS-2"><span class="nav-number">1.0.3.</span> <span class="nav-text">QoS 2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%87%8D%E5%A4%8D%E8%A7%A3%E5%86%B3"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">消息重复解决</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QoS%E6%80%A7%E8%83%BD%E5%B7%AE%E8%B7%9D"><span class="nav-number">1.0.4.</span> <span class="nav-text">QoS性能差距</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9QoS"><span class="nav-number">1.0.5.</span> <span class="nav-text">如何选择QoS</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

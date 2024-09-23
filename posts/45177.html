@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://img.qylh.xyz/blog/1727094579881.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1727099885578.png">
 <meta property="article:published_time" content="2024-09-22T11:24:36.000Z">
-<meta property="article:modified_time" content="2024-09-23T14:41:28.717Z">
+<meta property="article:modified_time" content="2024-09-23T14:45:26.311Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="物联网">
 <meta property="article:tag" content="MQTT">
@@ -203,7 +203,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-09-23 22:41:28" itemprop="dateModified" datetime="2024-09-23T22:41:28+08:00">2024-09-23</time>
+                <time title="修改时间：2024-09-23 22:45:26" itemprop="dateModified" datetime="2024-09-23T22:45:26+08:00">2024-09-23</time>
               </span>
 
           
@@ -222,13 +222,13 @@
 <p>MQTT协议概述</p>
 <span id="more"></span>
 
-<h2 id="MQTT概述"><a href="#MQTT概述" class="headerlink" title="MQTT概述"></a>MQTT概述</h2><blockquote>
+<h1 id="MQTT概述"><a href="#MQTT概述" class="headerlink" title="MQTT概述"></a>MQTT概述</h1><blockquote>
 <p>MQTT 是在上世纪 90 年代末由 IBM 的 Andy Stanford-Clark 博士和 Arcom（现 Eurotech）的 Arlen Nipper 开发，用于通过卫星网络监测石油管道。最初的 MQTT 3.1 版本非常轻量级和易于实现，适用于各种物联网设备。</p>
 <p>MQTT 3.1.1 于 2014 年发布，是一个 OASIS 标准，其中包括一些微调，增强了其清晰性和互操作性。它能够在资源有限的网络上高效地传输消息，因此在物联网应用中广受欢迎。</p>
 <p>然而，随着物联网行业的发展，应用的需求也在不断变化。为了适应这些新的需求，在 2019 年发布了 MQTT 5.0，其中加入了一些新功能。MQTT 5.0 也因此能够更好地满足现代物联网应用的复杂需求。</p>
 </blockquote>
 <p><code>MQTT（Message Queuing Telemetry Transport）</code>是一种轻量级、基于发布-订阅模式的消息传输协议，适用于资源受限的设备和低带宽、高延迟或不稳定的网络环境。它在<strong>物联网</strong>应用中广受欢迎，能够实现传感器、执行器和其它设备之间的高效通信。而且也可以应用在网络直播互动、手机消息推送等行业场景。</p>
-<h3 id="MQTT协议的特点"><a href="#MQTT协议的特点" class="headerlink" title="MQTT协议的特点"></a>MQTT协议的特点</h3><ul>
+<h2 id="MQTT协议的特点"><a href="#MQTT协议的特点" class="headerlink" title="MQTT协议的特点"></a>MQTT协议的特点</h2><ul>
 <li>轻量级：开销低、报文小</li>
 <li>可靠：支持多种QoS等级、支持会话感知和持久连接，可在较差的网络环境下保证消息的可靠传递</li>
 <li>安全：可提供TLS和SSL加密功能，提供认证授权机制</li>
@@ -237,7 +237,7 @@
 <li>适用于大规模物联网设备</li>
 <li>丰富的语言支持</li>
 </ul>
-<h3 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h3><ul>
+<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><ul>
 <li><p><code>MQTT Broker</code>： <code>MQTT Broker </code>（代理）是负责处理客户端请求的关键组件，包括建立连接、断开连接、订阅和取消订阅等操作，同时还负责消息的转发。</p>
 </li>
 <li><p><code>Topic</code>: <code>MQTT</code>根据<code>Topic</code>来转发消息，用<code>/</code>区分层级，支持通配符</p>
@@ -250,7 +250,7 @@
 </ul>
 </li>
 </ul>
-<h3 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h3><p>MQTT 连接由客户端向服务器端发起。任何运行了 MQTT 客户端库的程序或设备都是一个 <code>客户端</code>，而 <code>MQTT服务器</code>则负责接收客户端发起的连接，并将客户端发送的消息转发到另外一些符合条件的客户端。</p>
+<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><p>MQTT 连接由客户端向服务器端发起。任何运行了 MQTT 客户端库的程序或设备都是一个 <code>客户端</code>，而 <code>MQTT服务器</code>则负责接收客户端发起的连接，并将客户端发送的消息转发到另外一些符合条件的客户端。</p>
 <p>客户端与服务器建立网络连接后，需要先发送一个 <code>CONNECT</code> 数据包给服务器。服务器收到 <code>CONNECT</code> 包后会回复一个 <code>CONNACK</code> 给客户端，客户端收到 <code>CONNACK</code> 包后表示 MQTT 连接建立成功。如果客户端在超时时间内未收到服务器的 <code>CONNACK</code> 数据包，就会主动关闭连接。</p>
 <p><strong><code>MQTT</code>主要基于<code>TCP/IP</code> 进行通信，但也支持通过<a target="_blank" rel="noopener" href="https://www.emqx.com/zh/blog/how-to-set-parameters-when-establishing-an-mqtt-connection">WebSocket</a>和<a target="_blank" rel="noopener" href="https://www.emqx.com/zh/blog/connecting-mqtt-sn-devices-using-emqx">UDP</a>等进行网络传输。</strong> 使用<code>MQTT over websocket</code> 可以在浏览器中使用<code>MQTT</code>（因为浏览器交互主要基于<code>HTTP</code>，无法使用<code>TCP</code>）</p>
 <p><code>MQTT</code>借助发布&#x2F;订阅模式来实现通信，将发送消息的客户端（发布者）与接收消息的客户端（订阅者）解耦，使得两者不需要建立直接的联系也不需要知道对方的存在。</p>
@@ -260,20 +260,20 @@
 <li>客户端既向特定主题发布消息&#x2F;订阅主题以接收消息</li>
 <li>MQTT Broker 接收发布的消息，转发给订阅了该主题的客户端</li>
 </ol>
-<h3 id="为什么用MQTT"><a href="#为什么用MQTT" class="headerlink" title="为什么用MQTT"></a>为什么用MQTT</h3><h4 id="MQTT-VS-HTTP"><a href="#MQTT-VS-HTTP" class="headerlink" title="MQTT VS HTTP"></a><code>MQTT</code> VS <code>HTTP</code></h4><ol>
+<h2 id="为什么用MQTT"><a href="#为什么用MQTT" class="headerlink" title="为什么用MQTT"></a>为什么用MQTT</h2><h3 id="MQTT-VS-HTTP"><a href="#MQTT-VS-HTTP" class="headerlink" title="MQTT VS HTTP"></a><code>MQTT</code> VS <code>HTTP</code></h3><ol>
 <li><code>HTTP</code>报文长，需要占用更多的网络开销</li>
 <li><code>HTTP</code>属于无状态协议，服务器不会记录客户端的状态，无法实现从连接异常断开时恢复未发送数据</li>
 <li><code>HTTP</code>需要轮训才能获取数据更新</li>
 </ol>
 <p>​	<code>MQTT 5.0</code>之前发布者无法得知订阅者是否受到了消息，或者正确处理了消息，所以<code>MQTT 5.0</code>增加了<a href="https://qylh.xyz/posts/35585.html#%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E7%89%B9%E6%80%A7">请求响应</a></p>
-<h4 id="MQTTVS-消息队列"><a href="#MQTTVS-消息队列" class="headerlink" title="MQTTVS 消息队列"></a><code>MQTT</code>VS 消息队列</h4><p>尽管两者的特性比较相近，但他们的应用场景是有着显著不同的：</p>
+<h3 id="MQTTVS-消息队列"><a href="#MQTTVS-消息队列" class="headerlink" title="MQTTVS 消息队列"></a><code>MQTT</code>VS 消息队列</h3><p>尽管两者的特性比较相近，但他们的应用场景是有着显著不同的：</p>
 <ul>
 <li>消息队列作为一种中间件，主要用于服务端应用之间的消息存储与转发，数据量大但客户端数量少。</li>
 <li>MQTT是一种消息传输协议，主要用于物联网设备间的消息传递，特点是连接的设备量很大。</li>
 </ul>
 <p>有时<code>MQTT</code>和消息队列会一起使用，<code>MQTT</code>专注于处理物联网设备上报的数据，然后消息队列订阅这些消息并转发到不同的业务系统进行处理。</p>
 <p>而且相比消息队列，<code>MQTT</code>的主题不需要提前创建，在订阅或发布时即自动的创建了主题，开发者无需再关心主题的创建，并且也不需要手动删除主题。</p>
-<h3 id="MQTT保留消息"><a href="#MQTT保留消息" class="headerlink" title="MQTT保留消息"></a>MQTT保留消息</h3><p>发布订阅模式虽然能让消息的发布者与订阅者充分解耦，但也订阅者无法主动向发布者请求消息。因此借助保留消息，新的订阅者可以立即获得最近的状态。</p>
+<h2 id="MQTT保留消息"><a href="#MQTT保留消息" class="headerlink" title="MQTT保留消息"></a>MQTT保留消息</h2><p>发布订阅模式虽然能让消息的发布者与订阅者充分解耦，但也订阅者无法主动向发布者请求消息。因此借助保留消息，新的订阅者可以立即获得最近的状态。</p>
 <p>发布者发布消息时，如果<code>Retained</code>标记被设置为<code> true</code>，则该消息即是 <code>MQTT</code> 中的保留消息（<code>Retained Message</code>）。MQTT 服务器会为每个主题存储最新一条保留消息，以方便消息发布后才上线的客户端在订阅主题时仍可以接收到该消息。当客户端订阅主题时，如果服务端存在该主题匹配的保留消息，则该保留消息将被立即发送给该客户端。</p>
 <p><img data-src="https://img.qylh.xyz/blog/1727099885578.png" alt="1727099885578.png"></p>
 <p>保留消息的使用场景如下：</p>
@@ -282,9 +282,9 @@
 <li>传感器上报数据周期长，订阅者需要立即获取到最新的数据。</li>
 <li>传感器的一些固定属性可以上线后发布一条保留消息来告知后续订阅者</li>
 </ol>
-<h3 id="MQTT遗嘱消息"><a href="#MQTT遗嘱消息" class="headerlink" title="MQTT遗嘱消息"></a>MQTT遗嘱消息</h3><p>遗嘱消息（<code>Will Message</code> or <code> Last Will and Testament</code>）是<code>MQTT</code>中的一个重要功能，它解决了只有服务端才能知道客户端是否在线的问题，使我们能够为意外离线的客户端优雅地完成善后事宜。在 <code>MQTT</code> 中，客户端可以在连接时在服务端中注册一个遗嘱消息，与普通消息类似，我们可以设置遗嘱消息的主题、有效载荷等等。当该客户端意外断开连接，服务端就会向其他订阅了相应主题的客户端发送此遗嘱消息。这些接收者也因此可以及时地采取行动，例如向用户发送通知、切换备用设备等等。</p>
-<h4 id="遗嘱消息原理"><a href="#遗嘱消息原理" class="headerlink" title="遗嘱消息原理"></a>遗嘱消息原理</h4><h5 id="客户端在连接时指定遗嘱消息"><a href="#客户端在连接时指定遗嘱消息" class="headerlink" title="客户端在连接时指定遗嘱消息"></a>客户端在连接时指定遗嘱消息</h5><p>遗嘱消息在客户端发起连接时指定，它和 Client ID、Clean Start 这些字段一起包含在客户端发送的 CONNECT 报文中。与普通消息一样，我们可以为遗嘱消息设置主题（Will Topic）、保留消息标识位（Will Retain）、属性（Will Properties）、QoS（Will QoS）和有效载荷（Will Payload）</p>
-<h5 id="客户端意外关闭时服务端发布遗嘱消息"><a href="#客户端意外关闭时服务端发布遗嘱消息" class="headerlink" title="客户端意外关闭时服务端发布遗嘱消息"></a>客户端意外关闭时服务端发布遗嘱消息</h5><p>如果客户端在连接时指定了遗嘱消息，那么服务端就会将该遗嘱消息存储在相应的会话中，直到以下任一条件满足时发布它：</p>
+<h2 id="MQTT遗嘱消息"><a href="#MQTT遗嘱消息" class="headerlink" title="MQTT遗嘱消息"></a>MQTT遗嘱消息</h2><p>遗嘱消息（<code>Will Message</code> or <code> Last Will and Testament</code>）是<code>MQTT</code>中的一个重要功能，它解决了只有服务端才能知道客户端是否在线的问题，使我们能够为意外离线的客户端优雅地完成善后事宜。在 <code>MQTT</code> 中，客户端可以在连接时在服务端中注册一个遗嘱消息，与普通消息类似，我们可以设置遗嘱消息的主题、有效载荷等等。当该客户端意外断开连接，服务端就会向其他订阅了相应主题的客户端发送此遗嘱消息。这些接收者也因此可以及时地采取行动，例如向用户发送通知、切换备用设备等等。</p>
+<h3 id="遗嘱消息原理"><a href="#遗嘱消息原理" class="headerlink" title="遗嘱消息原理"></a>遗嘱消息原理</h3><h4 id="客户端在连接时指定遗嘱消息"><a href="#客户端在连接时指定遗嘱消息" class="headerlink" title="客户端在连接时指定遗嘱消息"></a>客户端在连接时指定遗嘱消息</h4><p>遗嘱消息在客户端发起连接时指定，它和 Client ID、Clean Start 这些字段一起包含在客户端发送的 CONNECT 报文中。与普通消息一样，我们可以为遗嘱消息设置主题（Will Topic）、保留消息标识位（Will Retain）、属性（Will Properties）、QoS（Will QoS）和有效载荷（Will Payload）</p>
+<h4 id="客户端意外关闭时服务端发布遗嘱消息"><a href="#客户端意外关闭时服务端发布遗嘱消息" class="headerlink" title="客户端意外关闭时服务端发布遗嘱消息"></a>客户端意外关闭时服务端发布遗嘱消息</h4><p>如果客户端在连接时指定了遗嘱消息，那么服务端就会将该遗嘱消息存储在相应的会话中，直到以下任一条件满足时发布它：</p>
 <ol>
 <li>服务端检测到了一个<code> I/O</code> 错误或者网络故障</li>
 <li>客户端在<code>Keep Alive</code>时间内未能通讯</li>
@@ -292,9 +292,9 @@
 <li>服务端在没有收到 <code>Reason Code </code>为 <code>0x00</code>（正常关闭）的<code> DISCONNECT</code> 报文的情况下关闭了网络连接，例如客户端的报文或行为不符合协议要求而被服务端关闭连接。</li>
 </ol>
 <p>总结以下就是客户端在服务端没有收到<code> Reason Code</code> 为 <code>0x00</code> 的 <code>DISCONNECT </code>报文的情况下关闭，发送遗嘱消息，客户端正常发送 <code>Reason Code</code> 为<code> 0x00</code> 的 <code>DISCONNECT</code> 报文后关闭，不会发布遗嘱消息。</p>
-<h5 id="MQTT-5-0-延迟发布特性"><a href="#MQTT-5-0-延迟发布特性" class="headerlink" title="MQTT 5.0 延迟发布特性"></a>MQTT 5.0 延迟发布特性</h5><p>如果网络连接中断只是暂时的，那么遗嘱消息被发送是无意义的，因此<code>MQTT 5.0</code>增加了<code>Will Delay Interval</code> 属性，来决定服务端在网络连接关闭后延迟多久发布遗嘱消息。</p>
-<h5 id="配合保留消息使用"><a href="#配合保留消息使用" class="headerlink" title="配合保留消息使用"></a>配合保留消息使用</h5><p>配合保留消息使用：正常情况下服务端一旦发布了遗嘱消息，就会将它从会话中删除，但如果关心该遗嘱消息的客户端不在线，就会错过该遗嘱消息，所以可以把遗嘱消息设置为保留消息。</p>
-<h3 id="MQTT-5-0"><a href="#MQTT-5-0" class="headerlink" title="MQTT 5.0"></a>MQTT 5.0</h3><p><code>MQTT 5.0</code> 新功能如下：</p>
+<h4 id="MQTT-5-0-延迟发布特性"><a href="#MQTT-5-0-延迟发布特性" class="headerlink" title="MQTT 5.0 延迟发布特性"></a>MQTT 5.0 延迟发布特性</h4><p>如果网络连接中断只是暂时的，那么遗嘱消息被发送是无意义的，因此<code>MQTT 5.0</code>增加了<code>Will Delay Interval</code> 属性，来决定服务端在网络连接关闭后延迟多久发布遗嘱消息。</p>
+<h4 id="配合保留消息使用"><a href="#配合保留消息使用" class="headerlink" title="配合保留消息使用"></a>配合保留消息使用</h4><p>配合保留消息使用：正常情况下服务端一旦发布了遗嘱消息，就会将它从会话中删除，但如果关心该遗嘱消息的客户端不在线，就会错过该遗嘱消息，所以可以把遗嘱消息设置为保留消息。</p>
+<h2 id="MQTT-5-0"><a href="#MQTT-5-0" class="headerlink" title="MQTT 5.0"></a>MQTT 5.0</h2><p><a href="https://qylh.xyz/posts/35585.html">MQTT 5.0</a> 新功能如下：</p>
 <ol>
 <li>原因代码：了解断开连接或失败原因</li>
 <li>会话过期间隔：管理会话的生命周期</li>
@@ -395,7 +395,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">MQTT概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">MQTT协议的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.</span> <span class="nav-text">相关概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8MQTT"><span class="nav-number">1.4.</span> <span class="nav-text">为什么用MQTT</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MQTT-VS-HTTP"><span class="nav-number">1.4.1.</span> <span class="nav-text">MQTT VS HTTP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MQTTVS-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">1.4.2.</span> <span class="nav-text">MQTTVS 消息队列</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT%E4%BF%9D%E7%95%99%E6%B6%88%E6%81%AF"><span class="nav-number">1.5.</span> <span class="nav-text">MQTT保留消息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.</span> <span class="nav-text">MQTT遗嘱消息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF%E5%8E%9F%E7%90%86"><span class="nav-number">1.6.1.</span> <span class="nav-text">遗嘱消息原理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%9C%A8%E8%BF%9E%E6%8E%A5%E6%97%B6%E6%8C%87%E5%AE%9A%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.1.1.</span> <span class="nav-text">客户端在连接时指定遗嘱消息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%84%8F%E5%A4%96%E5%85%B3%E9%97%AD%E6%97%B6%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8F%91%E5%B8%83%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.1.2.</span> <span class="nav-text">客户端意外关闭时服务端发布遗嘱消息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MQTT-5-0-%E5%BB%B6%E8%BF%9F%E5%8F%91%E5%B8%83%E7%89%B9%E6%80%A7"><span class="nav-number">1.6.1.3.</span> <span class="nav-text">MQTT 5.0 延迟发布特性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%85%8D%E5%90%88%E4%BF%9D%E7%95%99%E6%B6%88%E6%81%AF%E4%BD%BF%E7%94%A8"><span class="nav-number">1.6.1.4.</span> <span class="nav-text">配合保留消息使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-5-0"><span class="nav-number">1.7.</span> <span class="nav-text">MQTT 5.0</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MQTT%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">MQTT概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">MQTT协议的特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.</span> <span class="nav-text">相关概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">工作流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8MQTT"><span class="nav-number">1.4.</span> <span class="nav-text">为什么用MQTT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-VS-HTTP"><span class="nav-number">1.4.1.</span> <span class="nav-text">MQTT VS HTTP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTTVS-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">1.4.2.</span> <span class="nav-text">MQTTVS 消息队列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT%E4%BF%9D%E7%95%99%E6%B6%88%E6%81%AF"><span class="nav-number">1.5.</span> <span class="nav-text">MQTT保留消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.</span> <span class="nav-text">MQTT遗嘱消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF%E5%8E%9F%E7%90%86"><span class="nav-number">1.6.1.</span> <span class="nav-text">遗嘱消息原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%9C%A8%E8%BF%9E%E6%8E%A5%E6%97%B6%E6%8C%87%E5%AE%9A%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.1.1.</span> <span class="nav-text">客户端在连接时指定遗嘱消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%84%8F%E5%A4%96%E5%85%B3%E9%97%AD%E6%97%B6%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8F%91%E5%B8%83%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.1.2.</span> <span class="nav-text">客户端意外关闭时服务端发布遗嘱消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MQTT-5-0-%E5%BB%B6%E8%BF%9F%E5%8F%91%E5%B8%83%E7%89%B9%E6%80%A7"><span class="nav-number">1.6.1.3.</span> <span class="nav-text">MQTT 5.0 延迟发布特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E5%90%88%E4%BF%9D%E7%95%99%E6%B6%88%E6%81%AF%E4%BD%BF%E7%94%A8"><span class="nav-number">1.6.1.4.</span> <span class="nav-text">配合保留消息使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT-5-0"><span class="nav-number">1.7.</span> <span class="nav-text">MQTT 5.0</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
