@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/mylogo.svg">
+  <link rel="mask-icon" href="/images/mylogo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="MQTT协议概述">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MQTT协议概述">
+<meta property="og:url" content="https://qylh.xyz/posts/45177.html">
+<meta property="og:site_name" content="Echo">
+<meta property="og:description" content="MQTT协议概述">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.qylh.xyz/blog/Mqtt-hor.svg_.webp">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1727094579881.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1727099885578.png">
+<meta property="article:published_time" content="2024-09-22T11:24:36.000Z">
+<meta property="article:modified_time" content="2024-09-23T14:27:58.043Z">
+<meta property="article:author" content="MaHaotian">
+<meta property="article:tag" content="物联网">
+<meta property="article:tag" content="MQTT">
+<meta property="article:tag" content="消息队列">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.qylh.xyz/blog/Mqtt-hor.svg_.webp">
+
+<link rel="canonical" href="https://qylh.xyz/posts/45177.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>MQTT协议概述 | Echo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Echo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/45177.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Echo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MQTT协议概述
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-09-22 19:24:36" itemprop="dateCreated datePublished" datetime="2024-09-22T19:24:36+08:00">2024-09-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-09-23 22:27:58" itemprop="dateModified" datetime="2024-09-23T22:27:58+08:00">2024-09-23</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img data-src="https://img.qylh.xyz/blog/Mqtt-hor.svg_.webp" alt="Mqtt-hor.svg_.webp"></p>
+<p>MQTT协议概述</p>
+<span id="more"></span>
+
+<h2 id="MQTT概述"><a href="#MQTT概述" class="headerlink" title="MQTT概述"></a>MQTT概述</h2><blockquote>
+<p>MQTT 是在上世纪 90 年代末由 IBM 的 Andy Stanford-Clark 博士和 Arcom（现 Eurotech）的 Arlen Nipper 开发，用于通过卫星网络监测石油管道。最初的 MQTT 3.1 版本非常轻量级和易于实现，适用于各种物联网设备。</p>
+<p>MQTT 3.1.1 于 2014 年发布，是一个 OASIS 标准，其中包括一些微调，增强了其清晰性和互操作性。它能够在资源有限的网络上高效地传输消息，因此在物联网应用中广受欢迎。</p>
+<p>然而，随着物联网行业的发展，应用的需求也在不断变化。为了适应这些新的需求，在 2019 年发布了 MQTT 5.0，其中加入了一些新功能。MQTT 5.0 也因此能够更好地满足现代物联网应用的复杂需求。</p>
+</blockquote>
+<p><code>MQTT（Message Queuing Telemetry Transport）</code>是一种轻量级、基于发布-订阅模式的消息传输协议，适用于资源受限的设备和低带宽、高延迟或不稳定的网络环境。它在<strong>物联网</strong>应用中广受欢迎，能够实现传感器、执行器和其它设备之间的高效通信。而且也可以应用在网络直播互动、手机消息推送等行业场景。</p>
+<h3 id="MQTT协议的特点"><a href="#MQTT协议的特点" class="headerlink" title="MQTT协议的特点"></a>MQTT协议的特点</h3><ul>
+<li>轻量级：开销低、报文小</li>
+<li>可靠：支持多种QoS等级、支持会话感知和持久连接，可在较差的网络环境下保证消息的可靠传递</li>
+<li>安全：可提供TLS和SSL加密功能，提供认证授权机制</li>
+<li>双向通信：基于发布-订阅模式，易于扩展</li>
+<li>连续、有状态的会话：提供客户端与Broker之间保持状态会话能力，系统即使在断开连接后也能记住为传递的消息</li>
+<li>适用于大规模物联网设备</li>
+<li>丰富的语言支持</li>
+</ul>
+<h3 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h3><ul>
+<li><p><code>MQTT Broker</code>： <code>MQTT Broker </code>（代理）是负责处理客户端请求的关键组件，包括建立连接、断开连接、订阅和取消订阅等操作，同时还负责消息的转发。</p>
+</li>
+<li><p><code>Topic</code>: <code>MQTT</code>根据<code>Topic</code>来转发消息，用<code>/</code>区分层级，支持通配符</p>
+</li>
+<li><p><code>QoS</code>： <code>MQTT</code>支持三种<code>QoS</code>服务质量，详细请参考<a href="#QoS%E5%8E%9F%E7%90%86">QoS原理</a></p>
+<ul>
+<li><code>QoS-0</code>:消息最多传送一次。如果当前客户端不可用，它将丢失这条消息。</li>
+<li><code>QoS-1</code>:消息至少被传送一次。（适用于幂等操作）</li>
+<li><code>QoS-2</code>:消息只传送一次</li>
+</ul>
+</li>
+</ul>
+<h3 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h3><p>MQTT 连接由客户端向服务器端发起。任何运行了 MQTT 客户端库的程序或设备都是一个 <code>客户端</code>，而 <code>MQTT服务器</code>则负责接收客户端发起的连接，并将客户端发送的消息转发到另外一些符合条件的客户端。</p>
+<p>客户端与服务器建立网络连接后，需要先发送一个 <code>CONNECT</code> 数据包给服务器。服务器收到 <code>CONNECT</code> 包后会回复一个 <code>CONNACK</code> 给客户端，客户端收到 <code>CONNACK</code> 包后表示 MQTT 连接建立成功。如果客户端在超时时间内未收到服务器的 <code>CONNACK</code> 数据包，就会主动关闭连接。</p>
+<p><strong><code>MQTT</code>主要基于<code>TCP/IP</code> 进行通信，但也支持通过<a target="_blank" rel="noopener" href="https://www.emqx.com/zh/blog/how-to-set-parameters-when-establishing-an-mqtt-connection">WebSocket</a>和<a target="_blank" rel="noopener" href="https://www.emqx.com/zh/blog/connecting-mqtt-sn-devices-using-emqx">UDP</a>等进行网络传输。</strong> 使用<code>MQTT over websocket</code> 可以在浏览器中使用<code>MQTT</code>（因为浏览器交互主要基于<code>HTTP</code>，无法使用<code>TCP</code>）</p>
+<p><code>MQTT</code>借助发布&#x2F;订阅模式来实现通信，将发送消息的客户端（发布者）与接收消息的客户端（订阅者）解耦，使得两者不需要建立直接的联系也不需要知道对方的存在。</p>
+<p><img data-src="https://img.qylh.xyz/blog/1727094579881.png" alt="1727094579881.png"></p>
+<ol>
+<li>客户端使用 TCP&#x2F;IP 协议与 Broker 建立连接</li>
+<li>客户端既向特定主题发布消息&#x2F;订阅主题以接收消息</li>
+<li>MQTT Broker 接收发布的消息，转发给订阅了该主题的客户端</li>
+</ol>
+<h3 id="为什么用MQTT"><a href="#为什么用MQTT" class="headerlink" title="为什么用MQTT"></a>为什么用MQTT</h3><h4 id="MQTT-VS-HTTP"><a href="#MQTT-VS-HTTP" class="headerlink" title="MQTT VS HTTP"></a><code>MQTT</code> VS <code>HTTP</code></h4><ol>
+<li><code>HTTP</code>报文长，需要占用更多的网络开销</li>
+<li><code>HTTP</code>属于无状态协议，服务器不会记录客户端的状态，无法实现从连接异常断开时恢复未发送数据</li>
+<li><code>HTTP</code>需要轮训才能获取数据更新</li>
+</ol>
+<p>​	<code>MQTT 5.0</code>之前发布者无法得知订阅者是否受到了消息，或者正确处理了消息，所以<code>MQTT 5.0</code>增加了[请求响应](#MQTT 5.0的请求响应特性)</p>
+<h4 id="MQTTVS-消息队列"><a href="#MQTTVS-消息队列" class="headerlink" title="MQTTVS 消息队列"></a><code>MQTT</code>VS 消息队列</h4><p>尽管两者的特性比较相近，但他们的应用场景是有着显著不同的：</p>
+<ul>
+<li>消息队列作为一种中间件，主要用于服务端应用之间的消息存储与转发，数据量大但客户端数量少。</li>
+<li>MQTT是一种消息传输协议，主要用于物联网设备间的消息传递，特点是连接的设备量很大。</li>
+</ul>
+<p>有时<code>MQTT</code>和消息队列会一起使用，<code>MQTT</code>专注于处理物联网设备上报的数据，然后消息队列订阅这些消息并转发到不同的业务系统进行处理。</p>
+<p>而且相比消息队列，<code>MQTT</code>的主题不需要提前创建，在订阅或发布时即自动的创建了主题，开发者无需再关心主题的创建，并且也不需要手动删除主题。</p>
+<h3 id="MQTT保留消息"><a href="#MQTT保留消息" class="headerlink" title="MQTT保留消息"></a>MQTT保留消息</h3><p>发布订阅模式虽然能让消息的发布者与订阅者充分解耦，但也订阅者无法主动向发布者请求消息。因此借助保留消息，新的订阅者可以立即获得最近的状态。</p>
+<p>发布者发布消息时，如果<code>Retained</code>标记被设置为<code> true</code>，则该消息即是 <code>MQTT</code> 中的保留消息（<code>Retained Message</code>）。MQTT 服务器会为每个主题存储最新一条保留消息，以方便消息发布后才上线的客户端在订阅主题时仍可以接收到该消息。当客户端订阅主题时，如果服务端存在该主题匹配的保留消息，则该保留消息将被立即发送给该客户端。</p>
+<p><img data-src="https://img.qylh.xyz/blog/1727099885578.png" alt="1727099885578.png"></p>
+<p>保留消息的使用场景如下：</p>
+<ol>
+<li>设备状态发生变更的时候才会上报，但控制端需要在上线后就马上获取当前状态</li>
+<li>传感器上报数据周期长，订阅者需要立即获取到最新的数据。</li>
+<li>传感器的一些固定属性可以上线后发布一条保留消息来告知后续订阅者</li>
+</ol>
+<h3 id="MQTT遗嘱消息"><a href="#MQTT遗嘱消息" class="headerlink" title="MQTT遗嘱消息"></a>MQTT遗嘱消息</h3><p>遗嘱消息（<code>Will Message</code> or <code> Last Will and Testament</code>）是<code>MQTT</code>中的一个重要功能，它解决了只有服务端才能知道客户端是否在线的问题，使我们能够为意外离线的客户端优雅地完成善后事宜。在 <code>MQTT</code> 中，客户端可以在连接时在服务端中注册一个遗嘱消息，与普通消息类似，我们可以设置遗嘱消息的主题、有效载荷等等。当该客户端意外断开连接，服务端就会向其他订阅了相应主题的客户端发送此遗嘱消息。这些接收者也因此可以及时地采取行动，例如向用户发送通知、切换备用设备等等。</p>
+<h4 id="遗嘱消息原理"><a href="#遗嘱消息原理" class="headerlink" title="遗嘱消息原理"></a>遗嘱消息原理</h4><h5 id="客户端在连接时指定遗嘱消息"><a href="#客户端在连接时指定遗嘱消息" class="headerlink" title="客户端在连接时指定遗嘱消息"></a>客户端在连接时指定遗嘱消息</h5><p>遗嘱消息在客户端发起连接时指定，它和 Client ID、Clean Start 这些字段一起包含在客户端发送的 CONNECT 报文中。与普通消息一样，我们可以为遗嘱消息设置主题（Will Topic）、保留消息标识位（Will Retain）、属性（Will Properties）、QoS（Will QoS）和有效载荷（Will Payload）</p>
+<h5 id="客户端意外关闭时服务端发布遗嘱消息"><a href="#客户端意外关闭时服务端发布遗嘱消息" class="headerlink" title="客户端意外关闭时服务端发布遗嘱消息"></a>客户端意外关闭时服务端发布遗嘱消息</h5><p>如果客户端在连接时指定了遗嘱消息，那么服务端就会将该遗嘱消息存储在相应的会话中，直到以下任一条件满足时发布它：</p>
+<ol>
+<li>服务端检测到了一个<code> I/O</code> 错误或者网络故障</li>
+<li>客户端在<code>Keep Alive</code>时间内未能通讯</li>
+<li>客户端在没有发送 <code>Reason Code</code> 为<code> 0x00</code>（正常关闭）的<code>DISCONNECT</code>报文的情况下关闭了网络连接</li>
+<li>服务端在没有收到 <code>Reason Code </code>为 <code>0x00</code>（正常关闭）的<code> DISCONNECT</code> 报文的情况下关闭了网络连接，例如客户端的报文或行为不符合协议要求而被服务端关闭连接。</li>
+</ol>
+<p>总结以下就是客户端在服务端没有收到<code> Reason Code</code> 为 <code>0x00</code> 的 <code>DISCONNECT </code>报文的情况下关闭，发送遗嘱消息，客户端正常发送 <code>Reason Code</code> 为<code> 0x00</code> 的 <code>DISCONNECT</code> 报文后关闭，不会发布遗嘱消息。</p>
+<h5 id="MQTT-5-0-延迟发布特性"><a href="#MQTT-5-0-延迟发布特性" class="headerlink" title="MQTT 5.0 延迟发布特性"></a>MQTT 5.0 延迟发布特性</h5><p>如果网络连接中断只是暂时的，那么遗嘱消息被发送是无意义的，因此<code>MQTT 5.0</code>增加了<code>Will Delay Interval</code> 属性，来决定服务端在网络连接关闭后延迟多久发布遗嘱消息。</p>
+<h5 id="配合保留消息使用"><a href="#配合保留消息使用" class="headerlink" title="配合保留消息使用"></a>配合保留消息使用</h5><p>配合保留消息使用：正常情况下服务端一旦发布了遗嘱消息，就会将它从会话中删除，但如果关心该遗嘱消息的客户端不在线，就会错过该遗嘱消息，所以可以把遗嘱消息设置为保留消息。</p>
+<h3 id="MQTT-5-0"><a href="#MQTT-5-0" class="headerlink" title="MQTT 5.0"></a>MQTT 5.0</h3><p><code>MQTT 5.0</code> 新功能如下：</p>
+<ol>
+<li>原因代码：了解断开连接或失败原因</li>
+<li>会话过期间隔：管理会话的生命周期</li>
+<li>主题别名：减少消息头部的开销</li>
+<li>用户属性：MQTT 头部中的自定义元数据</li>
+<li>订阅选项：细粒度的订阅控制</li>
+<li>请求&#x2F;响应：允许客户端回复指定主题</li>
+<li>共享订阅：订阅者负载均衡功能</li>
+</ol>
+<blockquote>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.emqx.com/zh/mqtt-guide">https://www.emqx.com/zh/mqtt-guide</a></li>
+</ul>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%89%A9%E8%81%94%E7%BD%91/" rel="tag"># 物联网</a>
+              <a href="/tags/MQTT/" rel="tag"># MQTT</a>
+              <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag"># 消息队列</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/43359.html" rel="prev" title="腾讯犀牛鸟Apache-InLong项目总结">
+      <i class="fa fa-chevron-left"></i> 腾讯犀牛鸟Apache-InLong项目总结
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/36773.html" rel="next" title="MQTT QoS介绍">
+      MQTT QoS介绍 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">MQTT概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">MQTT协议的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.</span> <span class="nav-text">相关概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8MQTT"><span class="nav-number">1.4.</span> <span class="nav-text">为什么用MQTT</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MQTT-VS-HTTP"><span class="nav-number">1.4.1.</span> <span class="nav-text">MQTT VS HTTP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MQTTVS-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">1.4.2.</span> <span class="nav-text">MQTTVS 消息队列</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT%E4%BF%9D%E7%95%99%E6%B6%88%E6%81%AF"><span class="nav-number">1.5.</span> <span class="nav-text">MQTT保留消息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.</span> <span class="nav-text">MQTT遗嘱消息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF%E5%8E%9F%E7%90%86"><span class="nav-number">1.6.1.</span> <span class="nav-text">遗嘱消息原理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%9C%A8%E8%BF%9E%E6%8E%A5%E6%97%B6%E6%8C%87%E5%AE%9A%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.1.1.</span> <span class="nav-text">客户端在连接时指定遗嘱消息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%84%8F%E5%A4%96%E5%85%B3%E9%97%AD%E6%97%B6%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8F%91%E5%B8%83%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.1.2.</span> <span class="nav-text">客户端意外关闭时服务端发布遗嘱消息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MQTT-5-0-%E5%BB%B6%E8%BF%9F%E5%8F%91%E5%B8%83%E7%89%B9%E6%80%A7"><span class="nav-number">1.6.1.3.</span> <span class="nav-text">MQTT 5.0 延迟发布特性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%85%8D%E5%90%88%E4%BF%9D%E7%95%99%E6%B6%88%E6%81%AF%E4%BD%BF%E7%94%A8"><span class="nav-number">1.6.1.4.</span> <span class="nav-text">配合保留消息使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-5-0"><span class="nav-number">1.7.</span> <span class="nav-text">MQTT 5.0</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MaHaotian"
+      src="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+  <p class="site-author-name" itemprop="name">MaHaotian</p>
+  <div class="site-description" itemprop="description">给时光以生命，而不是给生命以时光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qy-liuhuo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qy-liuhuo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:maht2001@163.com" title="E-Mail → mailto:maht2001@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wangzekun.cn/" title="http:&#x2F;&#x2F;wangzekun.cn&#x2F;" rel="noopener" target="_blank">坤哥的博客</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://8.142.79.40:9101/" title="http:&#x2F;&#x2F;8.142.79.40:9101" rel="noopener" target="_blank">坤姐的博客</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MaHaotian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>

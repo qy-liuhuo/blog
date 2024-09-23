@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/mylogo.svg">
+  <link rel="mask-icon" href="/images/mylogo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="MQTT 提供了 QoS 机制，其核心是设计了多种消息交互机制来提供不同的服务质量，来满足用户在各种场景下对消息可靠性的要求">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MQTT QoS介绍">
+<meta property="og:url" content="https://qylh.xyz/posts/36773.html">
+<meta property="og:site_name" content="Echo">
+<meta property="og:description" content="MQTT 提供了 QoS 机制，其核心是设计了多种消息交互机制来提供不同的服务质量，来满足用户在各种场景下对消息可靠性的要求">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.qylh.xyz/blog/Mqtt-hor.svg_.webp">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1727007541789.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1727007618068.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1727007959670.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1727015533394.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1727015789844.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1727015897624.png">
+<meta property="article:published_time" content="2024-09-23T02:04:24.000Z">
+<meta property="article:modified_time" content="2024-09-23T12:51:07.145Z">
+<meta property="article:author" content="MaHaotian">
+<meta property="article:tag" content="物联网">
+<meta property="article:tag" content="MQTT">
+<meta property="article:tag" content="消息队列">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.qylh.xyz/blog/Mqtt-hor.svg_.webp">
+
+<link rel="canonical" href="https://qylh.xyz/posts/36773.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>MQTT QoS介绍 | Echo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Echo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/36773.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Echo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MQTT QoS介绍
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-09-23 10:04:24 / 修改时间：20:51:07" itemprop="dateCreated datePublished" datetime="2024-09-23T10:04:24+08:00">2024-09-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img data-src="https://img.qylh.xyz/blog/Mqtt-hor.svg_.webp" alt="Mqtt-hor.svg_.webp"></p>
+<p>MQTT 提供了 QoS 机制，其核心是设计了多种消息交互机制来提供不同的服务质量，来满足用户在各种场景下对消息可靠性的要求</p>
+<span id="more"></span>
+
+
+
+<h2 id="MQTT-QoS"><a href="#MQTT-QoS" class="headerlink" title="MQTT QoS"></a>MQTT QoS</h2><p>在网络受限的环境下，MQTT如果只依靠底层的 TCP 传输协议，并不能完全保证消息的可靠到达。因此，MQTT 提供了 QoS 机制，其核心是设计了多种消息交互机制来提供不同的服务质量，来满足用户在各种场景下对消息可靠性的要求。</p>
+<p><code>QoS</code>由发布者在<code>PUBLISH</code>报文中指定，消息的 QoS 等级可能会在转发的时候发生降级（比如订阅者在订阅时要求 Broker 可以向其转发的消息的最大 QoS 等级为 QoS 1，那么后续所有 QoS 2 消息都会降级至 QoS 1 转发给此订阅者，而所有 QoS 0 和 QoS 1 消息则会保持原始的 QoS 等级转发）</p>
+<p><img data-src="https://img.qylh.xyz/blog/1727007541789.png" alt="1727007541789.png"></p>
+<h4 id="QoS-0"><a href="#QoS-0" class="headerlink" title="QoS 0"></a>QoS 0</h4><p><code>QoS 0</code> 消息可靠性依赖完全底层<code>TCP</code>协议，消息即发即弃，不需要等待确认，不需要存储和重传，因此对于接收方来说，永远都不需要担心收到重复的消息。</p>
+<h5 id="消息丢失问题"><a href="#消息丢失问题" class="headerlink" title="消息丢失问题"></a>消息丢失问题</h5><p> 但<code>TCP</code>只能保证连接不管逼得情况下消息的可靠性，在连接关闭、重置等情况下会导致消息丢失。</p>
+<p><img data-src="https://img.qylh.xyz/blog/1727007618068.png" alt="1727007618068.png"></p>
+<h4 id="QoS-1"><a href="#QoS-1" class="headerlink" title="QoS 1"></a>QoS 1</h4><p><code>QoS 1</code> 加入了应答与重传机制，发送方只有在接收到<code>PUBACK</code>后才能认为消息投递成功， 在此之前发送法需要存储该<code>PUBLISH</code>报文以便下次重传，<code>QoS 1</code>采用<code>Packet ID</code>来标示报文，<code>PUBACK</code>需要采用和<code>PUBLISH</code>报文一致的<code>Packet ID</code></p>
+<p><img data-src="https://img.qylh.xyz/blog/1727007959670.png" alt="1727007959670.png"></p>
+<h5 id="重复消息问题"><a href="#重复消息问题" class="headerlink" title="重复消息问题"></a>重复消息问题</h5><p>但是<code>QoS 1</code>可能会造成重复消费消息问题，<code>PUBLISH</code>已经到达接收方，但接收方的<code>PUBACK</code>没有传回给发送法，发送方可能触发重传，导致重复消息。</p>
+<p><img data-src="https://img.qylh.xyz/blog/1727015533394.png" alt="1727015533394.png"></p>
+<p>虽然重传时<code> PUBLISH</code> 报文中的 <code>DUP</code> 标志会被设置为 1，用以表示这是一个重传的报文。但是接收方并不能因此假定自己曾经接收过这个消息，仍然需要将其视作一个全新的消息。因为对于接收方来说，可能存在以下两种情况：</p>
+<ol>
+<li><p>第一种情况，发送方由于没有收到 <code>PUBACK</code> 报文而重传了 <code>PUBLISH</code> 报文。此时，接收方收到的前后两个 <code>PUBLISH</code> 报文使用了相同的 <code>Packet ID</code>，并且第二个 <code>PUBLISH</code> 报文的 DUP 标志为 1，此时它确实是一个重复的消息。</p>
+</li>
+<li><p>第二种情况，第一个 <code>PUBLISH</code> 报文已经完成了投递，1024 这个 <code>Packet ID</code> 重新变为可用状态。发送方使用这个 <code>Packet ID</code> 发送了一个全新的 <code>PUBLISH</code> 报文，但这一次报文未能到达对端，所以发送方后续重传了这个 <code>PUBLISH</code> 报文。这就使得虽然接收方收到的第二个 <code>PUBLISH</code> 报文同样是相同的 <code>Packet ID</code>，并且 <code>DUP</code> 为 1，但确实是一个全新的消息。</p>
+</li>
+</ol>
+<p><img data-src="https://img.qylh.xyz/blog/1727015789844.png" alt="1727015789844.png"></p>
+<p>由于接收方无法区分这两种情况，所以只能将这些 <code>PUBLISH</code> 报文都当作全新的消息来处理。因此当我们使用 <code>QoS 1 </code>时，消息的重复在协议层面上是无法避免的。</p>
+<blockquote>
+<p>可以基于QoS 1 自行去重，如在报文中增加时间戳或单调计数器，接收方根据计数关系判断是否是一个新消息</p>
+</blockquote>
+<h4 id="QoS-2"><a href="#QoS-2" class="headerlink" title="QoS 2"></a>QoS 2</h4><p>QoS 2 解决了消息丢失和消息重复问题，但也带来了很大的开销，因为每一次QoS 2 消息传递，至少要进行两次请求响应流程。</p>
+<p><img data-src="https://img.qylh.xyz/blog/1727015897624.png" alt="1727015897624.png"></p>
+<p>流程如下：</p>
+<ol>
+<li>发送方存储并发送 <code>QoS  2</code> 的 <code>PUBLISH</code> 报文，然后等待接收方回复 <code>PUBREC</code> 报文。</li>
+<li>当发送方收到 <code>PUBREC </code>报文，即可确认对端已经收到了<code>PUBLISH</code>报文，发送方将<strong>不再需要重传</strong>这个报文，并且也<strong>不能再重传</strong>这个报文。此时发送方可以删除本地存储的 <code>PUBLISH</code> 报文，然后发送一个 <code>PUBREL </code>报文，通知对端自己准备将本次使用的 <code>Packet ID </code>标记为可用了。与 <code>PUBLISH</code> 报文一样，我们需要确保 PUBREL 报文到达对端，所以也需要一个响应报文，并且这个 <code>PUBREL</code> 报文需要被存储下来以便后续重传。</li>
+<li>当接收方收到 <code>PUBREL</code> 报文，也可以确认在这一次的传输流程中不会再有重传的 <code>PUBLISH</code> 报文到达，因此回复<code> PUBCOMP</code> 报文表示自己也准备好将当前的 <code>Packet ID</code> 用于新的消息了。</li>
+<li>当发送方收到 <code>PUBCOMP</code> 报文，这一次的 <code>QoS 2</code> 消息传输就算正式完成了。在这之后，发送方可以再次使用当前的<code>Packet ID</code>发送新的消息，而接收方再次收到使用这个<code> Packet ID</code> 的 <code>PUBLISH </code>报文时，也会将它视为一个全新的消息。</li>
+</ol>
+<h5 id="消息重复解决"><a href="#消息重复解决" class="headerlink" title="消息重复解决"></a>消息重复解决</h5><p>在<a href="#%E9%87%8D%E5%A4%8D%E6%B6%88%E6%81%AF%E9%97%AE%E9%A2%98">消息重复问题</a>中不难发现重复问题的根源是对<code>Packet ID</code>的使用没有达成共识，那么解决方案就是让通信双方正确同步地释放<code>Packet ID</code>，也就是对<code>Packet ID</code>的使用达成共识。<code>QoS 2</code>中增加的<code>PUBREL</code> 和<code>PUBCOMP</code>就是为了解决这个问题设置的。</p>
+<p><code>QoS 2</code> 规定，发送方只有在收到<code>PUBREC</code>报文之前可以重传<code> PUBLISH</code> 报文。一旦收到 <code>PUBREC </code>报文并发出 <code>PUBREL</code> 报文，发送方就进入了<code>Packet ID</code>释放流程，不可以再使用当前 <code>Packet ID</code> 重传<code> PUBLISH</code> 报文。同时，在收到对端回复的 <code>PUBCOMP </code>报文确认双方都完成 <code>Packet ID</code> 释放之前，也不可以使用当前 <code>Packet ID</code> 发送新的消息。（<code>PUBREL</code>如果丢失也会进行重传）</p>
+<h4 id="QoS性能差距"><a href="#QoS性能差距" class="headerlink" title="QoS性能差距"></a>QoS性能差距</h4><p>通常<code> QoS 0</code> 与 <code>QoS 1 </code>能够达到的吞吐比较接近，但 <code>QoS 1</code> 的 CPU 占用会略高于<code> QoS 0</code>，负载较高时<code>QoS 1 </code>的消息延迟也会进一步增加。而<code>QoS 2 </code>仅能达到<code>QoS 1 </code>一半的性能。</p>
+<h4 id="如何选择QoS"><a href="#如何选择QoS" class="headerlink" title="如何选择QoS"></a>如何选择QoS</h4><p><code>QoS 0</code>： 高频可容忍丢失的数据，如传感器数据</p>
+<p><code>QoS 1</code>  :  幂等操作的数据，或可以自行去重的场景</p>
+<p><code>QoS 2</code>  :   重要数据，不允许丢失，不允许重复</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%89%A9%E8%81%94%E7%BD%91/" rel="tag"># 物联网</a>
+              <a href="/tags/MQTT/" rel="tag"># MQTT</a>
+              <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag"># 消息队列</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/45177.html" rel="prev" title="MQTT协议概述">
+      <i class="fa fa-chevron-left"></i> MQTT协议概述
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/35585.html" rel="next" title="MQTT 5.0新特性">
+      MQTT 5.0新特性 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT-QoS"><span class="nav-number">1.</span> <span class="nav-text">MQTT QoS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#QoS-0"><span class="nav-number">1.0.1.</span> <span class="nav-text">QoS 0</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E4%B8%A2%E5%A4%B1%E9%97%AE%E9%A2%98"><span class="nav-number">1.0.1.1.</span> <span class="nav-text">消息丢失问题</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#QoS-1"><span class="nav-number">1.0.2.</span> <span class="nav-text">QoS 1</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D%E6%B6%88%E6%81%AF%E9%97%AE%E9%A2%98"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">重复消息问题</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#QoS-2"><span class="nav-number">1.0.3.</span> <span class="nav-text">QoS 2</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%87%8D%E5%A4%8D%E8%A7%A3%E5%86%B3"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">消息重复解决</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#QoS%E6%80%A7%E8%83%BD%E5%B7%AE%E8%B7%9D"><span class="nav-number">1.0.4.</span> <span class="nav-text">QoS性能差距</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9QoS"><span class="nav-number">1.0.5.</span> <span class="nav-text">如何选择QoS</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MaHaotian"
+      src="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+  <p class="site-author-name" itemprop="name">MaHaotian</p>
+  <div class="site-description" itemprop="description">给时光以生命，而不是给生命以时光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qy-liuhuo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qy-liuhuo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:maht2001@163.com" title="E-Mail → mailto:maht2001@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wangzekun.cn/" title="http:&#x2F;&#x2F;wangzekun.cn&#x2F;" rel="noopener" target="_blank">坤哥的博客</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://8.142.79.40:9101/" title="http:&#x2F;&#x2F;8.142.79.40:9101" rel="noopener" target="_blank">坤姐的博客</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MaHaotian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>

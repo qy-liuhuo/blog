@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/mylogo.svg">
+  <link rel="mask-icon" href="/images/mylogo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="MQTT 5.0 是MQTT协议的最新版本，相比之前的版本有了很多改进。新增功能包括：原因代码、会话过期间隔、主题别名、用户属性、订阅选项、请求&#x2F;响应功能和共享订阅等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MQTT 5.0新特性">
+<meta property="og:url" content="https://qylh.xyz/posts/35585.html">
+<meta property="og:site_name" content="Echo">
+<meta property="og:description" content="MQTT 5.0 是MQTT协议的最新版本，相比之前的版本有了很多改进。新增功能包括：原因代码、会话过期间隔、主题别名、用户属性、订阅选项、请求&#x2F;响应功能和共享订阅等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.qylh.xyz/blog/Mqtt-hor.svg_.webp">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1727093331116.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1727093508448.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1727093649554.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1727094825105.png">
+<meta property="article:published_time" content="2024-09-23T13:50:36.000Z">
+<meta property="article:modified_time" content="2024-09-23T14:37:11.799Z">
+<meta property="article:author" content="MaHaotian">
+<meta property="article:tag" content="物联网">
+<meta property="article:tag" content="MQTT">
+<meta property="article:tag" content="消息队列">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.qylh.xyz/blog/Mqtt-hor.svg_.webp">
+
+<link rel="canonical" href="https://qylh.xyz/posts/35585.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>MQTT 5.0新特性 | Echo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Echo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/35585.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Echo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MQTT 5.0新特性
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-09-23 21:50:36 / 修改时间：22:37:11" itemprop="dateCreated datePublished" datetime="2024-09-23T21:50:36+08:00">2024-09-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img data-src="https://img.qylh.xyz/blog/Mqtt-hor.svg_.webp" alt="Mqtt-hor.svg_.webp"></p>
+<p>MQTT 5.0 是MQTT协议的最新版本，相比之前的版本有了很多改进。新增功能包括：原因代码、会话过期间隔、主题别名、用户属性、订阅选项、请求&#x2F;响应功能和共享订阅等。</p>
+<span id="more"></span>
+
+<h2 id="MQTT-5-0-新特性"><a href="#MQTT-5-0-新特性" class="headerlink" title="MQTT 5.0 新特性"></a>MQTT 5.0 新特性</h2><h3 id="请求响应特性"><a href="#请求响应特性" class="headerlink" title="请求响应特性"></a>请求响应特性</h3><blockquote>
+<p>MQTT 的发布订阅机制，使消息的发送者和接收者完全解耦，所以消息可以被异步地传递。但这也带来了一个问题，即便是使用了 QoS 1 或 2 的消息，发布端也只能确保消息到达服务端，而无法知晓订阅端最终是否收到了消息。在执行一些请求或命令时，发布端还会想要知道对端的执行结果。最直接的做法是，让订阅端为请求返回响应。</p>
+</blockquote>
+<p>实现上述请求响应的一种方案是，设置一个请求主题和一个响应主题，订阅端收到请求消息后向响应主题发送一个响应消息，然而这种方式响应主题必须提前确定，无法灵活地变更。当存在多个不同的请求方时，由于只能订阅相同的响应主题，所以所有请求方都会收到响应，并且<em><strong>它们无法分辨响应是否属于自己</strong></em>：</p>
+<p><img data-src="https://img.qylh.xyz/blog/1727093331116.png" alt="1727093331116.png"></p>
+<p>为了解决以上问题，<code>MQTT 5.0</code> 引入了响应主题 (<code>Response Topic</code>)、关联数据 (<code>Correlation Data</code>) 和响应信息 (<code>Response Information</code>) </p>
+<h4 id="响应主题"><a href="#响应主题" class="headerlink" title="响应主题"></a>响应主题</h4><p>在 <code>MQTT 5.0</code> 中，请求方可以在请求消息中指定一个自己期望的响应主题 (<code>Response Topic</code>)。响应方根据请求内容采取适当的操作后，向请求中携带的响应主题发布响应消息。如果请求方订阅了该响应主题，那么就会收到响应。这样请求方将自己的<code>Client Id</code>作为响应主题的一部分，就可以有效避免响应主题的冲突</p>
+<p><img data-src="https://img.qylh.xyz/blog/1727093508448.png" alt="1727093508448.png"></p>
+<h4 id="关联数据"><a href="#关联数据" class="headerlink" title="关联数据"></a>关联数据</h4><p>请求方还可以在请求中携带关联数据 (<code>Correlation Data</code>)，响应方需要在响应中将关联数据<strong>原封不动</strong>地返回，请求方因此可以识别响应所属的原始请求。</p>
+<ul>
+<li><p>一方面这可以避免在响应方没有按请求顺序返回响应或者由于网络连接断开导致丢失了某个响应 (<code>QoS 0</code>) 时，请求方不正确地关联响应与原始请求。</p>
+</li>
+<li><p>另一方面，请求方可能需要与多个响应方交互，譬如我们通过手机控制家中的各种智能设备，关联数据可以让请求方仅订阅一个响应主题就能管理从多个响应方异步返回的响应。</p>
+<p><img data-src="https://img.qylh.xyz/blog/1727093649554.png" alt="1727093649554.png"></p>
+</li>
+</ul>
+<h4 id="响应信息"><a href="#响应信息" class="headerlink" title="响应信息"></a>响应信息</h4><p>出于安全考虑，<code>MQTT</code> 服务端通常会限制客户端可以发布和订阅的主题。请求方可以指定一个随机的响应主题，但无法保证自己有订阅该主题的权限，也无法保证响应方有向该响应主题发布消息的权限。</p>
+<p>所以<code>MQTT 5.0</code>还引入了响应信息 (<code>Response Information</code>) 属性，通过在<code>CONNECT</code>报文中将请求响应信息(<code>Request Response Information</code>) 标识符设置为 1，客户端可以请求服务端在<code> CONNACK</code> 报文中返回响应信息（<code>Response Information</code>）。客户端可以将响应信息的内容作为响应主题的某个特定部分，以便通过服务端的权限检查。</p>
+<p><img data-src="https://img.qylh.xyz/blog/1727094825105.png" alt="1727094825105.png"></p>
+<h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><ol>
+<li><p>需要在发送请求前订阅响应主题</p>
+</li>
+<li><p>借助响应信息来构建符合权限的响应主题</p>
+</li>
+<li><p>存在多个请求方时，需要使用不同的响应主题</p>
+</li>
+<li><p>存在多个响应方时，最好设置关联数据以避免响应混淆</p>
+</li>
+<li><p>遗嘱消息也可以使用请求响应特性，只需要在连接时为遗嘱消息设置响应主题即可。这可以帮助客户端知道在自己离线期间遗嘱消息是否被消费，以便做出适当的调整。</p>
+</li>
+</ol>
+<h3 id="用户属性"><a href="#用户属性" class="headerlink" title="用户属性"></a>用户属性</h3><p>用户属性允许用户想MQTT消息添加自己的元数据，传输额外的自定义信息（类似HTTP Header概念），由一个用户自定义的 UTF-8 的键&#x2F;值对数组组成，并在消息属性字段中配置，只要不超过最大的消息大小，可以使用无限数量的用户属性来向 MQTT 消息添加元数据，并在发布者、MQTT 服务器和订阅者之间传递信息。常用有两者用户属性配置：</p>
+<ol>
+<li>连接客户端的用户属性： 服务器预先定义好的属性，客户端连接成功后可以获取使用</li>
+<li>消息发布的用户属性: 在客户端之间进行元数据信息的传递</li>
+<li>订阅Topic时的用户属性</li>
+<li>取消订阅时的用户属性</li>
+<li>断开连接时的用户数属性</li>
+</ol>
+<p>用户属性的应用：</p>
+<ol>
+<li><p>可以借助用户属性传输文件：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;filename&quot;</span><span class="punctuation">:</span> <span class="string">&quot;test.txt&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;xxxx&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>定义资源解析方式：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;JSON/XML&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%89%A9%E8%81%94%E7%BD%91/" rel="tag"># 物联网</a>
+              <a href="/tags/MQTT/" rel="tag"># MQTT</a>
+              <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag"># 消息队列</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/36773.html" rel="prev" title="MQTT QoS介绍">
+      <i class="fa fa-chevron-left"></i> MQTT QoS介绍
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT-5-0-%E6%96%B0%E7%89%B9%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">MQTT 5.0 新特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E7%89%B9%E6%80%A7"><span class="nav-number">1.1.</span> <span class="nav-text">请求响应特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E4%B8%BB%E9%A2%98"><span class="nav-number">1.1.1.</span> <span class="nav-text">响应主题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E8%81%94%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.2.</span> <span class="nav-text">关联数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E4%BF%A1%E6%81%AF"><span class="nav-number">1.1.3.</span> <span class="nav-text">响应信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">1.1.4.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E5%B1%9E%E6%80%A7"><span class="nav-number">1.2.</span> <span class="nav-text">用户属性</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MaHaotian"
+      src="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+  <p class="site-author-name" itemprop="name">MaHaotian</p>
+  <div class="site-description" itemprop="description">给时光以生命，而不是给生命以时光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qy-liuhuo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qy-liuhuo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:maht2001@163.com" title="E-Mail → mailto:maht2001@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wangzekun.cn/" title="http:&#x2F;&#x2F;wangzekun.cn&#x2F;" rel="noopener" target="_blank">坤哥的博客</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://8.142.79.40:9101/" title="http:&#x2F;&#x2F;8.142.79.40:9101" rel="noopener" target="_blank">坤姐的博客</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MaHaotian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>
