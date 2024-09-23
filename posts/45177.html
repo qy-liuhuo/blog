@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://img.qylh.xyz/blog/1727094579881.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1727099885578.png">
 <meta property="article:published_time" content="2024-09-22T11:24:36.000Z">
-<meta property="article:modified_time" content="2024-09-23T14:27:58.043Z">
+<meta property="article:modified_time" content="2024-09-23T14:41:28.717Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="物联网">
 <meta property="article:tag" content="MQTT">
@@ -203,7 +203,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-09-23 22:27:58" itemprop="dateModified" datetime="2024-09-23T22:27:58+08:00">2024-09-23</time>
+                <time title="修改时间：2024-09-23 22:41:28" itemprop="dateModified" datetime="2024-09-23T22:41:28+08:00">2024-09-23</time>
               </span>
 
           
@@ -217,7 +217,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img data-src="https://img.qylh.xyz/blog/Mqtt-hor.svg_.webp" alt="Mqtt-hor.svg_.webp"></p>
+        <img data-src="https://img.qylh.xyz/blog/Mqtt-hor.svg_.webp" alt="Mqtt-hor.svg_.webp" style="zoom:50%;" />
+
 <p>MQTT协议概述</p>
 <span id="more"></span>
 
@@ -241,7 +242,7 @@
 </li>
 <li><p><code>Topic</code>: <code>MQTT</code>根据<code>Topic</code>来转发消息，用<code>/</code>区分层级，支持通配符</p>
 </li>
-<li><p><code>QoS</code>： <code>MQTT</code>支持三种<code>QoS</code>服务质量，详细请参考<a href="#QoS%E5%8E%9F%E7%90%86">QoS原理</a></p>
+<li><p><code>QoS</code>： <code>MQTT</code>支持三种<code>QoS</code>服务质量，详细请参考<a href="https://qylh.xyz/posts/36773.html">MQTT QoS介绍</a></p>
 <ul>
 <li><code>QoS-0</code>:消息最多传送一次。如果当前客户端不可用，它将丢失这条消息。</li>
 <li><code>QoS-1</code>:消息至少被传送一次。（适用于幂等操作）</li>
@@ -264,7 +265,7 @@
 <li><code>HTTP</code>属于无状态协议，服务器不会记录客户端的状态，无法实现从连接异常断开时恢复未发送数据</li>
 <li><code>HTTP</code>需要轮训才能获取数据更新</li>
 </ol>
-<p>​	<code>MQTT 5.0</code>之前发布者无法得知订阅者是否受到了消息，或者正确处理了消息，所以<code>MQTT 5.0</code>增加了[请求响应](#MQTT 5.0的请求响应特性)</p>
+<p>​	<code>MQTT 5.0</code>之前发布者无法得知订阅者是否受到了消息，或者正确处理了消息，所以<code>MQTT 5.0</code>增加了<a href="https://qylh.xyz/posts/35585.html#%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E7%89%B9%E6%80%A7">请求响应</a></p>
 <h4 id="MQTTVS-消息队列"><a href="#MQTTVS-消息队列" class="headerlink" title="MQTTVS 消息队列"></a><code>MQTT</code>VS 消息队列</h4><p>尽管两者的特性比较相近，但他们的应用场景是有着显著不同的：</p>
 <ul>
 <li>消息队列作为一种中间件，主要用于服务端应用之间的消息存储与转发，数据量大但客户端数量少。</li>
