@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://inlong.apache.org/zh-CN/assets/images/agent_basic_concepts-c2cd3ff06ca353ab79e5c9bf20964d11.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1726994205981.png">
 <meta property="article:published_time" content="2024-09-21T15:19:02.000Z">
-<meta property="article:modified_time" content="2024-09-22T11:20:22.148Z">
+<meta property="article:modified_time" content="2024-09-27T12:44:56.955Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="开源">
 <meta property="article:tag" content="InLong">
@@ -204,7 +204,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-09-22 19:20:22" itemprop="dateModified" datetime="2024-09-22T19:20:22+08:00">2024-09-22</time>
+                <time title="修改时间：2024-09-27 20:44:56" itemprop="dateModified" datetime="2024-09-27T20:44:56+08:00">2024-09-27</time>
               </span>
 
           
@@ -222,7 +222,7 @@
 <p>犀牛鸟开源人才培养计划Apache-InLong项目整理总结</p>
 <span id="more"></span>
 
-<p>在今年七月学院老师发了<a target="_blank" rel="noopener" href="https://opensource.tencent.com/summer-of-code">腾讯犀牛鸟开源人才培养计划</a>，我也早就有去参与一些较大开源项目的意愿，所以就马上报了名，该项目有很多子项目供选择，当时仔细考虑发现对Apache InLong项目最为感兴趣，也和自己的方向比较契合，所以就报名参加了InLong项目的开源课题实践。主要以<code>Issue</code>的形式参与开源项目，在参与的过程中，对InLong项目的理解更加深入，而且熟悉了开源项目的贡献流程。编码能力提高的同时，代码规范性也获得了提升。</p>
+<p>在今年七月学院老师发了<a target="_blank" rel="noopener" href="https://opensource.tencent.com/summer-of-code">腾讯犀牛鸟开源人才培养计划</a>的通知，我也一直有参与一些较大开源项目的意愿，所以就马上报了名，该项目有很多子项目供选择，当时仔细考虑发现对Apache InLong项目最为感兴趣，也和自己的方向比较契合，所以就报名参加了InLong项目的开源课题实践。主要以<code>Issue</code>的形式参与开源项目，在参与的过程中，对InLong项目的理解更加深入，而且熟悉了开源项目的贡献流程。编码能力提高的同时，代码规范性也获得了提升。</p>
 <h2 id="InLong介绍"><a href="#InLong介绍" class="headerlink" title="InLong介绍"></a>InLong介绍</h2><p>官方对InLong的介绍如下：</p>
 <blockquote>
 <p>InLong(应龙)，中国神话故事里的神兽，引流入海，借喻 InLong 系统提供数据集成能力。</p>
@@ -283,6 +283,16 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DataTruncationUtil</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * truncate data body if it is too long</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> body</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> byte[]</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">byte</span>[] truncateData(<span class="type">byte</span>[] body) &#123;</span><br><span class="line">        <span class="keyword">if</span> (body.length &gt; ConfigConstants.MAX_MESSAGE_LENGTH) &#123;</span><br><span class="line">            <span class="type">byte</span>[] newBody = <span class="keyword">new</span> <span class="title class_">byte</span>[ConfigConstants.MAX_MESSAGE_LENGTH];</span><br><span class="line">            System.arraycopy(body, <span class="number">0</span>, newBody, <span class="number">0</span>, ConfigConstants.MAX_MESSAGE_LENGTH);</span><br><span class="line">            <span class="keyword">return</span> newBody;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> body;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * truncate data body list if it is too long</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> bodyList</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> List&lt;byte[]&gt;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> List&lt;<span class="type">byte</span>[]&gt; truncateData(List&lt;<span class="type">byte</span>[]&gt; bodyList) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        List&lt;<span class="type">byte</span>[]&gt; newBodyList = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">byte</span>[] body : bodyList) &#123;</span><br><span class="line">            <span class="keyword">if</span> (body.length + size &lt;= ConfigConstants.MAX_MESSAGE_LENGTH) &#123;</span><br><span class="line">                newBodyList.add(body);</span><br><span class="line">                size += body.length;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="type">byte</span>[] newBody = <span class="keyword">new</span> <span class="title class_">byte</span>[ConfigConstants.MAX_MESSAGE_LENGTH - size];</span><br><span class="line">                System.arraycopy(body, <span class="number">0</span>, newBody, <span class="number">0</span>, ConfigConstants.MAX_MESSAGE_LENGTH - size);</span><br><span class="line">                newBodyList.add(newBody);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> newBodyList;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>针对单个的数据<code>body</code>，只需要在超出长度时进行截断即可，而对于一组body<code>List&lt;byte[]&gt; bodyList</code>需要进行累加处理。</p>
+<p>但上述方案在进行CR的时候，有社区老师提出截断操作无法保证用户报告的数据完整性，而且如果数据是被编码或者压缩过的，那么不完整的bytes会造成无法恢复的问题。</p>
+<p>为此我增加一个用户可选的配置项来允许用户自行配置是否启用截断功能：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (enableDataTruncation) &#123;</span><br><span class="line">    body = truncateData(body);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但经过和社区老师的沟通，在Inlong的场景下确实是无论如何也不能发送不完整的数据的，因此修改成了只要超出配置的最大长度就直接拒绝的方案：</p>
+<ul>
+<li>对于同步发送接口直接<code>return SendResult.BODY_EXCEED_MAX_LEN</code>即可</li>
+<li>对于异步发送接口需要调用SendMessageCallable的onMessageAck接口返回超出长度限制信息<code>callback.onMessageAck(SendResult.BODY_EXCEED_MAX_LEN);</code></li>
+</ul>
+<p>社区老师提出了一个新的改进方案，配置改为从<code>Manager</code>模块下发，通过仔细阅读了相关代码捋清了整个逻辑，<code>DataProxy SDK</code>在发送数据前会向<code>Manager</code>的<code>/dataproxy/getIpList/&#123;inlongGroupId&#125;</code>接口请求<code>dataproxy</code>集群信息，并借助该集群信息去构建一个<code>Sender</code>，那么如果能给此接口的返回信息中添加上最大长度配置字段就可以实现从<code>Manager</code>下发配置的需求。</p>
 
     </div>
 
