@@ -31,8 +31,12 @@
 <meta property="og:image" content="https://img.qylh.xyz/blog/whiteboard_exported_image%20(1).png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1730449078268.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1730449087690.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1730529069002.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1730528905240.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1730528920913.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1730530118905.png">
 <meta property="article:published_time" content="2024-11-01T02:35:17.000Z">
-<meta property="article:modified_time" content="2024-11-01T08:59:25.711Z">
+<meta property="article:modified_time" content="2024-11-02T07:07:54.518Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -193,10 +197,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-11-01 10:35:17 / 修改时间：16:59:25" itemprop="dateCreated datePublished" datetime="2024-11-01T10:35:17+08:00">2024-11-01</time>
+              <time title="创建时间：2024-11-01 10:35:17" itemprop="dateCreated datePublished" datetime="2024-11-01T10:35:17+08:00">2024-11-01</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-02 15:07:54" itemprop="dateModified" datetime="2024-11-02T15:07:54+08:00">2024-11-02</time>
+              </span>
 
           
 
@@ -288,12 +298,46 @@
 </ul>
 <p>为了保证解锁的原子性，需要采用<code>LUA</code>脚本执行解锁操作。</p>
 <h4 id="共享Session"><a href="#共享Session" class="headerlink" title="共享Session"></a>共享Session</h4><p>由于后端服务在多机部署时，本地存储的信息不互通，可以使用<code>redis</code>来进行集中缓存。</p>
-<h2 id="List"><a href="#List" class="headerlink" title="List"></a>List</h2><blockquote>
+<h2 id="List"><a href="#List" class="headerlink" title="List"></a>List</h2><p><code>List</code>列表可以实现从存储多个数据，并可以从两端插入（<code>LPUSH</code>、<code>RPUSH</code>）或获取（<code>LPOP</code>、<code>RPOP</code>），还支持范围查询<code>LRANGE</code>，以及阻塞查询<code>BLPOP</code> 。</p>
+<p><img data-src="https://img.qylh.xyz/blog/1730529069002.png" alt="1730529069002.png"></p>
+<h3 id="存储原理-1"><a href="#存储原理-1" class="headerlink" title="存储原理"></a>存储原理</h3><p><code>Redis 3.2</code>之前采用双向链表和压缩列表存储：</p>
+<ul>
+<li>当列表的元素个数小于 <code>512</code> 个，列表每个元素的值都小于 <code>64</code> 字节，使用<a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904053579710478"><strong>压缩列表</strong>（<code>ziplist</code>）</a>作为 List 类型的底层数据结构</li>
+<li>如果列表的元素不满足上面的条件，<code>Redis</code> 会使用<strong>双向链表</strong>作为 List 类型的底层数据结构</li>
+</ul>
+<p><img data-src="https://img.qylh.xyz/blog/1730528905240.png" alt="1730528905240.png"></p>
+<blockquote>
+<p>为什么在数据少时使用压缩列表呢？</p>
+<p>因为 redis 中的集合容器中，很多情况都用到了链表的实现，元素和元素之间通过储存的关联指针有序的串联起来，但是这样的指针往往是 <strong>随机I&#x2F;O</strong>，也就是指针地址是不连续的（分布不均匀）。而我们的 ziplist 它本身是一块连续的内存块，所以它的读写是 <strong>顺序I&#x2F;O</strong>，从底层的磁盘读写来说，<strong>顺序I&#x2F;O</strong> 的效率肯定是高于 <strong>随机I&#x2F;O</strong> 。你可能会问了，那为什么不都用 <strong>顺序I&#x2F;O</strong> 的 ziplist 代替 <strong>随机I&#x2F;O</strong> 呢，因为 ziplist 是连续内存，当你元素数量多了，意味着当你创建和扩展的时候需要操作更多的内存，所以 ziplist 针对元素少的时候才能提升效率。</p>
+</blockquote>
+<p>由于双向链表的pre、next指针需要占用很多的附加空间，并且会造成内存的碎片化，在<code>Redis 3.2</code>之后，<code>List</code>数据类型底层数据结构改为由<code>quicklist</code>实现，  <code>quicklist</code> 实际上是<code>zipList</code>和 <code>linkedList</code> 的混合体，它将 <code>linkedList </code>按段切分，每一段使用 <code>zipList </code>来紧凑存储，多个 <code>zipList</code> 之间使用双向指针串接起来。</p>
+<p><img data-src="https://img.qylh.xyz/blog/1730528920913.png" alt="1730528920913.png"></p>
+<h3 id="应用场景-1"><a href="#应用场景-1" class="headerlink" title="应用场景"></a>应用场景</h3><h4 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h4><p><code>List</code>可以借助<code>LPUSH + RPOP</code>实现先进先出的数据存取，然而<code>Redis</code>并没有提供通知机制，消费端需要轮询是否有新数据，为了提高效率可以采用阻塞查询<code>BRPOP</code>。另一方面，由于没有<code>ACK</code>机制，<code>POP</code>出数据之后这条记录就没了，如果消费端拿到了数据但没有完成处理就崩溃了就会导致数据的丢失，为此<code>redis</code>提供了<code>RPOPLPUSH</code>指令，<code>POP</code>时会同步放到另一个<code>List</code>中做备份，如果出现故障可以去备份<code>List</code>中获取。</p>
+<p>当然使用<code>Redis List</code>实现消息队列是比较基础和简陋的，无法实现消息组等功能，同时<code>Redis</code>宕机也会导致数据丢失。</p>
+<h2 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h2><p><code>Hash</code> 是一个键值对（<code>key - value</code>）集合，适用于存储对象。<code>Hash</code> 与<code>String</code> 对象的区别如下图所示：</p>
+<p><img data-src="https://img.qylh.xyz/blog/1730530118905.png" alt="1730530118905.png"></p>
+<h3 id="存储原理-2"><a href="#存储原理-2" class="headerlink" title="存储原理"></a>存储原理</h3><p><code>Redis 7.0</code>前<code>Hash</code>采用压缩列表和哈希表来实现</p>
+<ul>
+<li>如果哈希类型元素个数小于 <code>512</code> 个（默认值，可由 <code>hash-max-ziplist-entries</code> 配置），所有值小于 <code>64</code> 字节（默认值，可由 <code>hash-max-ziplist-value</code> 配置）的话，Redis 会使用<strong>压缩列表</strong>作为 Hash 类型的底层数据结构</li>
+<li>如果哈希类型元素不满足上面条件，Redis 会使用<strong>哈希表</strong>作为 Hash 类型的 底层数据结构。</li>
+</ul>
+<p>在 <code>Redis 7.0</code> 中，改为 <code>listpack</code> 实现，主要是为了解决压缩列表中间元素更新时导致的连锁更新问题（因为后续的<code>prevlen</code>都会发生改变）。<code>listpack</code>每个元素项不再保存上一个元素的长度，而是通过记录entry长度以及element-tot-len中特殊的结束符，来保证既可以从前也可以向后遍历。此处可参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/ldw201510803006/article/details/122420585">深入分析redis之listpack，取代ziplist?</a></p>
+<h3 id="应用场景-2"><a href="#应用场景-2" class="headerlink" title="应用场景"></a>应用场景</h3><h4 id="缓存对象"><a href="#缓存对象" class="headerlink" title="缓存对象"></a>缓存对象</h4><p>和基于<code>String</code>来存储<code>json</code>一样，<code>Hash</code>也可以用来缓存对象，他们的区别如下：</p>
+<ul>
+<li><code>String json</code> 直接存储整个对象，占用空间少，但不能单独获得和更新某个属性，适用于频繁获取整个对象的场景。</li>
+<li><code>Hash</code>占用空间会多一些，但支持单独处理某个属性，读取整个对象效率不高，适用于频繁更新单个属性的场景。</li>
+</ul>
+<p>此外对比前面提到的<code>RedisJSON</code>扩展，<code>RedisJSON</code>性能弱于<code>Hash</code>但可以处理嵌套等更复杂的对象结构。参考 <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/62010968/redis-when-to-use-hashes-vs-redisjson">Redis: When to use hashes vs RedisJSON?</a></p>
+<blockquote>
 <p>参考</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://xiaolincoding.com/redis/data_struct/command.html#list">Redis 常见数据类型和应用场景</a></li>
 <li><a target="_blank" rel="noopener" href="https://juejin.cn/user/3861140565670119/posts">[大课堂] Redis底层数据存储原理</a></li>
 <li><a target="_blank" rel="noopener" href="https://redisbook.readthedocs.io/en/latest/index.html">Redis 设计与实现</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904053579710478">【最完整系列】Redis-结构篇-压缩列表</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/hunternet/p/12624691.html">Redis数据结构-快速列表(quicklist)</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/ldw201510803006/article/details/122420585">深入分析redis之listpack，取代ziplist?</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/62010968/redis-when-to-use-hashes-vs-redisjson">Redis: When to use hashes vs RedisJSON?</a></li>
 </ul>
 </blockquote>
 
@@ -376,7 +420,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#String"><span class="nav-number">1.</span> <span class="nav-text">String</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">存储原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.2.</span> <span class="nav-text">应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%AF%B9%E8%B1%A1%E5%B1%9E%E6%80%A7"><span class="nav-number">1.2.1.</span> <span class="nav-text">缓存对象属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%A1%E6%95%B0"><span class="nav-number">1.2.2.</span> <span class="nav-text">计数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-number">1.2.3.</span> <span class="nav-text">分布式锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B1%E4%BA%ABSession"><span class="nav-number">1.2.4.</span> <span class="nav-text">共享Session</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#List"><span class="nav-number">2.</span> <span class="nav-text">List</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#String"><span class="nav-number">1.</span> <span class="nav-text">String</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">存储原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.2.</span> <span class="nav-text">应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%AF%B9%E8%B1%A1%E5%B1%9E%E6%80%A7"><span class="nav-number">1.2.1.</span> <span class="nav-text">缓存对象属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%A1%E6%95%B0"><span class="nav-number">1.2.2.</span> <span class="nav-text">计数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-number">1.2.3.</span> <span class="nav-text">分布式锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B1%E4%BA%ABSession"><span class="nav-number">1.2.4.</span> <span class="nav-text">共享Session</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#List"><span class="nav-number">2.</span> <span class="nav-text">List</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86-1"><span class="nav-number">2.1.</span> <span class="nav-text">存储原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="nav-number">2.2.</span> <span class="nav-text">应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">2.2.1.</span> <span class="nav-text">消息队列</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hash"><span class="nav-number">3.</span> <span class="nav-text">Hash</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86-2"><span class="nav-number">3.1.</span> <span class="nav-text">存储原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-2"><span class="nav-number">3.2.</span> <span class="nav-text">应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.2.1.</span> <span class="nav-text">缓存对象</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
