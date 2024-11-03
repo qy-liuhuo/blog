@@ -29,14 +29,17 @@
 <meta property="og:description" content="总结整理Redis常见数据类型、底层存储原理及应用。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://img.qylh.xyz/blog/whiteboard_exported_image%20(1).png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1730627012642.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1730449078268.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1730449087690.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1730529069002.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1730528905240.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1730528920913.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1730530118905.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1730621654071.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1730621828342.png">
 <meta property="article:published_time" content="2024-11-01T02:35:17.000Z">
-<meta property="article:modified_time" content="2024-11-02T07:08:28.477Z">
+<meta property="article:modified_time" content="2024-11-03T09:49:22.317Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -205,7 +208,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-02 15:08:28" itemprop="dateModified" datetime="2024-11-02T15:08:28+08:00">2024-11-02</time>
+                <time title="修改时间：2024-11-03 17:49:22" itemprop="dateModified" datetime="2024-11-03T17:49:22+08:00">2024-11-03</time>
               </span>
 
           
@@ -239,6 +242,7 @@
 <li><code>GEO</code> 经纬度（<code>V3.2</code>）</li>
 <li><code>Stream</code>消息队列（<code>V5.0</code>）</li>
 </ul>
+<p><img data-src="https://img.qylh.xyz/blog/1730627012642.png" alt="1730627012642.png"></p>
 <h2 id="String"><a href="#String" class="headerlink" title="String"></a>String</h2><p><code>Redis</code>作为一种<code>K-V</code>存储系统，其<code>Key</code>为基本的字符串类型，其大小上限为<code>512M</code>，当然为了性能考虑最好不要设置太大。</p>
 <p><code>String</code>是<code>Redis</code>最基本的<code>K-V</code>数据结构，虽然<code>Key</code>一定是字符串，但<code>Value</code>并不局限于字符串类型，还可以是正整数、浮点数甚至二进制数据，其最大数据长度也是<code>512M</code></p>
 <h3 id="存储原理"><a href="#存储原理" class="headerlink" title="存储原理"></a>存储原理</h3><p>首先<code>Redis</code>采用一个<code>RedisObject</code>结构体来存储一个<code>Value</code>：</p>
@@ -328,6 +332,53 @@
 <li><code>Hash</code>占用空间会多一些，但支持单独处理某个属性，读取整个对象效率不高，适用于频繁更新单个属性的场景。</li>
 </ul>
 <p>此外对比前面提到的<code>RedisJSON</code>扩展，<code>RedisJSON</code>性能弱于<code>Hash</code>但可以处理嵌套等更复杂的对象结构。参考 <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/62010968/redis-when-to-use-hashes-vs-redisjson">Redis: When to use hashes vs RedisJSON?</a></p>
+<h2 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h2><p>和<code>Python</code>的<code>Set</code>数据结构一样，这种数据类型是无序且无重复的，一个集合最多可以存储 <code>2^32-1</code> 个元素。除了支持集合内的增删改查，还支持交集、并集、差集等操作。</p>
+<h3 id="存储原理-3"><a href="#存储原理-3" class="headerlink" title="存储原理"></a>存储原理</h3><p><code>Set</code>采用哈希表或整数集合实现：</p>
+<ul>
+<li>若集合内元素均为整数且数量小于512个，会使用整数集合来存储</li>
+<li>若不满足上述条件，则采用哈希表进行存储</li>
+</ul>
+<h3 id="应用场景-3"><a href="#应用场景-3" class="headerlink" title="应用场景"></a>应用场景</h3><p>借助<code>Set</code>无序，不重复，以及集合运算等特性，可以应用到统计点赞，共同好友，抽奖等场景。</p>
+<h2 id="Zset"><a href="#Zset" class="headerlink" title="Zset"></a>Zset</h2><p><code>Zset</code>在<code>Set</code>的基础上增加了一个排序属性<code>score</code>，可以按照<code>score</code>进行排序。</p>
+<h3 id="存储原理-4"><a href="#存储原理-4" class="headerlink" title="存储原理"></a>存储原理</h3><p>Zset 类型的底层数据结构是由<strong>压缩列表（Redis 7.0之后改为listpack）或跳表</strong>实现</p>
+<ul>
+<li>如果有序集合的元素个数小于 <code>128</code> 个，并且每个元素的值小于 <code>64</code> 字节时，<code>Redis</code> 会使用<strong>压缩列表</strong>作为 <code>Zset</code> 类型的底层数据结构</li>
+<li>如果有序集合的元素不满足上面的条件，<code>Redis</code> 会使用<strong>跳表</strong>（<a target="_blank" rel="noopener" href="https://juejin.cn/post/6893072817206591496">深入理解Redis跳跃表的基本实现和特性</a>）作为 <code>Zset</code> 类型的底层数据结构。</li>
+</ul>
+<p><img data-src="https://img.qylh.xyz/blog/1730621654071.png" alt="1730621654071.png"></p>
+<h3 id="应用场景-4"><a href="#应用场景-4" class="headerlink" title="应用场景"></a>应用场景</h3><p>借助有序的特性，可以实现排行榜功能，通过点赞不断更新相应<code>Key</code>的<code>score</code>，维护从高到低的排行榜。</p>
+<h2 id="BitMap"><a href="#BitMap" class="headerlink" title="BitMap"></a>BitMap</h2><p><code>Bitmap</code>，即位图，是一串连续的二进制数组（0和1），可以通过偏移量（offset）定位元素。BitMap通过最小的单位bit来进行<code>0|1</code>的设置，表示某个元素的值或者状态，时间复杂度为O(1)。</p>
+<p><img data-src="https://img.qylh.xyz/blog/1730621828342.png" alt="1730621828342.png"></p>
+<h3 id="应用场景-5"><a href="#应用场景-5" class="headerlink" title="应用场景"></a>应用场景</h3><p>可以应用在只有两种状态的记录场景，如记录用户的签到数据，判断用户的登录状态，用户的权限信息等。</p>
+<h2 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h2><p><code>HyperLogLog</code>，用于在一大批数据中估算不重复的元素数量（统计基数），其优点是所需要的空间固定，仅需要 <code>12 KB</code> 左右的内存空间，就可以估算出最多<code>2^64</code>的基数。但是这种方法无法得到精确的结果，<strong>标准误差为 0.8125%</strong></p>
+<h3 id="估算原理"><a href="#估算原理" class="headerlink" title="估算原理"></a>估算原理</h3><p><code>HyperLogLog</code> 算法的基本思想来自伯努利过程, 抛硬币正面反面的概率都是<code>1/2</code>，那么抛出<code>正正反</code>这样一个序列的概率大概就是<code>1/8</code>，就可以估算出大概进行了<code>8次</code>抛硬币实验。<code>HyperLogLog</code> 原理思路是通过给定 n 个的元素集合，记录集合中数字的比特串第一个1出现位置的最大值k，也可以理解为统计二进制低位连续为零（前导零）的最大个数。通过k值可以估算集合中不重复元素的数量m，m近似等于 2^k。此外<code>Redis HyperLogLog</code>还进行了分桶优化，来改善误差。具体可参考 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/54chensongxia/p/13803465.html">Redis 中 HyperLogLog 的使用场景</a>。</p>
+<h3 id="应用场景-6"><a href="#应用场景-6" class="headerlink" title="应用场景"></a>应用场景</h3><p>可以用于估算网页的访问量（按用户去重）</p>
+<h2 id="GEO"><a href="#GEO" class="headerlink" title="GEO"></a>GEO</h2><p><code>Redis GEO</code> 是 <code>Redis 3.2</code> 版本新增的数据类型，主要用于存储地理位置信息，并对存储的信息进行操作。可用于查询一定距离内的<code>key</code>，以及计算两个<code>key</code>的距离等。</p>
+<h3 id="存储原理-5"><a href="#存储原理-5" class="headerlink" title="存储原理"></a>存储原理</h3><p><code>GEO</code> 类型使用 <code>GeoHash</code> 将二维的经纬度数据编码成一维数据，再利用<code>Zset</code>进行有序索引。具体原理可参考<a target="_blank" rel="noopener" href="https://juejin.cn/user/3034307821047230/posts">Redis GEO &amp; 实现原理深度分析</a>一文。</p>
+<h2 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h2><p><code>Redis Stream</code> 是 <code>Redis 5.0 </code>版本新增加的数据类型，<code>Redis </code>专门为消息队列设计的数据类型，相比基于<code>List</code>实现的消息队列，<code>Stream</code>可以支持：</p>
+<ul>
+<li>自动生成全局唯一 ID （生产者插入消息时会自动生成一个ID并返回）</li>
+<li>消息的持久化及<code>ack</code> 确认消息的模式，<code>Stream</code> 会自动使用内部队列（也称为 <code>PENDING List</code>）留存消费组里每个消费者读取的消息，直到消费者使用 <code>XACK</code> 命令通知 <code>Stream</code> “消息已经处理完成”。未完成处理的消息，<code>Redis</code>会为之保存。</li>
+<li>消费组模式（使用<code> XGROUP</code>命令即可创建消费组，一条消息可以供多个消费组消费）</li>
+</ul>
+<blockquote>
+<p><strong>Redis Stream 消息会丢失吗？</strong></p>
+<p>消息丢失可能发生在三个位置：生产者、队列中间件、消费者</p>
+<ul>
+<li>生产者，生产者只需要确保消息成功插入即可保证消息不丢失</li>
+<li><strong>队列中间件</strong>，<code>redis</code>的持久化机制导致数据不会实时落盘，因此宕机时会可能导致数据丢失，此外在进行主从复制时也可能导致数据的丢失。</li>
+<li>消费者，凭借消息的持久化及<code>ack</code> 确认消息的模式可以保证消息不丢失</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>Redis 发布&#x2F;订阅机制为什么不可以作为消息队列？</strong></p>
+<ol>
+<li>发布&#x2F;订阅机制没有基于任何数据类型实现，所以不具备「数据持久化」的能力，也就是发布&#x2F;订阅机制的相关操作，不会写入到 RDB 和 AOF 中，当 Redis 宕机重启，发布&#x2F;订阅机制的数据也会全部丢失。</li>
+<li>发布订阅模式是“发后既忘”的工作模式，如果有订阅者离线重连之后不能消费之前的历史消息。</li>
+<li>当消费端有一定的消息积压时，也就是生产者发送的消息，消费者消费不过来时，如果超过 32M 或者是 60s 内持续保持在 8M 以上，消费端会被强行断开，这个参数是在配置文件中设置的，默认值是 <code>client-output-buffer-limit pubsub 32mb 8mb 60</code>。</li>
+</ol>
+</blockquote>
+<p>相比其他消息队列，<code>Redis</code>数据存在内存中，其性能更高，但其对消息积压的容忍性较低，因此设置了消息队列的最大长度，超出后会删除旧消息，导致消息丢失，因此需要结合业务需求选择是否使用<code>redis stream</code>作为消息队列, 其适用于对消息丢失不敏感，不易出现消息堆积的轻量应用场景。</p>
 <blockquote>
 <p>参考</p>
 <ul>
@@ -338,6 +389,9 @@
 <li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/hunternet/p/12624691.html">Redis数据结构-快速列表(quicklist)</a></li>
 <li><a target="_blank" rel="noopener" href="https://blog.csdn.net/ldw201510803006/article/details/122420585">深入分析redis之listpack，取代ziplist?</a></li>
 <li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/62010968/redis-when-to-use-hashes-vs-redisjson">Redis: When to use hashes vs RedisJSON?</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6893072817206591496">深入理解Redis跳跃表的基本实现和特性</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/54chensongxia/p/13803465.html">Redis 中 HyperLogLog 的使用场景</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/user/3034307821047230/posts">Redis GEO &amp; 实现原理深度分析</a></li>
 </ul>
 </blockquote>
 
@@ -420,7 +474,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#String"><span class="nav-number">1.</span> <span class="nav-text">String</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">存储原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.2.</span> <span class="nav-text">应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%AF%B9%E8%B1%A1%E5%B1%9E%E6%80%A7"><span class="nav-number">1.2.1.</span> <span class="nav-text">缓存对象属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%A1%E6%95%B0"><span class="nav-number">1.2.2.</span> <span class="nav-text">计数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-number">1.2.3.</span> <span class="nav-text">分布式锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B1%E4%BA%ABSession"><span class="nav-number">1.2.4.</span> <span class="nav-text">共享Session</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#List"><span class="nav-number">2.</span> <span class="nav-text">List</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86-1"><span class="nav-number">2.1.</span> <span class="nav-text">存储原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="nav-number">2.2.</span> <span class="nav-text">应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">2.2.1.</span> <span class="nav-text">消息队列</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hash"><span class="nav-number">3.</span> <span class="nav-text">Hash</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86-2"><span class="nav-number">3.1.</span> <span class="nav-text">存储原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-2"><span class="nav-number">3.2.</span> <span class="nav-text">应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.2.1.</span> <span class="nav-text">缓存对象</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#String"><span class="nav-number">1.</span> <span class="nav-text">String</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">存储原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.2.</span> <span class="nav-text">应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%AF%B9%E8%B1%A1%E5%B1%9E%E6%80%A7"><span class="nav-number">1.2.1.</span> <span class="nav-text">缓存对象属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%A1%E6%95%B0"><span class="nav-number">1.2.2.</span> <span class="nav-text">计数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-number">1.2.3.</span> <span class="nav-text">分布式锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B1%E4%BA%ABSession"><span class="nav-number">1.2.4.</span> <span class="nav-text">共享Session</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#List"><span class="nav-number">2.</span> <span class="nav-text">List</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86-1"><span class="nav-number">2.1.</span> <span class="nav-text">存储原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="nav-number">2.2.</span> <span class="nav-text">应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">2.2.1.</span> <span class="nav-text">消息队列</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hash"><span class="nav-number">3.</span> <span class="nav-text">Hash</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86-2"><span class="nav-number">3.1.</span> <span class="nav-text">存储原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-2"><span class="nav-number">3.2.</span> <span class="nav-text">应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.2.1.</span> <span class="nav-text">缓存对象</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Set"><span class="nav-number">4.</span> <span class="nav-text">Set</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86-3"><span class="nav-number">4.1.</span> <span class="nav-text">存储原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-3"><span class="nav-number">4.2.</span> <span class="nav-text">应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Zset"><span class="nav-number">5.</span> <span class="nav-text">Zset</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86-4"><span class="nav-number">5.1.</span> <span class="nav-text">存储原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-4"><span class="nav-number">5.2.</span> <span class="nav-text">应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BitMap"><span class="nav-number">6.</span> <span class="nav-text">BitMap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-5"><span class="nav-number">6.1.</span> <span class="nav-text">应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HyperLogLog"><span class="nav-number">7.</span> <span class="nav-text">HyperLogLog</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%B0%E7%AE%97%E5%8E%9F%E7%90%86"><span class="nav-number">7.1.</span> <span class="nav-text">估算原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-6"><span class="nav-number">7.2.</span> <span class="nav-text">应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GEO"><span class="nav-number">8.</span> <span class="nav-text">GEO</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86-5"><span class="nav-number">8.1.</span> <span class="nav-text">存储原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Stream"><span class="nav-number">9.</span> <span class="nav-text">Stream</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
