@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/mylogo.svg">
+  <link rel="mask-icon" href="/images/mylogo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="Redis持久化">
+<meta property="og:url" content="https://qylh.xyz/posts/62112.html">
+<meta property="og:site_name" content="Echo">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1731295323290.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1731310252536.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1731313203786.png">
+<meta property="article:published_time" content="2024-11-11T02:33:18.000Z">
+<meta property="article:modified_time" content="2024-11-11T12:48:23.679Z">
+<meta property="article:author" content="MaHaotian">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.qylh.xyz/blog/1731295323290.png">
+
+<link rel="canonical" href="https://qylh.xyz/posts/62112.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Redis持久化 | Echo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Echo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/62112.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Echo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Redis持久化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-11-11 10:33:18 / 修改时间：20:48:23" itemprop="dateCreated datePublished" datetime="2024-11-11T10:33:18+08:00">2024-11-11</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="https://img.qylh.xyz/blog/1731295323290.png" alt="1731295323290.png" style="zoom:50%;" />
+
+<span id="more"></span>
+
+<p>由于<code>Redis</code>是内存型数据库，重启后内存中的数据就会丢失，因此需要持久化落盘，<code>Redis</code> 提供了 <code>AOF</code> 和 <code>RDB</code> 两种持久化机制。</p>
+<h2 id="AOF日志"><a href="#AOF日志" class="headerlink" title="AOF日志"></a>AOF日志</h2><p><code>AOF(Append Only File)</code> 是将<code>Redis</code>执行的每一条写操作都以追加的方式记录到一个文件里，重启后只需要重新按序执行文件中所有的命令。（该功能默认不开启）</p>
+<p><code>Redis</code> 主线程先执行命令再写<code>AOF</code>日志，否则写完日志后执行发现命令有问题还需要回去修改日志。</p>
+<p><img data-src="https://img.qylh.xyz/blog/1731310252536.png" alt="1731310252536.png"></p>
+<h3 id="AOF-写回策略"><a href="#AOF-写回策略" class="headerlink" title="AOF 写回策略"></a>AOF 写回策略</h3><p>前面提到的写<code>AOF</code>日志其实只是写入了内核缓冲区而没有写回到硬盘，此时宕机仍然会丢失数据，首先我们看一下<code>AOF</code>的完整流程：</p>
+<p><img data-src="https://img.qylh.xyz/blog/1731313203786.png" alt="1731313203786.png"></p>
+<ol>
+<li><p><code>Redis</code> 执行完写操作命令后，会将命令追加到 <code>aof_buf</code> 缓冲区；</p>
+</li>
+<li><p>然后通过 <code>write()</code> 系统调用，将<code>aof_buf</code>缓冲区的数据写入到 <code>AOF</code> 文件，此时数据并没有写入到硬盘，而是拷贝到了内核缓冲区<code> page cache</code>，等待内核将数据写入硬盘</p>
+</li>
+<li><p>写回到硬盘，具体什么时候写回<code>Redis</code>提供了三种写回策略（通过<code>appendfsync</code> 配置项配置）：</p>
+<ul>
+<li><p>Always：每次写操作执行完后都写回（直接调用<code>fdatasync</code>，相比<code>fsync</code>，<code>fdatasync</code>不会同步文件属性只同步文件数据，参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/ZhuChangwu/p/14047108.html">一分钟了解 sync、fsync、fdatasync 系统调用</a>）</p>
+</li>
+<li><p>Everysec：每隔一秒将缓冲区内容写回硬盘（直接调用<code>fdatasync</code>）</p>
+</li>
+<li><p>No：由操作系统决定什么时候写回（被修改的内存页变成了脏页，当空闲内存低于某个阈值 or 脏页驻留时间达到阈值时会将脏页写回磁盘）这部分可以参考<a target="_blank" rel="noopener" href="https://juejin.cn/post/7085935695432269861">系统调用、用户缓冲区、内核缓冲区、底层IO知识笔记</a>这篇文章。</p>
+</li>
+</ul>
+<p><code>Everysec</code> 和 <code>No</code>这两种写回策略很明显仍然会出现消息丢失，那么<code>Always</code>策略能100%保证数据不丢失吗？</p>
+<p>小林coding中说可以最大程度保证数据不丢失，但没有给出具体说明，网上很多文章是这样说的：</p>
+<blockquote>
+<p>在<code>flushAppendOnlyFile</code>方法中，有<code>if (server.aof_fsync == AOF_FSYNC_ALWAYS)</code>的判断，如果条件符合，会使用<code>fdatasync()</code>的方法来写磁盘。大体就是：先把写命令追加到aof buffer中，下一次进入事件循环循环后，再将buffer写到磁盘上。结合while循环处方法的调用顺序，可以看出确实是这样的。那么也就是说，这次写到磁盘上的内容是上一个事件循环产生的 所以，即使设置为always，也会丢失一个循环的数据。<a target="_blank" rel="noopener" href="https://www.cnblogs.com/innocenter/p/13208034.html">redis能保证数据100%不丢失吗？</a></p>
+</blockquote>
+</li>
+</ol>
+<p>​		但感觉明显有问题，为什么非要等下一个循环再写回呢？阅读了<code>flushAppendOnlyFile</code>发现并非如此，该函数注释中明确写到<code>we accumulate all the AOF writes in a memory buffer and write it on disk using this function just before entering the event loop again</code>。在该函数中会先将<code>aof_buffer</code>中的内容写到文件中，然后调用<code>fdatasync()</code>的方法来写磁盘，写入成功后才会认为命令执行成功。因此我认为忽略文件损坏以及硬件故障等极端情况可以认为<code>always</code>策略可以保证数据不丢失。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Write the append only file buffer on disk.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Since we are required to write the AOF before replying to the client,</span></span><br><span class="line"><span class="comment"> * and the only way the client socket can get a write is entering when</span></span><br><span class="line"><span class="comment"> * the event loop, we accumulate all the AOF writes in a memory</span></span><br><span class="line"><span class="comment"> * buffer and write it on disk using this function just before entering</span></span><br><span class="line"><span class="comment"> * the event loop again.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * About the &#x27;force&#x27; argument:</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * When the fsync policy is set to &#x27;everysec&#x27; we may delay the flush if there</span></span><br><span class="line"><span class="comment"> * is still an fsync() going on in the background thread, since for instance</span></span><br><span class="line"><span class="comment"> * on Linux write(2) will be blocked by the background fsync anyway.</span></span><br><span class="line"><span class="comment"> * When this happens we remember that there is some aof buffer to be</span></span><br><span class="line"><span class="comment"> * flushed ASAP, and will try to do that in the serverCron() function.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * However if force is set to 1 we&#x27;ll write regardless of the background</span></span><br><span class="line"><span class="comment"> * fsync. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> AOF_WRITE_LOG_ERROR_RATE 30 <span class="comment">/* Seconds between errors logging. */</span></span></span><br><span class="line"><span class="type">void</span> <span class="title function_">flushAppendOnlyFile</span><span class="params">(<span class="type">int</span> force)</span> &#123;</span><br><span class="line">	...</span><br><span class="line">    </span><br><span class="line">    nwritten = aofWrite(server.aof_fd,server.aof_buf,sdslen(server.aof_buf));</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">/* Perform the fsync if needed. */</span></span><br><span class="line">    <span class="keyword">if</span> (server.aof_fsync == AOF_FSYNC_ALWAYS) &#123;</span><br><span class="line">        <span class="comment">/* redis_fsync is defined as fdatasync() for Linux in order to avoid</span></span><br><span class="line"><span class="comment">         * flushing metadata. */</span></span><br><span class="line">        latencyStartMonitor(latency);</span><br><span class="line">        <span class="comment">/* Let&#x27;s try to get this data on the disk. To guarantee data safe when</span></span><br><span class="line"><span class="comment">         * the AOF fsync policy is &#x27;always&#x27;, we should exit if failed to fsync</span></span><br><span class="line"><span class="comment">         * AOF (see comment next to the exit(1) after write error above). */</span></span><br><span class="line">        <span class="keyword">if</span> (redis_fsync(server.aof_fd) == <span class="number">-1</span>) &#123;</span><br><span class="line">            serverLog(LL_WARNING,<span class="string">&quot;Can&#x27;t persist AOF for fsync error when the &quot;</span></span><br><span class="line">              <span class="string">&quot;AOF fsync policy is &#x27;always&#x27;: %s. Exiting...&quot;</span>, strerror(errno));</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        latencyEndMonitor(latency);</span><br><span class="line">        latencyAddSampleIfNeeded(<span class="string">&quot;aof-fsync-always&quot;</span>,latency);</span><br><span class="line">        server.aof_last_incr_fsync_offset = server.aof_last_incr_size;</span><br><span class="line">        server.aof_last_fsync = server.mstime;</span><br><span class="line">        atomicSet(server.fsynced_reploff_pending, server.master_repl_offset);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (server.aof_fsync == AOF_FSYNC_EVERYSEC &amp;&amp;</span><br><span class="line">               server.mstime - server.aof_last_fsync &gt;= <span class="number">1000</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!sync_in_progress) &#123;</span><br><span class="line">            aof_background_fsync(server.aof_fd);</span><br><span class="line">            server.aof_last_incr_fsync_offset = server.aof_last_incr_size;</span><br><span class="line">        &#125;</span><br><span class="line">        server.aof_last_fsync = server.mstime;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对比：</p>
+<table>
+<thead>
+<tr>
+<th align="center">写回策略</th>
+<th align="center">写回时机</th>
+<th align="center">性能</th>
+<th align="center">数据防丢失</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Always</td>
+<td align="center">同步写回</td>
+<td align="center">⭐</td>
+<td align="center">⭐⭐⭐</td>
+</tr>
+<tr>
+<td align="center">Eversec（默认策略）</td>
+<td align="center">每秒写回（异步任务）</td>
+<td align="center">⭐⭐</td>
+<td align="center">⭐⭐</td>
+</tr>
+<tr>
+<td align="center">No</td>
+<td align="center">操作系统写回策略<br />（内存占用&#x2F;脏页驻留时间超过某阈值）</td>
+<td align="center">⭐⭐⭐</td>
+<td align="center">⭐</td>
+</tr>
+</tbody></table>
+<h3 id="AOF-重写"><a href="#AOF-重写" class="headerlink" title="AOF 重写"></a>AOF 重写</h3><p> 随着<code>Redis</code>不断接受客户端的命令，<code>AOF</code>文件越积越大，就会影响性能，为了避免<code>AOF</code>文件越来越大，<code>Redis</code>提供了<code>AOF</code>重写机制，当文件大小超过某个阈值后就会触发重写以压缩<code>AOF</code>文件，压缩原理也很简单，只需要保留最新的记录就可以了。重写的时候为了防止破坏原文件，会创建一个新的副本文件，重写完成后再覆盖过去。</p>
+<p>但<code>AOF</code>重写是一个很耗时的工作，如果放到单进程中去做就会长时间阻塞命令执行，因此<code>Redis</code>采用了后台重写机制，主进程继续处理命令请求，由<strong>子进程</strong>去慢慢处理重写任务。</p>
+<p>为什么使用子进程而不是多线程呢？</p>
+<blockquote>
+<p>如果是使用线程，多线程之间会共享内存，那么在修改共享内存数据的时候，需要通过加锁来保证数据的安全，而这样就会降低性能。而使用子进程，创建子进程时，父子进程是共享内存数据的，不过这个共享的内存只能以只读的方式，而当父子进程任意一方修改了该共享内存，就会发生<a target="_blank" rel="noopener" href="https://imageslr.com/2020/copy-on-write.html">写时复制</a>，于是父子进程就有了独立的数据副本，就不用加锁来保证数据安全。</p>
+</blockquote>
+<p>写时复制原理</p>
+<p>主进程通过<code>fork</code>系统调用生成<code>bgrewriteaof 子进程</code>，操作系统会把主进程的页表复制一份给子进程，这样两者的虚拟空间虽然不同，但对应的物理空间是一个。此时页表项属性会被标记为<strong>只读</strong>，当父进程（<code>Redis</code>主进程）向这个内存发起写操作时，CPU 就会触发<strong>写保护中断</strong>，操作系统就会在这个中断处理函数中进行响应页表项对应物理内存的复制，并将页表项属性修改为<strong>可读写</strong>，之后父进程对该页表项的修改就不会影响子进程，这样子进程可见的始终是触发重写时刻的<code>AOF</code>文件。</p>
+<p>这样相当于将重写的耗时分摊到了多次请求上，触发请求需要承担<code>fork</code>子进程的耗时，后续请求如果触发写保护中断需承担复制物理内存的耗时。但相比阻塞进行重写，这种方案性能无疑是更优秀的。</p>
+<p>走到这一步，应该会产生一个疑问，<code>bgrewriteaof</code>子进程重写的只是产生重写任务这一时刻的<code>AOF</code>文件，后面主线程还会处理新的请求，如何保证一致性呢？这里其实也很简单，<code>Redis</code>只需要记录一下在此期间产生的所有写命令（实际上<code>Redis</code>是写入到一个<code>AOF</code> 重写缓冲区中），等子进程重写完成后通过信号机制与主进程通信，主进程收到该信号后会<code>AOF </code>重写缓冲区中的所有内容追加到新的 <code>AOF </code>的文件中，并用新的<code>AOF</code>文件覆盖现有文件。</p>
+<blockquote>
+<p>参考</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://xiaolincoding.com/redis/storage/aof.html#aof-%E6%97%A5%E5%BF%97">小林coding Redis持久化篇</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/ZhuChangwu/p/14047108.html">一分钟了解 sync、fsync、fdatasync 系统调用</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7085935695432269861">系统调用、用户缓冲区、内核缓冲区、底层IO知识笔记</a></li>
+<li><a target="_blank" rel="noopener" href="https://imageslr.com/2020/copy-on-write.html">📔【操作系统】写时复制 Copy-on-write</a></li>
+</ul>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/6834.html" rel="prev" title="Redis数据类型">
+      <i class="fa fa-chevron-left"></i> Redis数据类型
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AOF%E6%97%A5%E5%BF%97"><span class="nav-number">1.</span> <span class="nav-text">AOF日志</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AOF-%E5%86%99%E5%9B%9E%E7%AD%96%E7%95%A5"><span class="nav-number">1.1.</span> <span class="nav-text">AOF 写回策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AOF-%E9%87%8D%E5%86%99"><span class="nav-number">1.2.</span> <span class="nav-text">AOF 重写</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MaHaotian"
+      src="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+  <p class="site-author-name" itemprop="name">MaHaotian</p>
+  <div class="site-description" itemprop="description">给时光以生命，而不是给生命以时光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">78</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qy-liuhuo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qy-liuhuo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:maht2001@163.com" title="E-Mail → mailto:maht2001@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wangzekun.cn/" title="http:&#x2F;&#x2F;wangzekun.cn&#x2F;" rel="noopener" target="_blank">坤哥的博客</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://8.142.79.40:9101/" title="http:&#x2F;&#x2F;8.142.79.40:9101" rel="noopener" target="_blank">坤姐的博客</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MaHaotian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>
