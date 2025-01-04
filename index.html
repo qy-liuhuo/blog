@@ -163,6 +163,996 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/0.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Echo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/0.html" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-04 23:24:26" itemprop="dateCreated datePublished" datetime="2025-01-04T23:24:26+08:00">2025-01-04</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/5.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Echo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/5.html" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-04 23:14:16" itemprop="dateCreated datePublished" datetime="2025-01-04T23:14:16+08:00">2025-01-04</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&#x2F;*<br><img data-src="https://raw.githubusercontent.com/zsviczian/obsidian-excalidraw-plugin/master/images/scripts-download-raw.jpg"></p>
+<p>Download this file and save to your Obsidian Vault including the first line, or open it in “Raw” and copy the entire contents to Obsidian.</p>
+<p><img data-src="https://raw.githubusercontent.com/zsviczian/obsidian-excalidraw-plugin/master/images/scripts-box-each-selected-groups.png"></p>
+<p>This script will add encapsulating boxes around each of the currently selected groups in Excalidraw.</p>
+<p>You can focus on content creation first, and then batch add consistent style boxes to each group of text.</p>
+<p>Tips 1: You can copy the desired style to the global state using script <code>Copy Selected Element Style to Global</code>, then add boxes with the same global style using script <code>Box Each Selected Groups</code>.</p>
+<p>Tips 2: Next you can use scripts <code>Expand rectangles horizontally keep text centered</code> and <code>Expand rectangles vertically keep text centered</code> to make the boxes the same size, if you wish.</p>
+<p>Tips 3: If you want the left and right margins to be different from the top and bottom margins, input something like <code>32,16</code>, this will create a box with left and right margins of <code>32</code> and top and bottom margins of <code>16</code>.</p>
+<p>See documentation for more details:<br><a target="_blank" rel="noopener" href="https://zsviczian.github.io/obsidian-excalidraw-plugin/ExcalidrawScriptsEngine.html">https://zsviczian.github.io/obsidian-excalidraw-plugin/ExcalidrawScriptsEngine.html</a></p>
+<pre><code class="javascript">*/
+if(!ea.verifyMinimumPluginVersion || !ea.verifyMinimumPluginVersion(&quot;1.5.21&quot;)) &#123;
+  new Notice(&quot;This script requires a newer version of Excalidraw. Please install the latest version.&quot;);
+  return;
+&#125;
+settings = ea.getScriptSettings();
+//set default values on first run
+if(!settings[&quot;Default padding&quot;]) &#123;
+    settings = &#123;
+      &quot;Prompt for padding?&quot;: true,
+      &quot;Default padding&quot; : &#123;
+            value: 10,
+          description: &quot;Padding between the bounding box of the selected elements, and the box the script creates&quot;
+      &#125;,
+      &quot;Remember last padding?&quot;: false
+    &#125;;
+    ea.setScriptSettings(settings);
+&#125;
+
+let paddingStr = settings[&quot;Default padding&quot;].value.toString();
+const rememberLastPadding = settings[&quot;Remember last padding?&quot;];
+
+if(settings[&quot;Prompt for padding?&quot;]) &#123;
+    paddingStr = await utils.inputPrompt(&quot;padding?&quot;,&quot;string&quot;,paddingStr);
+&#125;
+if(!paddingStr) &#123;
+    return;
+&#125;
+if(rememberLastPadding) &#123;
+    settings[&quot;Default padding&quot;].value = paddingStr;
+    ea.setScriptSettings(settings);
+&#125;
+var paddingLR = 0;
+var paddingTB = 0;
+if(paddingStr.indexOf(&#39;,&#39;) &gt; 0) &#123;
+    const paddingParts = paddingStr.split(&#39;,&#39;);
+    paddingLR = parseInt(paddingParts[0]);
+    paddingTB = parseInt(paddingParts[1]);
+&#125;
+else &#123;
+    paddingLR = paddingTB = parseInt(paddingStr);
+&#125;
+
+if(isNaN(paddingLR) || isNaN(paddingTB)) &#123;
+    return;
+&#125;
+
+const selectedElements = ea.getViewSelectedElements();
+const groups = ea.getMaximumGroups(selectedElements);
+const allIndividualArrows = ea.getMaximumGroups(ea.getViewElements())
+    .reduce((result, group) =&gt; (group.length === 1 &amp;&amp; (group[0].type === &#39;arrow&#39; || group[0].type === &#39;line&#39;)) ? 
+            [...result, group[0]] : result, []);
+for(const elements of groups) &#123;
+    if(elements.length === 1 &amp;&amp; elements[0].type ===&quot;arrow&quot; || elements[0].type===&quot;line&quot;) &#123;
+        // individual arrows or lines are not affected
+        continue;
+    &#125;
+    const box = ea.getBoundingBox(elements);
+    color = ea
+            .getExcalidrawAPI()
+            .getAppState()
+            .currentItemStrokeColor;
+    // use current stroke with and style
+    const appState = ea.getExcalidrawAPI().getAppState();
+    const strokeWidth = appState.currentItemStrokeWidth;
+    const strokeStyle = appState.currentItemStrokeStyle;
+    const strokeSharpness = appState.currentItemStrokeSharpness;
+    const roughness = appState.currentItemRoughness;
+    const fillStyle = appState.currentItemFillStyle;
+    const backgroundColor = appState.currentItemBackgroundColor;
+    ea.style.strokeWidth = strokeWidth;
+    ea.style.strokeStyle = strokeStyle;
+    ea.style.strokeSharpness = strokeSharpness;
+    ea.style.roughness = roughness;
+    ea.style.fillStyle = fillStyle;
+    ea.style.backgroundColor = backgroundColor;	
+    ea.style.strokeColor = color;
+
+    const id = ea.addRect(
+        box.topX - paddingLR,
+        box.topY - paddingTB,
+        box.width + 2*paddingLR,
+        box.height + 2*paddingTB
+    );
+
+    // Change the join point in the group to the new box
+    const elementsWithBounded = elements.filter(el =&gt; (el.boundElements || []).length &gt; 0);
+    const boundedElementsCollection = elementsWithBounded.reduce((result, el) =&gt; [...result, ...el.boundElements], []);
+    for(const el of elementsWithBounded) &#123;
+        el.boundElements = [];
+    &#125;
+
+    const newRect = ea.getElement(id);
+    newRect.boundElements = boundedElementsCollection;
+
+    const elementIds = elements.map(el =&gt; el.id);
+
+    const startBindingLines = allIndividualArrows.filter(el =&gt; elementIds.includes((el.startBinding||&#123;&#125;).elementId));
+    for(startBindingLine of startBindingLines) &#123;
+        startBindingLine.startBinding.elementId = id;
+        recalculateStartPointOfLine(startBindingLine, newRect);
+    &#125;
+
+    const endBindingLines = allIndividualArrows.filter(el =&gt; elementIds.includes((el.endBinding||&#123;&#125;).elementId));
+    for(endBindingLine of endBindingLines) &#123;
+        endBindingLine.endBinding.elementId = id;
+        recalculateEndPointOfLine(endBindingLine, newRect);
+    &#125;
+
+    ea.copyViewElementsToEAforEditing(elements);
+    ea.addToGroup([id].concat(elements.map((el)=&gt;el.id)));
+&#125;
+
+await ea.addElementsToView(false,false);
+
+function recalculateStartPointOfLine(line, el) &#123;
+    const aX = el.x + el.width/2;
+    const bX = line.x + line.points[1][0];
+    const aY = el.y + el.height/2;
+    const bY = line.y + line.points[1][1];
+
+    line.startBinding.gap = 8;
+    line.startBinding.focus = 0;
+    const intersectA = ea.intersectElementWithLine(
+                el,
+                [bX, bY],
+                [aX, aY],
+                line.startBinding.gap
+              );
+
+    if(intersectA.length &gt; 0) &#123;
+        line.points[0] = [0, 0];
+        for(var i = 1; i&lt;line.points.length; i++) &#123;
+            line.points[i][0] -= intersectA[0][0] - line.x;
+            line.points[i][1] -= intersectA[0][1] - line.y;
+        &#125;
+        line.x = intersectA[0][0];
+        line.y = intersectA[0][1];
+    &#125;
+&#125;
+
+function recalculateEndPointOfLine(line, el) &#123;
+    const aX = el.x + el.width/2;
+    const bX = line.x + line.points[line.points.length-2][0];
+    const aY = el.y + el.height/2;
+    const bY = line.y + line.points[line.points.length-2][1];
+
+    line.endBinding.gap = 8;
+    line.endBinding.focus = 0;
+    const intersectA = ea.intersectElementWithLine(
+                el,
+                [bX, bY],
+                [aX, aY],
+                line.endBinding.gap
+              );
+
+    if(intersectA.length &gt; 0) &#123;
+        line.points[line.points.length - 1] = [intersectA[0][0] - line.x, intersectA[0][1] - line.y];
+    &#125;
+&#125;
+</code></pre>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/4.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Echo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/4.html" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-04 23:13:59" itemprop="dateCreated datePublished" datetime="2025-01-04T23:13:59+08:00">2025-01-04</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&#x2F;*</p>
+<p><img data-src="https://raw.githubusercontent.com/zsviczian/obsidian-excalidraw-plugin/master/images/scripts-download-raw.jpg"></p>
+<p>Download this file and save to your Obsidian Vault including the first line, or open it in “Raw” and copy the entire contents to Obsidian.</p>
+<p><img data-src="https://raw.githubusercontent.com/zsviczian/obsidian-excalidraw-plugin/master/images/scripts-auto-layout.png"></p>
+<p>This script performs automatic layout for the selected top-level grouping objects. It is powered by <a target="_blank" rel="noopener" href="https://github.com/kieler/elkjs">elkjs</a> and needs to be connected to the Internet.</p>
+<p>See documentation for more details:<br><a target="_blank" rel="noopener" href="https://zsviczian.github.io/obsidian-excalidraw-plugin/ExcalidrawScriptsEngine.html">https://zsviczian.github.io/obsidian-excalidraw-plugin/ExcalidrawScriptsEngine.html</a></p>
+<pre><code class="javascript">*/
+
+if (
+  !ea.verifyMinimumPluginVersion ||
+  !ea.verifyMinimumPluginVersion(&quot;1.5.21&quot;)
+) &#123;
+  new Notice(
+    &quot;This script requires a newer version of Excalidraw. Please install the latest version.&quot;
+  );
+  return;
+&#125;
+
+settings = ea.getScriptSettings();
+//set default values on first run
+if (!settings[&quot;Layout Options JSON&quot;]) &#123;
+  settings = &#123;
+    &quot;Layout Options JSON&quot;: &#123;
+      height: &quot;450px&quot;,
+      value: `&#123;\n      &quot;org.eclipse.elk.layered.crossingMinimization.semiInteractive&quot;: &quot;true&quot;,\n      &quot;org.eclipse.elk.layered.considerModelOrder.components&quot;: &quot;FORCE_MODEL_ORDER&quot;\n&#125;`,
+      description: `You can use layout options to configure the layout algorithm. A list of all options and further details of their exact effects is available in &lt;a href=&quot;http://www.eclipse.org/elk/reference.html&quot; rel=&quot;nofollow&quot;&gt;ELK&#39;s documentation&lt;/a&gt;.`,
+    &#125;,
+  &#125;;
+  ea.setScriptSettings(settings);
+&#125; 
+
+if (typeof ELK === &quot;undefined&quot;) &#123;
+  loadELK(doAutoLayout);
+&#125; else &#123;
+  doAutoLayout();
+&#125;
+
+async function doAutoLayout() &#123;
+  const selectedElements = ea.getViewSelectedElements();
+  const groups = ea
+    .getMaximumGroups(selectedElements)
+    .map((g) =&gt; g.filter((el) =&gt; el.containerId == null)) // ignore text in stickynote
+    .filter((els) =&gt; els.length &gt; 0);
+
+  const stickynotesMap = selectedElements
+    .filter((el) =&gt; el.containerId != null)
+    .reduce((result, el) =&gt; &#123;
+      result.set(el.containerId, el);
+      return result;
+    &#125;, new Map());
+
+  const elk = new ELK();
+  const knownLayoutAlgorithms = await elk.knownLayoutAlgorithms();
+  const layoutAlgorithms = knownLayoutAlgorithms
+    .map((knownLayoutAlgorithm) =&gt; (&#123;
+      id: knownLayoutAlgorithm.id,
+      displayText:
+        knownLayoutAlgorithm.id === &quot;org.eclipse.elk.layered&quot; ||
+        knownLayoutAlgorithm.id === &quot;org.eclipse.elk.radial&quot; ||
+        knownLayoutAlgorithm.id === &quot;org.eclipse.elk.mrtree&quot;
+          ? &quot;* &quot; +
+            knownLayoutAlgorithm.name +
+            &quot;: &quot; +
+            knownLayoutAlgorithm.description
+          : knownLayoutAlgorithm.name + &quot;: &quot; + knownLayoutAlgorithm.description,
+    &#125;))
+    .sort((lha, rha) =&gt; lha.displayText.localeCompare(rha.displayText));
+
+  const layoutAlgorithmsSimple = knownLayoutAlgorithms
+    .map((knownLayoutAlgorithm) =&gt; (&#123;
+      id: knownLayoutAlgorithm.id,
+      displayText:
+        knownLayoutAlgorithm.id === &quot;org.eclipse.elk.layered&quot; ||
+        knownLayoutAlgorithm.id === &quot;org.eclipse.elk.radial&quot; ||
+        knownLayoutAlgorithm.id === &quot;org.eclipse.elk.mrtree&quot;
+          ? &quot;* &quot; + knownLayoutAlgorithm.name
+          : knownLayoutAlgorithm.name,
+    &#125;))
+    .sort((lha, rha) =&gt; lha.displayText.localeCompare(rha.displayText));
+
+  // const knownOptions = knownLayoutAlgorithms
+  //   .reduce(
+  //     (result, knownLayoutAlgorithm) =&gt; [
+  //       ...result,
+  //       ...knownLayoutAlgorithm.knownOptions,
+  //     ],
+  //     []
+  //   )
+  //   .filter((value, index, self) =&gt; self.indexOf(value) === index) // remove duplicates
+  //   .sort((lha, rha) =&gt; lha.localeCompare(rha));
+  // console.log(&quot;knownOptions&quot;, knownOptions);
+
+  const selectedAlgorithm = await utils.suggester(
+    layoutAlgorithms.map((algorithmInfo) =&gt; algorithmInfo.displayText),
+    layoutAlgorithms.map((algorithmInfo) =&gt; algorithmInfo.id),
+    &quot;Layout algorithm&quot;
+  );
+
+  const knownNodePlacementStrategy = [
+    &quot;SIMPLE&quot;,
+    &quot;INTERACTIVE&quot;,
+    &quot;LINEAR_SEGMENTS&quot;,
+    &quot;BRANDES_KOEPF&quot;,
+    &quot;NETWORK_SIMPLEX&quot;,
+  ];
+
+  const knownDirections = [
+    &quot;UNDEFINED&quot;,
+    &quot;RIGHT&quot;,
+    &quot;LEFT&quot;,
+    &quot;DOWN&quot;,
+    &quot;UP&quot;
+  ];
+
+  let nodePlacementStrategy = &quot;BRANDES_KOEPF&quot;;
+  let componentComponentSpacing = &quot;10&quot;;
+  let nodeNodeSpacing = &quot;100&quot;;
+  let nodeNodeBetweenLayersSpacing = &quot;100&quot;;
+  let discoComponentLayoutAlgorithm = &quot;org.eclipse.elk.layered&quot;;
+  let direction = &quot;UNDEFINED&quot;;
+
+  if (selectedAlgorithm === &quot;org.eclipse.elk.layered&quot;) &#123;
+    nodePlacementStrategy = await utils.suggester(
+      knownNodePlacementStrategy,
+      knownNodePlacementStrategy,
+      &quot;Node placement strategy&quot;
+    );
+
+    selectedDirection = await utils.suggester(
+      knownDirections,
+      knownDirections,
+      &quot;Direction&quot;
+    );
+    direction = selectedDirection??&quot;UNDEFINED&quot;;
+  &#125; else if (selectedAlgorithm === &quot;org.eclipse.elk.disco&quot;) &#123;
+    const componentLayoutAlgorithms = layoutAlgorithmsSimple.filter(al =&gt; al.id !== &quot;org.eclipse.elk.disco&quot;);
+    const selectedDiscoComponentLayoutAlgorithm = await utils.suggester(
+      componentLayoutAlgorithms.map((algorithmInfo) =&gt; algorithmInfo.displayText),
+      componentLayoutAlgorithms.map((algorithmInfo) =&gt; algorithmInfo.id),
+      &quot;Disco Connected Components Layout Algorithm&quot;
+    );
+    discoComponentLayoutAlgorithm = selectedDiscoComponentLayoutAlgorithm??&quot;org.eclipse.elk.layered&quot;;
+  &#125;
+
+  if (
+    selectedAlgorithm === &quot;org.eclipse.elk.box&quot; ||
+    selectedAlgorithm === &quot;org.eclipse.elk.rectpacking&quot;
+  ) &#123;
+    nodeNodeSpacing = await utils.inputPrompt(&quot;Node Spacing&quot;, &quot;number&quot;, &quot;10&quot;);
+  &#125; else &#123;
+    let userSpacingStr = await utils.inputPrompt(
+      &quot;Components Spacing, Node Spacing, Node Node Between Layers Spacing&quot;,
+      &quot;number, number, number&quot;,
+      &quot;10, 100, 100&quot;
+    );
+    let userSpacingArr = (userSpacingStr??&quot;&quot;).split(&quot;,&quot;);
+    componentComponentSpacing = userSpacingArr[0] ?? &quot;10&quot;;
+    nodeNodeSpacing = userSpacingArr[1] ?? &quot;100&quot;;
+    nodeNodeBetweenLayersSpacing = userSpacingArr[2] ?? &quot;100&quot;;
+  &#125;
+
+  let layoutOptionsJson = &#123;&#125;;
+  try &#123;
+    layoutOptionsJson = JSON.parse(settings[&quot;Layout Options JSON&quot;].value);
+  &#125; catch (e) &#123;
+    new Notice(
+      &quot;Error reading Layout Options JSON, see developer console for more information&quot;,
+      4000
+    );
+    console.log(e);
+  &#125;
+
+  layoutOptionsJson[&quot;elk.algorithm&quot;] = selectedAlgorithm;
+  layoutOptionsJson[&quot;org.eclipse.elk.spacing.componentComponent&quot;] =
+    componentComponentSpacing;
+  layoutOptionsJson[&quot;org.eclipse.elk.spacing.nodeNode&quot;] = nodeNodeSpacing;
+  layoutOptionsJson[&quot;org.eclipse.elk.layered.spacing.nodeNodeBetweenLayers&quot;] =
+    nodeNodeBetweenLayersSpacing;
+  layoutOptionsJson[&quot;org.eclipse.elk.layered.nodePlacement.strategy&quot;] =
+    nodePlacementStrategy;
+  layoutOptionsJson[&quot;org.eclipse.elk.disco.componentCompaction.componentLayoutAlgorithm&quot;] = 
+    discoComponentLayoutAlgorithm;
+  layoutOptionsJson[&quot;org.eclipse.elk.direction&quot;] = direction;
+
+  const graph = &#123;
+    id: &quot;root&quot;,
+    layoutOptions: layoutOptionsJson,
+    children: [],
+    edges: [],
+  &#125;;
+
+  let groupMap = new Map();
+  let targetElkMap = new Map();
+  let arrowEls = [];
+
+  for (let i = 0; i &lt; groups.length; i++) &#123;
+    const elements = groups[i];
+    if (
+      elements.length === 1 &amp;&amp;
+      (elements[0].type === &quot;arrow&quot; || elements[0].type === &quot;line&quot;)
+    ) &#123;
+      if (
+        elements[0].type === &quot;arrow&quot; &amp;&amp;
+        elements[0].startBinding &amp;&amp;
+        elements[0].endBinding
+      ) &#123;
+        arrowEls.push(elements[0]);
+      &#125;
+    &#125; else &#123;
+      let elkId = &quot;g&quot; + i;
+      elements.reduce((result, el) =&gt; &#123;
+        result.set(el.id, elkId);
+        return result;
+      &#125;, targetElkMap);
+
+      const box = ea.getBoundingBox(elements);
+      groupMap.set(elkId, &#123;
+        elements: elements,
+        boundingBox: box,
+      &#125;);
+
+      graph.children.push(&#123;
+        id: elkId,
+        width: box.width,
+        height: box.height,
+        x: box.topX,
+        y: box.topY,
+      &#125;);
+    &#125;
+  &#125;
+
+  for (let i = 0; i &lt; arrowEls.length; i++) &#123;
+    const arrowEl = arrowEls[i];
+    const startElkId = targetElkMap.get(arrowEl.startBinding.elementId);
+    const endElkId = targetElkMap.get(arrowEl.endBinding.elementId);
+
+    graph.edges.push(&#123;
+      id: &quot;e&quot; + i,
+      sources: [startElkId],
+      targets: [endElkId],
+    &#125;);
+  &#125;
+
+  const initTopX =
+    Math.min(...Array.from(groupMap.values()).map((v) =&gt; v.boundingBox.topX)) -
+    12;
+  const initTopY =
+    Math.min(...Array.from(groupMap.values()).map((v) =&gt; v.boundingBox.topY)) -
+    12;
+
+  elk
+    .layout(graph)
+    .then((resultGraph) =&gt; &#123;
+      for (const elkEl of resultGraph.children) &#123;
+        const group = groupMap.get(elkEl.id);
+        for (const groupEl of group.elements) &#123;
+          const originalDistancX = groupEl.x - group.boundingBox.topX;
+          const originalDistancY = groupEl.y - group.boundingBox.topY;
+          const groupElDistanceX =
+            elkEl.x + initTopX + originalDistancX - groupEl.x;
+          const groupElDistanceY =
+            elkEl.y + initTopY + originalDistancY - groupEl.y;
+
+          groupEl.x = groupEl.x + groupElDistanceX;
+          groupEl.y = groupEl.y + groupElDistanceY;
+
+          if (stickynotesMap.has(groupEl.id)) &#123;
+            const stickynote = stickynotesMap.get(groupEl.id);
+            stickynote.x = stickynote.x + groupElDistanceX;
+            stickynote.y = stickynote.y + groupElDistanceY;
+          &#125;
+        &#125;
+      &#125;
+
+      ea.copyViewElementsToEAforEditing(selectedElements);
+      ea.addElementsToView(false, false);
+
+      normalizeSelectedArrows();
+    &#125;)
+    .catch(console.error);
+&#125;
+
+function loadELK(doAfterLoaded) &#123;
+  let script = document.createElement(&quot;script&quot;);
+  script.onload = function () &#123;
+    if (typeof ELK !== &quot;undefined&quot;) &#123;
+      doAfterLoaded();
+    &#125;
+  &#125;;
+  script.src =
+    &quot;https://cdn.jsdelivr.net/npm/elkjs@0.8.2/lib/elk.bundled.min.js&quot;;
+  document.head.appendChild(script);
+&#125;
+
+/*
+ * Normalize Selected Arrows
+ */
+
+function normalizeSelectedArrows() &#123;
+  let gapValue = 2;
+
+  const selectedIndividualArrows = ea.getMaximumGroups(ea.getViewSelectedElements())
+    .reduce((result, g) =&gt; [...result, ...g.filter(el =&gt; el.type === &#39;arrow&#39;)], []);
+
+  const allElements = ea.getViewElements();
+  for (const arrow of selectedIndividualArrows) &#123;
+    const startBindingEl = allElements.filter(
+      (el) =&gt; el.id === (arrow.startBinding || &#123;&#125;).elementId
+    )[0];
+    const endBindingEl = allElements.filter(
+      (el) =&gt; el.id === (arrow.endBinding || &#123;&#125;).elementId
+    )[0];
+
+    if (startBindingEl) &#123;
+      recalculateStartPointOfLine(
+        arrow,
+        startBindingEl,
+        endBindingEl,
+        gapValue
+      );
+    &#125;
+    if (endBindingEl) &#123;
+      recalculateEndPointOfLine(arrow, endBindingEl, startBindingEl, gapValue);
+    &#125;
+  &#125;
+
+  ea.copyViewElementsToEAforEditing(selectedIndividualArrows);
+  ea.addElementsToView(false, false);
+&#125;
+
+function recalculateStartPointOfLine(line, el, elB, gapValue) &#123;
+  const aX = el.x + el.width / 2;
+  const bX =
+    line.points.length &lt;= 2 &amp;&amp; elB
+      ? elB.x + elB.width / 2
+      : line.x + line.points[1][0];
+  const aY = el.y + el.height / 2;
+  const bY =
+    line.points.length &lt;= 2 &amp;&amp; elB
+      ? elB.y + elB.height / 2
+      : line.y + line.points[1][1];
+
+  line.startBinding.gap = gapValue;
+  line.startBinding.focus = 0;
+  const intersectA = ea.intersectElementWithLine(
+    el,
+    [bX, bY],
+    [aX, aY],
+    line.startBinding.gap
+  );
+
+  if (intersectA.length &gt; 0) &#123;
+    line.points[0] = [0, 0];
+    for (let i = 1; i &lt; line.points.length; i++) &#123;
+      line.points[i][0] -= intersectA[0][0] - line.x;
+      line.points[i][1] -= intersectA[0][1] - line.y;
+    &#125;
+    line.x = intersectA[0][0];
+    line.y = intersectA[0][1];
+  &#125;
+&#125;
+
+function recalculateEndPointOfLine(line, el, elB, gapValue) &#123;
+  const aX = el.x + el.width / 2;
+  const bX =
+    line.points.length &lt;= 2 &amp;&amp; elB
+      ? elB.x + elB.width / 2
+      : line.x + line.points[line.points.length - 2][0];
+  const aY = el.y + el.height / 2;
+  const bY =
+    line.points.length &lt;= 2 &amp;&amp; elB
+      ? elB.y + elB.height / 2
+      : line.y + line.points[line.points.length - 2][1];
+
+  line.endBinding.gap = gapValue;
+  line.endBinding.focus = 0;
+  const intersectA = ea.intersectElementWithLine(
+    el,
+    [bX, bY],
+    [aX, aY],
+    line.endBinding.gap
+  );
+
+  if (intersectA.length &gt; 0) &#123;
+    line.points[line.points.length - 1] = [
+      intersectA[0][0] - line.x,
+      intersectA[0][1] - line.y,
+    ];
+  &#125;
+&#125;
+</code></pre>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/3.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Echo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/3.html" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-04 23:13:41" itemprop="dateCreated datePublished" datetime="2025-01-04T23:13:41+08:00">2025-01-04</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&#x2F;*<br><img data-src="https://raw.githubusercontent.com/zsviczian/obsidian-excalidraw-plugin/master/images/scripts-add-link-and-open.jpg"></p>
+<p>Prompts for a file from the vault. Adds a link to the selected element pointing to the selected file. You can control in settings to open the file in the current active pane or an adjacent pane.</p>
+<pre><code class="javascript">*/
+
+if(!ea.verifyMinimumPluginVersion || !ea.verifyMinimumPluginVersion(&quot;1.5.21&quot;)) &#123;
+  new Notice(&quot;This script requires a newer version of Excalidraw. Please install the latest version.&quot;);
+  return;
+&#125;
+
+settings = ea.getScriptSettings();
+
+if(!settings[&quot;Open link in active pane&quot;]) &#123;
+  settings = &#123;
+    &quot;Open link in active pane&quot;: &#123;
+      value: false,
+      description: &quot;Open the link in the current active pane (on) or a new pane (off).&quot;
+    &#125;,
+    ...settings
+  &#125;;
+  ea.setScriptSettings(settings);
+&#125;
+
+const openInCurrentPane = settings[&quot;Open link in active pane&quot;].value;
+
+elements = ea.getViewSelectedElements();
+if(elements.length === 0) &#123;
+  new Notice(&quot;No selected elements&quot;);
+  return;
+&#125;
+
+const files = app.vault.getFiles()
+const filePaths = files.map((f)=&gt;f.path);
+file = await utils.suggester(filePaths,files,&quot;Select a file&quot;);
+
+if(!file) return;
+
+const link = `[[$&#123;app.metadataCache.fileToLinktext(file,ea.targetView.file.path,true)&#125;]]`;
+
+ea.style.backgroundColor = &quot;transparent&quot;;
+ea.style.strokeColor = &quot;rgba(70,130,180,0.05)&quot;
+ea.style.strokeWidth = 2;
+ea.style.roughness = 0;
+
+if(elements.length===1 &amp;&amp; elements[0].type !== &quot;text&quot;) &#123;
+  ea.copyViewElementsToEAforEditing(elements);
+    ea.getElements()[0].link = link;
+&#125; else &#123;
+  const b = ea.getBoundingBox(elements);
+  const id = ea.addEllipse(b.topX+b.width-5, b.topY, 5, 5);
+  ea.getElement(id).link = link;
+  ea.copyViewElementsToEAforEditing(elements);
+  ea.addToGroup(elements.map((e)=&gt;e.id).concat([id]));
+&#125;
+await ea.addElementsToView(false,true,true);
+ea.selectElementsInView(ea.getElements());
+
+if(openInCurrentPane) &#123;
+    app.workspace.openLinkText(file.path,ea.targetView.file.path,false);
+  return;
+&#125;
+ea.openFileInNewOrAdjacentLeaf(file);
+</code></pre>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/2.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Echo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/2.html" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-04 23:12:25" itemprop="dateCreated datePublished" datetime="2025-01-04T23:12:25+08:00">2025-01-04</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&#x2F;*<br><img data-src="https://raw.githubusercontent.com/zsviczian/obsidian-excalidraw-plugin/master/images/scripts-bullet-point.jpg"></p>
+<p>This script will add a small circle to the top left of each text element in the selection and add the text and the “bullet point” into a group.</p>
+<p>See documentation for more details:<br><a target="_blank" rel="noopener" href="https://zsviczian.github.io/obsidian-excalidraw-plugin/ExcalidrawScriptsEngine.html">https://zsviczian.github.io/obsidian-excalidraw-plugin/ExcalidrawScriptsEngine.html</a></p>
+<pre><code class="javascript">*/
+elements = ea.getViewSelectedElements().filter((el)=&gt;el.type===&quot;text&quot;);
+ea.copyViewElementsToEAforEditing(elements);
+const padding = 10;
+elements.forEach((el)=&gt;&#123;
+  ea.style.strokeColor = el.strokeColor;
+  const size = el.fontSize/2;
+  const ellipseId = ea.addEllipse(
+    el.x-padding-size,
+    el.y+size/2,
+    size,
+    size
+  );
+  ea.addToGroup([el.id,ellipseId]);
+&#125;);
+await ea.addElementsToView(false,false,true);
+</code></pre>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/1.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Echo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/1.html" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-01-04 23:08:04 / 修改时间：23:24:00" itemprop="dateCreated datePublished" datetime="2025-01-04T23:08:04+08:00">2025-01-04</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&#x3D;&#x3D;⚠  Switch to EXCALIDRAW VIEW in the MORE OPTIONS menu of this document. ⚠&#x3D;&#x3D; You can decompress Drawing data with the command palette: ‘Decompress current Excalidraw file’. For more info check in plugin settings under ‘Saving’</p>
+<h1 id="Excalidraw-Data"><a href="#Excalidraw-Data" class="headerlink" title="Excalidraw Data"></a>Excalidraw Data</h1><h2 id="Text-Elements"><a href="#Text-Elements" class="headerlink" title="Text Elements"></a>Text Elements</h2><p>%%</p>
+<h2 id="Drawing"><a href="#Drawing" class="headerlink" title="Drawing"></a>Drawing</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">N4KAkARALgngDgUwgLgAQQQDwMYEMA2AlgCYBOuA7hADTgQBuCpAzoQPYB2KqATLZMzYBXUtiRoIACyhQ4zZAHoFAc0JRJQgEYA6bGwC2CgF7N6hbEcK4OCtptbErHALRY8RMpWdx8Q1TdIEfARcZgRmBShcZQUebQB2bQAWGjoghH0EDihmbgBtcDBQMBKIEm4IADFmKAAJDgBlI2wAfQAVADkWgA1NJIAGABkAYQBOITbUkshYRArA7CiOZWCp</span><br><span class="line"></span><br><span class="line">0sxuZx4ADgBmbVHD0d3t0YA2JO2k3fiAVn5SmE2ks8SLw+2znlf+06uHyAUEjqbg8fpnZL9KE8JJJACMAy+90KkEkCEIymk3F2cP62l2R2OpwuVySAIg1hW4lQ/XJNVIbAA1ghhmx8GxSBUAMRwhC83lrSCaXDYRnKBlCDjEVnszkSKDkDjMOC4QLZQUQABmhHw+AasFWEkEHg19KZCAA6sDJKC6QrzfqYIb0MbyuSJZiOOFcmg4eS2CrsGonr6o</span><br><span class="line"></span><br><span class="line">eTxcI4ABJYg+1B5AC65M15EyMe4HCEuvJhClWAquH6GolUq9zDjxWm0Hg1N2KIAvnSEAhiNw4WCkfDtrSUQwmKxONjbmdyYwWOwOB1OGI27coWdbtdfjnmAARdJQFvcTUEMLkzTCKUAUWCmWyccT5KEcGIuE3rd98V2ZyhSR4PFGt1u8XJRA4jIzLN8F/NhRS3NAd3wMJCnrcAkzoXA4DgfU72pStoDRTIKiITEoDWBhCAQCgACERTFEtpTZDluU</span><br><span class="line"></span><br><span class="line">1Wi6Pw7ARDVKAo03fR9QZZkZWoiQeT5fiGKYrIWLY0jRQjSVKNlCoFWsZVVWEwTSGY1iMkqHU9QNakIFdVsHggRjlOE1T2PtZkrWIEE0D4QoDKE7ITI4h0tIqXSlJUtiACVhE9b0230wyPIyAB5QNgzbMNbMC4y2MqTgoEqXB9B1ENUGRUpooc2L4oaQgjGpMEAvskSMjaLAoAAQRwrgJGCTU8KKoysoyFDSEq5S2AoNFcAfVBM2zKLipMo8pQqj</span><br><span class="line"></span><br><span class="line">qupCXqKXG9yYoyMaGQoNoa3mQ89Ns5hsAZXVum4bZbm2bQziOW44TheI4W2O59M27b8AATW4M4zn2O5jniBceAO+JTn0ow2AMbhK0gegCCEAqYMaoL9G8ySyzjCAKPw8USFy/LQR7UoUeIfUEDgbh0sgbGAFk2GIBARtwTRgl6yC91s7HuLlVBgYgYi2Sm0hlGFAAKHhzuoXgBaFn8aW0W4AEoNU8hBlCzVV5m53A+d2WleFVwWeA1sXJYgSHBqa</span><br><span class="line"></span><br><span class="line">qAnOZUKoAnON+uA2yUyShAZbzUhc2UIHeyyKmae4BVwfJbAiHxtAvYQckOFtz3SG93thCgP9qUD/XSjsAArBBFmYBoQ7gUnycp6nwNQOmg9skUzcYNoAfwF2q1mbSwmCRYJw1RiagMZa5jQS2QLA2nd0Lqt8FCSr69L8vAN1GDwEbOhtWCCtYPrIA===</span><br></pre></td></tr></table></figure>
+<p>%%</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/26931.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -328,7 +1318,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-01-01 22:30:41" itemprop="dateModified" datetime="2025-01-01T22:30:41+08:00">2025-01-01</time>
+                <time title="修改时间：2025-01-04 23:50:50" itemprop="dateModified" datetime="2025-01-04T23:50:50+08:00">2025-01-04</time>
               </span>
 
           
@@ -439,442 +1429,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/49044.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
-      <meta itemprop="name" content="MaHaotian">
-      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Echo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/49044.html" class="post-title-link" itemprop="url">一图捋清从输入URL到页面渲染的整个流程</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-19 21:07:27" itemprop="dateCreated datePublished" datetime="2024-11-19T21:07:27+08:00">2024-11-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-19 21:26:32" itemprop="dateModified" datetime="2024-12-19T21:26:32+08:00">2024-12-19</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <img data-src="https://img.qylh.xyz/blog/1732021910041.png" style="zoom:50%;" />
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/49044.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/52435.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
-      <meta itemprop="name" content="MaHaotian">
-      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Echo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/52435.html" class="post-title-link" itemprop="url">LRU & LFU</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-13 21:40:49" itemprop="dateCreated datePublished" datetime="2024-11-13T21:40:49+08:00">2024-11-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-19 21:07:21" itemprop="dateModified" datetime="2024-11-19T21:07:21+08:00">2024-11-19</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <img data-src="https://img.qylh.xyz/blog/1731506873900.png" alt="LRU 及 LFU 算法" style="zoom:80%;" />
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/52435.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/62112.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
-      <meta itemprop="name" content="MaHaotian">
-      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Echo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/62112.html" class="post-title-link" itemprop="url">Redis持久化</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-11 10:33:18" itemprop="dateCreated datePublished" datetime="2024-11-11T10:33:18+08:00">2024-11-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-12 14:59:26" itemprop="dateModified" datetime="2024-11-12T14:59:26+08:00">2024-11-12</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <img data-src="https://img.qylh.xyz/blog/1731295323290.png" alt="" style="zoom: 67%;" />
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/62112.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/6834.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
-      <meta itemprop="name" content="MaHaotian">
-      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Echo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/6834.html" class="post-title-link" itemprop="url">Redis数据类型</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-01 10:35:17" itemprop="dateCreated datePublished" datetime="2024-11-01T10:35:17+08:00">2024-11-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-03 17:49:22" itemprop="dateModified" datetime="2024-11-03T17:49:22+08:00">2024-11-03</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>总结整理Redis常见数据类型、底层存储原理及应用。</p>
-<img data-src="https://img.qylh.xyz/blog/whiteboard_exported_image (1).png" alt="" style="zoom:50%;" />
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/6834.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/18426.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
-      <meta itemprop="name" content="MaHaotian">
-      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Echo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/18426.html" class="post-title-link" itemprop="url">Hot Key解决方案</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-09-27 21:10:48" itemprop="dateCreated datePublished" datetime="2024-09-27T21:10:48+08:00">2024-09-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-09-29 16:14:41" itemprop="dateModified" datetime="2024-09-29T16:14:41+08:00">2024-09-29</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <img data-src="https://img.qylh.xyz/blog/%E5%B7%A6%E6%A0%8Ficon_HOT.png" style="zoom: 67%;" />
-整理热Key问题及其解决方案，并介绍了Jd-hotkey热key探测方案
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/18426.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/35585.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
-      <meta itemprop="name" content="MaHaotian">
-      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Echo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/35585.html" class="post-title-link" itemprop="url">MQTT 5.0新特性</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-09-23 21:50:36" itemprop="dateCreated datePublished" datetime="2024-09-23T21:50:36+08:00">2024-09-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-09-29 16:10:30" itemprop="dateModified" datetime="2024-09-29T16:10:30+08:00">2024-09-29</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <img data-src="https://img.qylh.xyz/blog/Mqtt-hor.svg_.webp" alt="" style="zoom:20%;" />
-
-<p>MQTT 5.0 是MQTT协议的最新版本，相比之前的版本有了很多改进。新增功能包括：原因代码、会话过期间隔、主题别名、用户属性、订阅选项、请求&#x2F;响应功能和共享订阅等。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/35585.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -946,7 +1500,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">78</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -959,7 +1513,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">82</span>
+        <span class="site-state-item-count">83</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
