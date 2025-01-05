@@ -35,7 +35,7 @@
 <meta property="og:image" content="https://img.qylh.xyz/blog/image-20220319154626314.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/DynamicThreadPoolRefreshListener.png">
 <meta property="article:published_time" content="2024-12-22T09:44:34.000Z">
-<meta property="article:modified_time" content="2025-01-04T15:53:41.355Z">
+<meta property="article:modified_time" content="2025-01-05T09:11:20.591Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="线程池">
 <meta property="article:tag" content="开源项目">
@@ -205,7 +205,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-01-04 23:53:41" itemprop="dateModified" datetime="2025-01-04T23:53:41+08:00">2025-01-04</time>
+                <time title="修改时间：2025-01-05 17:11:20" itemprop="dateModified" datetime="2025-01-05T17:11:20+08:00">2025-01-05</time>
               </span>
 
           
@@ -332,8 +332,15 @@
 <p>当通过<code>ApplicationContextHolder.getInstance().publishEvent()</code>发布一个<code>ThreadPoolConfigDynamicRefreshEvent</code> 后，实现了<code>EventListener</code> 的<code>DynamicThreadPoolRefreshListener</code> 就会调用 <code>onApplicationEvent</code> 方法处理这个<code>ThreadPoolConfigDynamicRefreshEvent</code> 。 这个方法的核心是修改线程池参数，核心代码如下：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">dynamicRefreshPool</span><span class="params">(String threadPoolId, ExecutorProperties properties)</span> &#123;</span><br><span class="line">        <span class="type">ExecutorProperties</span> <span class="variable">beforeProperties</span> <span class="operator">=</span> ThreadPoolExecutorRegistry.getHolder(threadPoolId).getExecutorProperties();</span><br><span class="line">        <span class="type">ThreadPoolExecutor</span> <span class="variable">executor</span> <span class="operator">=</span> ThreadPoolExecutorRegistry.getHolder(threadPoolId).getExecutor();</span><br><span class="line">        <span class="keyword">if</span> (properties.getMaximumPoolSize() != <span class="literal">null</span> &amp;&amp; properties.getCorePoolSize() != <span class="literal">null</span>) &#123;</span><br><span class="line">            ThreadPoolExecutorUtil.safeSetPoolSize(executor, properties.getCorePoolSize(), properties.getMaximumPoolSize());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (properties.getMaximumPoolSize() != <span class="literal">null</span>) &#123;</span><br><span class="line">                executor.setMaximumPoolSize(properties.getMaximumPoolSize());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (properties.getCorePoolSize() != <span class="literal">null</span>) &#123;</span><br><span class="line">                executor.setCorePoolSize(properties.getCorePoolSize());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (properties.getAllowCoreThreadTimeOut() != <span class="literal">null</span> &amp;&amp; !Objects.equals(beforeProperties.getAllowCoreThreadTimeOut(), properties.getAllowCoreThreadTimeOut())) &#123;</span><br><span class="line">            executor.allowCoreThreadTimeOut(properties.getAllowCoreThreadTimeOut());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (properties.getExecuteTimeOut() != <span class="literal">null</span> &amp;&amp; !Objects.equals(beforeProperties.getExecuteTimeOut(), properties.getExecuteTimeOut())) &#123;</span><br><span class="line">            <span class="keyword">if</span> (executor <span class="keyword">instanceof</span> DynamicThreadPoolExecutor) &#123;</span><br><span class="line">                ((DynamicThreadPoolExecutor) executor).setExecuteTimeOut(properties.getExecuteTimeOut());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (properties.getRejectedHandler() != <span class="literal">null</span> &amp;&amp; !Objects.equals(beforeProperties.getRejectedHandler(), properties.getRejectedHandler())) &#123;</span><br><span class="line">            <span class="type">RejectedExecutionHandler</span> <span class="variable">rejectedExecutionHandler</span> <span class="operator">=</span> RejectedPolicyTypeEnum.createPolicy(properties.getRejectedHandler());</span><br><span class="line">            executor.setRejectedExecutionHandler(rejectedExecutionHandler);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (properties.getKeepAliveTime() != <span class="literal">null</span> &amp;&amp; !Objects.equals(beforeProperties.getKeepAliveTime(), properties.getKeepAliveTime())) &#123;</span><br><span class="line">            executor.setKeepAliveTime(properties.getKeepAliveTime(), TimeUnit.SECONDS);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (properties.getQueueCapacity() != <span class="literal">null</span> &amp;&amp; !Objects.equals(beforeProperties.getQueueCapacity(), properties.getQueueCapacity())</span><br><span class="line">                &amp;&amp; Objects.equals(BlockingQueueTypeEnum.RESIZABLE_LINKED_BLOCKING_QUEUE.getName(), executor.getQueue().getClass().getSimpleName())) &#123;</span><br><span class="line">            <span class="keyword">if</span> (executor.getQueue() <span class="keyword">instanceof</span> ResizableCapacityLinkedBlockingQueue) &#123;</span><br><span class="line">                ResizableCapacityLinkedBlockingQueue&lt;?&gt; queue = (ResizableCapacityLinkedBlockingQueue&lt;?&gt;) executor.getQueue();</span><br><span class="line">                queue.setCapacity(properties.getQueueCapacity());</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                log.warn(<span class="string">&quot;The queue length cannot be modified. Queue type mismatch. Current queue type: &#123;&#125;&quot;</span>, executor.getQueue().getClass().getSimpleName());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
-
-
+<blockquote>
+<p>[!col]</p>
+<blockquote>
+<p>a</p>
+</blockquote>
+<blockquote>
+<p>B </p>
+</blockquote>
+</blockquote>
 <p><strong>未完待续~</strong></p>
 <blockquote>
 <p>参考资料:</p>
@@ -446,7 +453,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
