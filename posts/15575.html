@@ -27,8 +27,10 @@
 <meta property="og:site_name" content="Echo">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1736175340611.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1736230771561.png">
+<meta property="og:image" content="https://img.qylh.xyz/blog/1736251041419.png">
 <meta property="article:published_time" content="2025-01-06T14:51:59.000Z">
-<meta property="article:modified_time" content="2025-01-06T15:00:54.856Z">
+<meta property="article:modified_time" content="2025-01-07T11:57:27.379Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
@@ -189,10 +191,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2025-01-06 22:51:59 / 修改时间：23:00:54" itemprop="dateCreated datePublished" datetime="2025-01-06T22:51:59+08:00">2025-01-06</time>
+              <time title="创建时间：2025-01-06 22:51:59" itemprop="dateCreated datePublished" datetime="2025-01-06T22:51:59+08:00">2025-01-06</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-01-07 19:57:27" itemprop="dateModified" datetime="2025-01-07T19:57:27+08:00">2025-01-07</time>
+              </span>
 
           
 
@@ -205,7 +213,36 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img data-src="https://img.qylh.xyz/blog/1736175340611.png" alt="1736175340611.png|300"></p>
+        <img data-src="https://img.qylh.xyz/blog/1736175340611.png" style = "zoom:60%" />
+
+<span id="more"></span>
+
+<p>总结整理遇到过已经使用过的设计模式</p>
+<h2 id="装饰器模式"><a href="#装饰器模式" class="headerlink" title="装饰器模式"></a>装饰器模式</h2><h3 id="Java-IO-流"><a href="#Java-IO-流" class="headerlink" title="Java IO 流"></a>Java IO 流</h3><p><img data-src="https://img.qylh.xyz/blog/1736230771561.png" alt="1736230771561.png"><br>Java 的输入输出流中使用了装饰器模式，比如可以使用 BufferedInputStream 和 DataInputStream 来装饰几种基本的输入流。更多的例子可以参考 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/whgk/p/6920018.html">JavaSE(一) IO类层次关系和各种IO流的用法总结 - 有梦想的老王 - 博客园</a></p>
+<h2 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h2><h3 id="Java-IO-字节流与字符流"><a href="#Java-IO-字节流与字符流" class="headerlink" title="Java IO 字节流与字符流"></a>Java IO 字节流与字符流</h3><p>IO 流中的字符流和字节流的接口不同，它们之间可以协调工作就是基于适配器模式来做的，通过适配器，我们可以将字节流对象适配成一个字符流对象，这样我们可以直接通过字节流对象来读取或者写入字符数据。</p>
+<p><code>InputStreamReader</code> 和 <code>OutputStreamWriter</code> 就是两个适配器(Adapter)，同时，它们两个也是字节流和字符流之间的桥梁。</p>
+<ul>
+<li><code>InputStreamReader</code> 使用 <code>StreamDecoder</code> （流解码器）对字节进行解码，实现字节流到字符流的转换</li>
+<li><code>OutputStreamWriter</code> 使用 <code>StreamEncoder</code>（流编码器）对字符进行编码，实现字符流到字节流的转换</li>
+</ul>
+<h3 id="SLF4J-适配器"><a href="#SLF4J-适配器" class="headerlink" title="SLF4J 适配器"></a>SLF4J 适配器</h3><p>SLF4J 通过适配器模式适配了具体的日志实现（Log4j、Logback 等）</p>
+<h3 id="Hippo4j-动态线程池适配器"><a href="#Hippo4j-动态线程池适配器" class="headerlink" title="Hippo4j 动态线程池适配器"></a>Hippo4j 动态线程池适配器</h3><p>Hippo4j 通过实现 ThreadPoolAdapter 接口实现对 Dubbo、Spring Cloud、Kafka、RabbitMQ 等第三方线程池的适配。</p>
+<h2 id="外观模式（门面模式）"><a href="#外观模式（门面模式）" class="headerlink" title="外观模式（门面模式）"></a>外观模式（门面模式）</h2><h3 id="SLF4J"><a href="#SLF4J" class="headerlink" title="SLF4J"></a>SLF4J</h3><p>SLF4J 作为日志系统的外观，提供了一个简单的接口来隐藏底层的日志实现。使用者通过 SLF4J API（如 <code>Logger</code> 接口）记录日志，而不需要关心底层实现（Logback、Log4j 等）。</p>
+<h2 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h2><h3 id="SLF4J-1"><a href="#SLF4J-1" class="headerlink" title="SLF4J"></a>SLF4J</h3><p>SLF4J 的 LoggerFactory 是基于单例模式的，保证只有一个日志工厂示例，其是通过双重校验锁来实现的：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">LoggerFactory</span> &#123;  </span><br><span class="line">	  </span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">UNINITIALIZED</span> <span class="operator">=</span> <span class="number">0</span>;  </span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">ONGOING_INITIALIZATION</span> <span class="operator">=</span> <span class="number">1</span>;  </span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">FAILED_INITIALIZATION</span> <span class="operator">=</span> <span class="number">2</span>;  </span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">SUCCESSFUL_INITIALIZATION</span> <span class="operator">=</span> <span class="number">3</span>;  </span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">NOP_FALLBACK_INITIALIZATION</span> <span class="operator">=</span> <span class="number">4</span>;  </span><br><span class="line">	<span class="comment">// volatile 保证多线程内存可见性</span></span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">volatile</span> <span class="type">int</span> <span class="variable">INITIALIZATION_STATE</span> <span class="operator">=</span> UNINITIALIZED;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> <span class="title function_">LoggerFactory</span><span class="params">()</span> &#123;  </span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> ILoggerFactory <span class="title function_">getILoggerFactory</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">if</span> (INITIALIZATION_STATE == UNINITIALIZED) &#123;  </span><br><span class="line">            <span class="keyword">synchronized</span> (LoggerFactory.class) &#123;  </span><br><span class="line">                <span class="keyword">if</span> (INITIALIZATION_STATE == UNINITIALIZED) &#123;  </span><br><span class="line">                    INITIALIZATION_STATE = ONGOING_INITIALIZATION;  </span><br><span class="line">                    performInitialization();  </span><br><span class="line">                &#125;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">switch</span> (INITIALIZATION_STATE) &#123;  </span><br><span class="line">        <span class="keyword">case</span> SUCCESSFUL_INITIALIZATION:  </span><br><span class="line">            <span class="keyword">return</span> StaticLoggerBinder.getSingleton().getLoggerFactory();  </span><br><span class="line">        <span class="keyword">case</span> NOP_FALLBACK_INITIALIZATION:  </span><br><span class="line">            <span class="keyword">return</span> NOP_FALLBACK_FACTORY;  </span><br><span class="line">        <span class="keyword">case</span> FAILED_INITIALIZATION:  </span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(UNSUCCESSFUL_INIT_MSG);  </span><br><span class="line">        <span class="keyword">case</span> ONGOING_INITIALIZATION:  </span><br><span class="line">            <span class="comment">// support re-entrant behavior.  </span></span><br><span class="line">            <span class="comment">// See also http://jira.qos.ch/browse/SLF4J-97            return SUBST_FACTORY;  </span></span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(<span class="string">&quot;Unreachable code&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h2><h3 id="SLF4J-Logger-factory"><a href="#SLF4J-Logger-factory" class="headerlink" title="SLF4J Logger factory"></a>SLF4J Logger factory</h3><p>SLF4J 通过 LoggerFactory 来生产 Logger</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Logger <span class="title function_">getLogger</span><span class="params">(String name)</span> &#123;</span><br><span class="line">    <span class="comment">/**工厂方法模式的使用**/</span></span><br><span class="line">    <span class="type">ILoggerFactory</span> <span class="variable">iLoggerFactory</span> <span class="operator">=</span> getILoggerFactory();</span><br><span class="line">    <span class="keyword">return</span> iLoggerFactory.getLogger(name);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//工厂接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ILoggerFactory</span> &#123;</span><br><span class="line">    Logger <span class="title function_">getLogger</span><span class="params">(String var1)</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//Logger产品接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Logger</span> &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">ROOT_LOGGER_NAME</span> <span class="operator">=</span> <span class="string">&quot;ROOT&quot;</span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="InLong-Sort-Flink-Connector"><a href="#InLong-Sort-Flink-Connector" class="headerlink" title="InLong Sort Flink Connector"></a>InLong Sort Flink Connector</h3><p>InLong Sort 模块中的 Flink Connector 采用了工厂模式来制造 Source 对象用于和具体的数据源对接。<br><img data-src="https://img.qylh.xyz/blog/1736251041419.png" alt="1736251041419.png"></p>
+<blockquote>
+<p>参考资料</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/whgk/p/6920018.html">JavaSE(一) IO类层次关系和各种IO流的用法总结 - 有梦想的老王 - 博客园</a></li>
+<li><a target="_blank" rel="noopener" href="https://javaguide.cn/java/io/io-design-patterns.html#%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F">Java IO 设计模式总结 | JavaGuide</a></li>
+</ol>
+</blockquote>
 
     </div>
 
@@ -286,6 +323,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">装饰器模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-IO-%E6%B5%81"><span class="nav-number">1.1.</span> <span class="nav-text">Java IO 流</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">适配器模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-IO-%E5%AD%97%E8%8A%82%E6%B5%81%E4%B8%8E%E5%AD%97%E7%AC%A6%E6%B5%81"><span class="nav-number">2.1.</span> <span class="nav-text">Java IO 字节流与字符流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SLF4J-%E9%80%82%E9%85%8D%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">SLF4J 适配器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hippo4j-%E5%8A%A8%E6%80%81%E7%BA%BF%E7%A8%8B%E6%B1%A0%E9%80%82%E9%85%8D%E5%99%A8"><span class="nav-number">2.3.</span> <span class="nav-text">Hippo4j 动态线程池适配器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F%EF%BC%88%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">外观模式（门面模式）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SLF4J"><span class="nav-number">3.1.</span> <span class="nav-text">SLF4J</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">单例模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SLF4J-1"><span class="nav-number">4.1.</span> <span class="nav-text">SLF4J</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">工厂模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SLF4J-Logger-factory"><span class="nav-number">5.1.</span> <span class="nav-text">SLF4J Logger factory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InLong-Sort-Flink-Connector"><span class="nav-number">5.2.</span> <span class="nav-text">InLong Sort Flink Connector</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
