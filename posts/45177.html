@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://img.qylh.xyz/blog/1727094579881.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1727099885578.png">
 <meta property="article:published_time" content="2024-09-22T11:24:36.000Z">
-<meta property="article:modified_time" content="2024-09-29T08:10:40.499Z">
+<meta property="article:modified_time" content="2025-01-09T08:44:50.221Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="MQTT">
 <meta property="article:tag" content="消息队列">
@@ -203,7 +203,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-09-29 16:10:40" itemprop="dateModified" datetime="2024-09-29T16:10:40+08:00">2024-09-29</time>
+                <time title="修改时间：2025-01-09 16:44:50" itemprop="dateModified" datetime="2025-01-09T16:44:50+08:00">2025-01-09</time>
               </span>
 
           
@@ -266,7 +266,7 @@
 <li><code>HTTP</code>需要轮训才能获取数据更新</li>
 </ol>
 <p>​	<code>MQTT 5.0</code>之前发布者无法得知订阅者是否受到了消息，或者正确处理了消息，所以<code>MQTT 5.0</code>增加了<a href="https://qylh.xyz/posts/35585.html#%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E7%89%B9%E6%80%A7">请求响应</a></p>
-<h3 id="MQTTVS-消息队列"><a href="#MQTTVS-消息队列" class="headerlink" title="MQTTVS 消息队列"></a><code>MQTT</code>VS 消息队列</h3><p>尽管两者的特性比较相近，但他们的应用场景是有着显著不同的：</p>
+<h3 id="MQTT-VS-消息队列"><a href="#MQTT-VS-消息队列" class="headerlink" title="MQTT VS 消息队列"></a><code>MQTT</code> VS 消息队列</h3><p>尽管两者的特性比较相近，但他们的应用场景是有着显著不同的：</p>
 <ul>
 <li>消息队列作为一种中间件，主要用于服务端应用之间的消息存储与转发，数据量大但客户端数量少。</li>
 <li>MQTT是一种消息传输协议，主要用于物联网设备间的消息传递，特点是连接的设备量很大。</li>
@@ -395,7 +395,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MQTT%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">MQTT概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">MQTT协议的特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.</span> <span class="nav-text">相关概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">工作流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8MQTT"><span class="nav-number">1.4.</span> <span class="nav-text">为什么用MQTT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-VS-HTTP"><span class="nav-number">1.4.1.</span> <span class="nav-text">MQTT VS HTTP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTTVS-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">1.4.2.</span> <span class="nav-text">MQTTVS 消息队列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT%E4%BF%9D%E7%95%99%E6%B6%88%E6%81%AF"><span class="nav-number">1.5.</span> <span class="nav-text">MQTT保留消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.</span> <span class="nav-text">MQTT遗嘱消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF%E5%8E%9F%E7%90%86"><span class="nav-number">1.6.1.</span> <span class="nav-text">遗嘱消息原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%9C%A8%E8%BF%9E%E6%8E%A5%E6%97%B6%E6%8C%87%E5%AE%9A%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.1.1.</span> <span class="nav-text">客户端在连接时指定遗嘱消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%84%8F%E5%A4%96%E5%85%B3%E9%97%AD%E6%97%B6%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8F%91%E5%B8%83%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.1.2.</span> <span class="nav-text">客户端意外关闭时服务端发布遗嘱消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MQTT-5-0-%E5%BB%B6%E8%BF%9F%E5%8F%91%E5%B8%83%E7%89%B9%E6%80%A7"><span class="nav-number">1.6.1.3.</span> <span class="nav-text">MQTT 5.0 延迟发布特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E5%90%88%E4%BF%9D%E7%95%99%E6%B6%88%E6%81%AF%E4%BD%BF%E7%94%A8"><span class="nav-number">1.6.1.4.</span> <span class="nav-text">配合保留消息使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT-5-0"><span class="nav-number">1.7.</span> <span class="nav-text">MQTT 5.0</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MQTT%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">MQTT概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">MQTT协议的特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.</span> <span class="nav-text">相关概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">工作流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8MQTT"><span class="nav-number">1.4.</span> <span class="nav-text">为什么用MQTT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-VS-HTTP"><span class="nav-number">1.4.1.</span> <span class="nav-text">MQTT VS HTTP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-VS-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">1.4.2.</span> <span class="nav-text">MQTT VS 消息队列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT%E4%BF%9D%E7%95%99%E6%B6%88%E6%81%AF"><span class="nav-number">1.5.</span> <span class="nav-text">MQTT保留消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.</span> <span class="nav-text">MQTT遗嘱消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF%E5%8E%9F%E7%90%86"><span class="nav-number">1.6.1.</span> <span class="nav-text">遗嘱消息原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%9C%A8%E8%BF%9E%E6%8E%A5%E6%97%B6%E6%8C%87%E5%AE%9A%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.1.1.</span> <span class="nav-text">客户端在连接时指定遗嘱消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%84%8F%E5%A4%96%E5%85%B3%E9%97%AD%E6%97%B6%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8F%91%E5%B8%83%E9%81%97%E5%98%B1%E6%B6%88%E6%81%AF"><span class="nav-number">1.6.1.2.</span> <span class="nav-text">客户端意外关闭时服务端发布遗嘱消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MQTT-5-0-%E5%BB%B6%E8%BF%9F%E5%8F%91%E5%B8%83%E7%89%B9%E6%80%A7"><span class="nav-number">1.6.1.3.</span> <span class="nav-text">MQTT 5.0 延迟发布特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E5%90%88%E4%BF%9D%E7%95%99%E6%B6%88%E6%81%AF%E4%BD%BF%E7%94%A8"><span class="nav-number">1.6.1.4.</span> <span class="nav-text">配合保留消息使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT-5-0"><span class="nav-number">1.7.</span> <span class="nav-text">MQTT 5.0</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -411,7 +411,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-count">78</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -424,7 +424,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">85</span>
+        <span class="site-state-item-count">86</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

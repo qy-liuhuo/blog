@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/mylogo.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/mylogo.svg">
+  <link rel="mask-icon" href="/images/mylogo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="项目整理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Echo">
+<meta property="og:url" content="https://qylh.xyz/posts/1.html">
+<meta property="og:site_name" content="Echo">
+<meta property="og:description" content="项目整理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.qylh.xyz/blog/%E9%A1%B9%E7%9B%AE1.png">
+<meta property="article:published_time" content="2025-01-09T15:26:00.000Z">
+<meta property="article:modified_time" content="2025-01-09T15:54:50.422Z">
+<meta property="article:author" content="MaHaotian">
+<meta property="article:tag" content="开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.qylh.xyz/blog/%E9%A1%B9%E7%9B%AE1.png">
+
+<link rel="canonical" href="https://qylh.xyz/posts/1.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title> | Echo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Echo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/1.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+      <meta itemprop="name" content="MaHaotian">
+      <meta itemprop="description" content="给时光以生命，而不是给生命以时光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Echo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-01-09 23:26:00 / 修改时间：23:54:50" itemprop="dateCreated datePublished" datetime="2025-01-09T23:26:00+08:00">2025-01-09</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img data-src="https://img.qylh.xyz/blog/%E9%A1%B9%E7%9B%AE1.png" alt="项目1.png"></p>
+<center>项目整理</center>
+
+<span id="more"></span>
+
+
+
+<h2 id="DeviceShare"><a href="#DeviceShare" class="headerlink" title="DeviceShare"></a>DeviceShare</h2><h3 id="服务注册与发现"><a href="#服务注册与发现" class="headerlink" title="服务注册与发现"></a>服务注册与发现</h3><p>现有的方案多采用手动设置服务端 ip 地址的方式进行软件配置， 但这种方式学习成本高，配置效率低，我们就想能不能设计一种自动化的配置方案，这也是从微服务的注册发现中获得的启发，然而软件 C&#x2F;S 架构限制了采用 Zookeeper 、Nacos 这种分布式中间件来进行服务注册与发现。</p>
+<p>这里最初是自己基于 UDP 广播实现的，客户端向局域网内发送UDP广播请求服务地址，服务端监听UDP请求，并回复给客户端自己服务所在的地址。（其实有点像DHCP协议）。但这种方案的效率是比较低的，而且如果服务端出现故障后，客户端会不停地向网络中发送UDP广播，可能会造成广播风暴。</p>
+<p>那么就可以采用组播的方案，客户端和服务端加入某个组播，之后客户端发送组播查询服务端服务地址，可以降低网络开销。</p>
+<p>后来调研了一下发现有一种叫作Zeroconf的协议，翻译一下就是零配置，可以完美实现这个问题，但其实zeroconf</p>
+<p>有不同的实现，比如苹果的设备发现协议 Bonjour 就是其中一种，其主要依靠mDNS协议实现，基本原理是使用mDNS的主机都会加入一个多播组，服务端会向组中多播一个注册信息，包括自己能够提供的服务类型和服务协议，端口和ip等，客户端需要寻找时会向组中发送查询请求获取服务地址。</p>
+<h3 id="输入设备-I-O-性能优化"><a href="#输入设备-I-O-性能优化" class="headerlink" title="输入设备 I&#x2F;O 性能优化"></a>输入设备 I&#x2F;O 性能优化</h3><p>由于我们的软件设计目标是跨平台，而且需要适配 openKylin 的 Wayland 桌面环境，对于windows、macos已经非wayland的桌面环境来说，我们是可以直接借助系统的 API 读写输入设备的输入信息的，比如说在linux 的 x11 桌面环境下，就有一个x server 的东西，这个server 一方面控制屏幕的绘制一方面负责和x client也就是我们的应用程序交互。 我们可以直接从他的x server 中获取当前鼠标的位置，也可以直接把鼠标位置信息输入给这个 x server处理，这个过程是比较高效的。</p>
+<p>但问题处在 wayland 这个桌面环境下，这是一种比较新的桌面协议，他出于安全的考量，移除了x server 这一层，就导致我们没办法直接获得输入设备的信息，这个解决办法是选择更底层的方式，其实也就是直接读写输入设备文件，然而实际操作下来发现会有很多个设备文件，我们不太好区分哪个才是我们正在用的设备。</p>
+<p>那如果不能区分，我们就监听所有的鼠标或键盘设备文件（当然后来去现场答辩的时候，和其他同赛题的同学交流了下，发现他们的解决思路也很有意思，他们在软件启动的时候会需要用户操作一下键鼠，这样就可以知道是哪一个了，但是我们这样做的好处就是可以处理多个鼠标或键盘的情况）， 我们这里是基于 evdev （<a target="_blank" rel="noopener" href="https://python-evdev.readthedocs.io/en/latest/tutorial.html#reading-events-using-asyncio%EF%BC%89%E6%9D%A5%E5%81%9A%E7%9A%84%EF%BC%8C%E6%9C%80%E5%88%9D%E6%88%91%E7%9A%84%E5%81%9A%E6%B3%95%E6%98%AF%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E7%9B%91%E5%90%AC%E5%A4%9A%E4%B8%AA%E8%AE%BE%E5%A4%87%E6%96%87%E4%BB%B6%EF%BC%8C%E6%AF%8F%E4%B8%AA%E7%BA%BF%E7%A8%8B%E9%87%87%E7%94%A8%E9%98%BB%E5%A1%9E%E8%AF%BB%E5%8F%96%E7%9A%84%E6%96%B9%E5%BC%8F%EF%BC%8C%E5%A6%82%E6%9E%9C%E8%BF%99%E4%B8%AA%E7%BA%BF%E7%A8%8B%E8%B4%9F%E8%B4%A3%E7%9A%84%E6%98%AF%E6%97%A0%E6%95%88%E7%9A%84%E8%AE%BE%E5%A4%87%E6%96%87%E4%BB%B6%E5%B0%B1%E4%BC%9A%E8%A2%AB%E9%98%BB%E5%A1%9E%EF%BC%8C%E4%BD%86%E6%98%AF%E5%8F%91%E7%8E%B0%E7%94%B1%E4%BA%8E%E8%BF%99%E4%B8%AA%E7%BA%BF%E7%A8%8B%E8%A2%AB%E9%98%BB%E5%A1%9E%E4%BD%8F%E5%B0%B1%E6%B2%A1%E5%8A%9E%E6%B3%95%E7%BB%93%E6%9D%9F%E4%BA%86%EF%BC%8C%E9%99%A4%E9%9D%9E%E7%9B%B4%E6%8E%A5%E5%85%B3%E9%97%AD%E7%A8%8B%E5%BA%8F%EF%BC%8C%E9%82%A3%E5%B0%B1%E5%8F%AA%E8%83%BD%E7%94%A8%E9%9D%9E%E9%98%BB%E5%A1%9E%E7%9A%84%E8%AF%BB%E5%8F%96%E6%96%B9%E5%BC%8F%EF%BC%8C%E4%BD%86%E8%BF%99%E5%8F%88%E4%BC%9A%E5%AF%BC%E8%87%B4%E7%BA%BF%E7%A8%8B%E7%9A%84%E9%A2%91%E7%B9%81%E5%88%87%E6%8D%A2%EF%BC%8C%E6%95%88%E7%8E%87%E6%98%AF%E6%AF%94%E8%BE%83%E4%BD%8E%E7%9A%84%E3%80%82">https://python-evdev.readthedocs.io/en/latest/tutorial.html#reading-events-using-asyncio）来做的，最初我的做法是多个线程监听多个设备文件，每个线程采用阻塞读取的方式，如果这个线程负责的是无效的设备文件就会被阻塞，但是发现由于这个线程被阻塞住就没办法结束了，除非直接关闭程序，那就只能用非阻塞的读取方式，但这又会导致线程的频繁切换，效率是比较低的。</a></p>
+<p>最后我采用的协程来处理，我理解的协程其实就是程序的调度可以交给用户来决定，本质还是在一个线程内顺序执行，只不过是通过调度产生异步并行的效果。 这样可以在阻塞等待IO的时候去处理别的逻辑，可以减少线程调度，同时可解决了因为阻塞读取导致无法结束的问题（在python 的 asynio 模块中 如果有一个任务抛出异常，所有任务都会中止，只需要在鼠标移动出屏幕的时候抛出一个自定义异常就好了）。</p>
+<p>后来又仔细思考了一下这个方案，这个方案还是把每个设备文件当成了一个任务来处理，通过事件调度来在一个设备文件io阻塞时去处理别的事件， 我们还可以借助IO多路复用机制来合并对多个设备文件的监听，这样可以减少协程的上下文切换，但是单纯使用IO多路复用在阻塞时没办法很好地利用资源，我们其实可以在IO阻塞的时候，去处理别的逻辑比如说网络IO，那最终我的方案是结合了io多路复用和协程机制，那这样的话相当于是两个任务，一个任务是基于io多路复用来监听多个设备输入文件，另一个任务是将监听到的输入事件通过socket发送给其他主机，两个任务通过通过一个队列交换数据，通过协程调度，而且因为协程本身还是在一个线程内执行，也免去了加锁等开销。</p>
+<p>通过一系列的优化，最终使得共享鼠标移动的回报率从200HZ增加到了350HZ左右。</p>
+<p>总结一下以上几个方案：</p>
+<ul>
+<li><p>多线程</p>
+<ul>
+<li><p>频繁线程切换</p>
+</li>
+<li><p>多线程并发需要加锁</p>
+</li>
+</ul>
+</li>
+<li><p>协程</p>
+<ul>
+<li><p>轻量级线程，切换开销小</p>
+</li>
+<li><p>依靠事件循环调度处理多个任务，在IO阻塞时可处理其他任务</p>
+</li>
+<li><p>无须加锁</p>
+</li>
+</ul>
+</li>
+<li><p>多路IO复用</p>
+<ul>
+<li><p>无须频繁轮询多个设备文件，由操作系统提供支持，一次系统调用监听多个设备文件</p>
+</li>
+<li><p>没有切换开销</p>
+</li>
+</ul>
+</li>
+<li><p>协程+多路IO复用</p>
+<ul>
+<li><p>集两者优点为一体</p>
+</li>
+<li><p>即可监听多个设备未见，又可以提高资源利用率，在IO阻塞时调度运行其他任务。</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">from</span> evdev <span class="keyword">import</span> InputDevice, categorize, ecodes, list_devices</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">print_events</span>(<span class="params">device</span>):</span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">for</span> event <span class="keyword">in</span> device.async_read_loop():</span><br><span class="line">        <span class="keyword">if</span> event.<span class="built_in">type</span> == ecodes.EV_KEY:</span><br><span class="line">            key_event = categorize(event)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;device.name&#125;</span>: <span class="subst">&#123;key_event&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">&quot;test&quot;</span>) <span class="comment"># 退出任务,所有任务都会被取消</span></span><br><span class="line">        <span class="keyword">elif</span> event.<span class="built_in">type</span> == ecodes.EV_REL:</span><br><span class="line">            rel_event = categorize(event)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;device.name&#125;</span>: <span class="subst">&#123;rel_event&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="comment"># 找到所有鼠标设备</span></span><br><span class="line">    devices = [InputDevice(path) <span class="keyword">for</span> path <span class="keyword">in</span> list_devices()]</span><br><span class="line">    mouse_devices = []</span><br><span class="line">    <span class="keyword">for</span> device <span class="keyword">in</span> devices:</span><br><span class="line">        capabilities = device.capabilities()</span><br><span class="line">        <span class="keyword">if</span> ecodes.EV_REL <span class="keyword">in</span> capabilities <span class="keyword">and</span> ecodes.EV_KEY <span class="keyword">in</span> capabilities <span class="keyword">and</span> <span class="string">&quot;virtual&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> device.name:</span><br><span class="line">            <span class="keyword">if</span> ecodes.REL_X <span class="keyword">in</span> capabilities[ecodes.EV_REL] <span class="keyword">and</span> ecodes.REL_Y <span class="keyword">in</span> capabilities[ecodes.EV_REL]:</span><br><span class="line">                <span class="keyword">if</span> ecodes.BTN_LEFT <span class="keyword">in</span> capabilities[ecodes.EV_KEY] <span class="keyword">or</span> ecodes.BTN_RIGHT <span class="keyword">in</span> capabilities[</span><br><span class="line">                    ecodes.EV_KEY]:</span><br><span class="line">                    mouse_devices.append(device)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> mouse_devices:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;未找到鼠标设备。&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 为每个鼠标设备启动监听任务</span></span><br><span class="line">    tasks = [asyncio.create_task(print_events(dev)) <span class="keyword">for</span> dev <span class="keyword">in</span> mouse_devices]</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;监听以下鼠标设备:&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> dev <span class="keyword">in</span> mouse_devices:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;- <span class="subst">&#123;dev.name&#125;</span> (<span class="subst">&#123;dev.path&#125;</span>)&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> asyncio.gather(*tasks, return_exceptions=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    asyncio.run(main())</span><br></pre></td></tr></table></figure>
+
+<h2 id="数字孪生"><a href="#数字孪生" class="headerlink" title="数字孪生"></a>数字孪生</h2><h3 id="轨迹数据传输"><a href="#轨迹数据传输" class="headerlink" title="轨迹数据传输"></a>轨迹数据传输</h3><p>边缘计算节点将实时轨迹数据发布到mqtt上，web服务器订阅mqtt进行解析和坐标转换后需要传递给前端，因为这里涉及到了后端主动向前端推送数据的问题，传统的 HTTP 无法实现服务端向客户端主动推送数据（虽然HTTP 2.0 有服务端推送的特性，但这也只是说在请求a资源时可以顺带把b资源也推送给前端，并不满足我们的需求）为了实现这种功能有如下几种方案：</p>
+<ol>
+<li><p>HTTP轮询，这又分为短轮询和长轮询，长轮询是保持http连接，如果超时前有数据发送即可直接response</p>
+</li>
+<li><p>WebSocket，可以实现全双工通信</p>
+</li>
+<li><p>SSE 协议，最初了解这个协议是因为ChatGPT使用的SSE传输响应文本，SSE是基于 HTTP 长连接的，content-type 设置为event-stream，通过http建立连接，之后就可以持续的发送事件数据，前端可以监听获得这些数据。</p>
+</li>
+</ol>
+<p>  选型的时候主要是在 WebSocket 和 SSE 之间犹豫，最终还是选用了 SSE 协议，选用原因有几点：</p>
+<ol>
+<li><p>需求只是后端向前端推送，前端向后端发送数据还是以 http 请求响应的模式进行，因此SSE协议的单工通信就够用了</p>
+</li>
+<li><p>SSE 支持超时自动重连</p>
+</li>
+<li><p>SSE 更轻量级 更易于实现，因为其本身就是基于 HTTP 的，浏览器支持较好</p>
+</li>
+<li><p>基于HTTP，更方便做负载均衡</p>
+</li>
+<li><p>基于事件，可以推送不同类型的事件，客户端进行处理，而websocket需要自己定义消息类型</p>
+</li>
+</ol>
+<p>此外为了提高使用SSE时的性能，也做了优化，因为需要维持一个HTTP的长连接，那么我们可以把连接话柄缓存起来，这样可以同一个用户可以共用一个话柄，短时间内刷新浏览器也不需要重新建立话柄，这里我是用的concurrentHashMap 来做的，使用用户登录的 ticket 作为key，value存放话柄，如果是第一次登录就会put进去一个新话柄，之后就可以复用这个话柄，直到用户下线超时被移除。使用 concurrentHashMap 是为了保证并发时的</p>
+<p>线程安全。</p>
+<h3 id="MQTT-选用"><a href="#MQTT-选用" class="headerlink" title="MQTT 选用"></a>MQTT 选用</h3><p>在该项目中，为了实现物理世界数据到数字世界的传递，选用了 MQTT 协议，其本质也是一个轻量级的发布订阅协议，适用于资源受限的设备和低带宽、高延迟或不稳定的网络环境，在物联网中广泛应用。物联网设备将采集到的数据发布到对应的 Topic ， 后端服务订阅这个 Topic 即可，这样描述其实有点像我们用的消息队列，但其并不是一个消息队列，而是一种传输协议，是基于TCP、Websocket、UDP等的一个应用层协议。</p>
+<p>Mqtt 和 消息队列的设计初衷和实现上都是不一样的，消息队列更关注应用间的消息传递和转发，数据量大但连接的数量比较少，而 mqtt 更关注物联网设备间的信息传递，特点是支持很大的设备连接数量。有时MQTT和消息队列会一起使用，MQTT专注于处理物联网设备上报的数据，然后消息队列订阅这些消息并转发到不同的业务系统进行处理。</p>
+<p>而且相比使用HTTP协议，MQTT报文长度更小，网络开销低，而且 HTTP 属于无状态协议，无法记录客户端的状态，当连接断开恢复后无法恢复未发送的数据。而且 HTTP 是半双工的，需要轮询才能获取数据更新。而MQTT可以实现双向通信，此外MQTT提供了三种不同的QOS服务质量，当然随着QoS级别的提升，通信的效率也会降低，尤其是采用QoS 2 级别其性能智能达到QoS 1 一半：</p>
+<ul>
+<li><p>QoS 0 最多传送一次</p>
+</li>
+<li><p>QoS 1 至少被传送一次</p>
+</li>
+<li><p>QoS 2 消息只传送一次</p>
+</li>
+</ul>
+<p>可以根据不同的需求选用不同的服务质量，比如实验室的智能开关，因为它只会发送点击信息，无法判断当前是打开还是关闭，因此我们必须保证消息可达而且只能到达一次，否则就乱了，而对于成员的进出信息，我们只需要保证他可达就好了，就算重复发送了两条同一个人进入实验室的信息也问题不大，而对于实验室任务的实时轨迹位置信息设置QoS 0 就足够了，偶尔丢几个数据对系统也产生不了什么影响。</p>
+<p>当然MQTT还提供了很多特性，比如项目中使用到的一个特性叫作保留消息，比如空调的状态信息是在空调状态修改后才会发布的，那么如果我们的服务端上线时就像获取他的最新信息就可以利用这个保留消息，物联网设备会把自己的状态信息以保留消息的方式发布，mqtt 会保留最新的一条保留消息，这样服务端上线时就可以立即收到这个保留消息获得最新状态。</p>
+<p>还有一个特性叫作遗嘱消息，客户端可以指定一条遗嘱消息，当客户端异常关闭时这条遗嘱消息就会被发送，这样我们可以更方便的感知到物联网传感器的状态，进一步做处理。</p>
+<p>后续可以测试一下消息延迟？</p>
+<p>除此之外我还在Inlong项目中负责了Agent模块的MQTTSource模块开发：</p>
+<h2 id="易班大厅-疫情打卡"><a href="#易班大厅-疫情打卡" class="headerlink" title="易班大厅 - 疫情打卡"></a>易班大厅 - 疫情打卡</h2><h3 id="疫情打卡数据导出"><a href="#疫情打卡数据导出" class="headerlink" title="疫情打卡数据导出"></a>疫情打卡数据导出</h3><p>学生需每日在平台打卡自己的健康数据，各级管理老师需要将学生每日&#x2F;一段时间的打卡情况导出为excel，而大规模的数据查询和excel文件生成会消耗比较长的时间，甚至可能导致http连接超时。这里用到了两个技术来解决：</p>
+<ol>
+<li>使用线程池去处理，用户提交导出请求后，先生成多个子任务，交给线程池去处理，每个线程负责生成其中一个子表格，并由一个线程去整合结果将所有 excel 打包成一个压缩包。这里最简单的办法就是用线程池的invokeAll 方法去获取所有的任务结果，但是这种方法有一个弊端，因为打包zip，是需要一个一个写入文件的，等待所有的任务都执行结束再去处理效率是比较低的， 还有一个办法是去记录一个Future对象的列表，遍历获得所有结果，能获取到一个即可处理一个，但是前面的可能会阻塞后面的处理， 最差的情况就是第一个任务是最慢的，需要等第一个处理完后，后面的才能处理，这和invokeAll 是一样的。<a target="_blank" rel="noopener" href="https://blog.csdn.net/lijingjingchn/article/details/104491862%EF%BC%8C%E6%89%80%E4%BB%A5%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8CompletionService">https://blog.csdn.net/lijingjingchn/article/details/104491862，所以可以使用CompletionService</a> 来实现<a target="_blank" rel="noopener" href="https://blog.csdn.net/liuyu973971883/article/details/108055564%EF%BC%8C%E4%BB%96%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E6%98%AF%E7%BB%B4%E6%8A%A4%E4%BA%86%E4%B8%80%E4%B8%AA%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%EF%BC%8C%E6%B2%A1%E5%AE%8C%E6%88%90%E4%B8%80%E4%B8%AA%E4%BB%BB%E5%8A%A1%E5%B0%B1%E4%BC%9A%E6%94%BE%E5%85%A5%E8%BF%99%E4%B8%AA%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E4%B8%AD%EF%BC%8C%E8%BF%99%E6%A0%B7%E6%88%91%E4%BB%AC%E5%B0%B1%E5%8F%AF%E4%BB%A5%E5%A4%84%E7%90%86%E5%AE%8C%E6%88%90%E4%B8%80%E4%B8%AA%E5%AD%90%E4%BB%BB%E5%8A%A1%E5%B0%B1%E5%8F%AF%E4%BB%A5%E5%86%99%E5%85%A5%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E4%BA%86%EF%BC%8C%E5%A4%A7%E5%A4%A7%E6%8F%90%E9%AB%98%E4%BA%86%E6%95%88%E7%8E%87%E3%80%82">https://blog.csdn.net/liuyu973971883/article/details/108055564，他的基本原理是维护了一个阻塞队列，没完成一个任务就会放入这个阻塞队列中，这样我们就可以处理完成一个子任务就可以写入压缩文件了，大大提高了效率。</a> 效果对比： 导出100个班级约50000名学生一天的打卡数据，优化前12s左右，优化后4s左右</li>
+</ol>
+<blockquote>
+<p>线程池参数设置：参考 <a target="_blank" rel="noopener" href="https://blog.csdn.net/Gemini1995/article/details/137683936%EF%BC%8C%E8%AF%A5%E4%BB%BB%E5%8A%A1%E6%98%AF%E4%B8%80%E4%B8%AA">https://blog.csdn.net/Gemini1995/article/details/137683936，该任务是一个</a> I&#x2F;O 密集场景，通过并行可以充分利用 CPU 的资源，这个场景下，一个学院平均的班级数量大概在10 - 30 左右，所以核心线程设置为了10，工作队列使用的是ArrayBlockingQueue长度设置为50，最大线程数设置为了25，由于是一个低并发的场景所以非核心线程空闲存活时间设置的比较短大概也就设置了半分钟左右，尽快释放系统资源。</p>
+<p>队列满之后的丢弃策略采用的是抛出异常并返回给前端，并提示用户当前系统负载较高请稍候重试。当然后来出现了一个问题，学校的老师反映没办法导出数据，一直提示系统负载过高，我们查看日志之后发现这名老师是学校的管理老师，她尝试导出全校每个班级的数据， 那么当前这种参数设置完全没办法满足学校一级的管理老师导出所有班级信息的需求，因为全校的班级数量太多了，这里我们就直接删掉了校级老师按班级导出数据的功能，粒度只细化到学院。因为为了这样一个特殊情况增加线程数等是不值得的。</p>
+<p>关于拒绝策略通过思考发现现有的四种策略都不是很满足我们的需求，其中最满足的应该是抛出异常并返回给前端，然后前端提示系统负载较高，但是这样有一个问题，因为我们的请求会分成很多个子任务，可能已经提交了几个子任务之后才发现队列满了，那这时候抛异常前面的几个任务就白做了，那我们在提交任务前可以先判断一下队列剩余的空间够不够我们完成任务，如果不够的话可以直接拒绝，如果够的话就提交任务，但是这样还是有问题的，因为任务是并发的，可能在任务提交过程中其他用户也提交了任务，就会导致后面出现任务还没提交完，队列就满了的情况。因此我自己写了一个拒绝策略，这个策略也很简单，如果满了就由主线程以阻塞的方式提交到任务队列中去。等到队列空出来就可以把这个任务加进去，但是为了防止出现异常导致主线程在put的时候一直阻塞，这里选用了offer方法，为阻塞设置一个超时时间，如果超过这个事件还没有空位，就直接返回错误，这个相当于是一个兜底的策略。</p>
+<p>但其实后来在应用上线之后发现，实际上系统导出任务的触发频率是比较低的，按照每天每个学院导出2次数据算，其实一天也就五十次左右，那么线程池中的核心线程很多时候就是空闲的，这也是一种浪费，然后就给核心线程设置成了允许超时，这样没有任务的时候核心线程也可以释放掉。 这个系统的实现是这样的，但其实后来回想起来，当时的设计其实有点画蛇添足了，这种场景下用上述策略其实也没比直接创建线程执行优化多少，可能当时也是想用一用这个技术吧，不过确实系统设计也应该简洁高效，强行套一些方法可能效果也不会提升多少，简单高效就够了。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncPutQueuePolicy</span> <span class="keyword">implements</span> <span class="title class_">RejectedExecutionHandler</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">rejectedExecution</span><span class="params">(Runnable r, ThreadPoolExecutor executor)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (executor.isShutdown()) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            executor.getQueue().offer(r, <span class="number">2</span>, TimeUnit.SECONDS);;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            log.error(<span class="string">&quot;Adding Queue task to thread pool failed.&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ol start="2">
+<li><p>学院老师导出数据时一般不会超时，而学校老师导出时由于数据量过大就很有可能会超时，为此使用了长轮询技术基于 DeferredResult 实现 HTTP 长轮询，可以实现异步处理，不会阻塞请求线程，由单独的线程去处理耗时的 I&#x2F;O 操作，可以设置一个超时事件，在超时前如果能拿到异步处理的结果就可以直接返回结构，否则会返回超时信息由前端 (<a target="_blank" rel="noopener" href="https://juejin.cn/post/6950164619872698405)%EF%BC%8C%E5%89%8D%E7%AB%AF%E5%86%8D%E5%8E%BB%E5%AE%9A%E6%97%B6%E8%AF%B7%E6%B1%82%E5%BC%82%E6%AD%A5%E7%9A%84%E5%A4%84%E7%90%86%E7%BB%93%E6%9E%9C%E3%80%82">https://juejin.cn/post/6950164619872698405)，前端再去定时请求异步的处理结果。</a></p>
+</li>
+<li><p>使用的是easyExcel，这个是阿里的一个开源工具，不过今年我关注到这个项目已经停更了，原作者已经从阿里离职，他也创建了新项目叫fastexcel。</p>
+</li>
+</ol>
+<p>  数据表设计：</p>
+<ul>
+<li><p>自增主键</p>
+</li>
+<li><p>日期时间，学号联合索引（学号中已经隐含了学院和班级信息）</p>
+<ul>
+<li><p>学号单独索引，用于查找某个学生打卡信息&#96;</p>
+</li>
+<li><p>异常数据 单独索引（一个布尔值）</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="打卡高并发"><a href="#打卡高并发" class="headerlink" title="打卡高并发"></a>打卡高并发</h3><ol>
+<li>分表，因为 insert 进一条数据需要对表加锁，为了提高系统性能，将打卡记录表进行了横向拆分，拆分成了多个表，一条记录具体插入到哪个表是按照学生所属的学院进行划分的，这样也方便之后学院老师查询，也就不需要跨表查询了，具体来说其实是按照学号来做的，因为我本科的时候学号中有两位是和学院挂钩的，这样只需要取这两位对表的数量进行一个取余的操作就可以了。    </li>
+<li>批量提交，为了减少数据库的操作次数，我们采用了批量提交的方案，就是学生打卡之后我并不直接写入数据库，而是把他先缓存在本地，当积累了一定数量的打卡后再批量插入（设置阈值为5，采用mybatis的批量插入，本质是foreach 拼接 sql语句，当然这里有一个坑就是不能拼接太多的sql语句，会导致超出mysql语句限制，但本场景不会有那么大的数据量就不需要考虑这个问题了）。但是如果在非高峰期或者高峰期的末尾可能会出现打卡记录迟迟不提交的问题，为此我做了两个优化：<br>1. 统计了打卡高峰时间段，高峰时间段才启用批量提交策略<br>2. 记录系统qps 当出现高峰时自动启用提交策略，结束高峰后自动停用<br>3. 设置超时提交策略，由一个线程去监控所有的缓存，当缓存的第一条记录和当前时间差超过一定阈值之后直接触发提交</li>
+</ol>
+<p>当然这也出现了一个问题，用户可能会延迟看到自己的打卡记录，打卡了前端页面显示成功了，在刷新一下发现打卡记录不见了，可能会出现重复打卡的情况。为了避免这个问题，在前端也做了一些工作，打卡后系统会把打卡数据缓存到前端，在超时时间内用户都是能看到自己的打卡记录的，这样也减少了数据库的查询操作。但是这也产生了另一个问题，用户以为自己打卡成功了，但是系统出现了异常，实际这个数据没有写入数据库，这就会导致这个学生被辅导员批评哈哈，为了防止这种情况发生，我们利用了易班的站内信功能，每天固定时间段会给未打卡的用户发送通知提醒他们打卡。</p>
+<h3 id="记录迁移"><a href="#记录迁移" class="headerlink" title="记录迁移"></a>记录迁移</h3><p>随着打卡记录的累计，记录库越来越大，这也不利于查询，因为前面存的都是老数据，大概率是不会去查的，但是也不能删除，所以我们可以定期对表中的数据进行一个迁移，比如说可以把一个月前的数据转移到归档表中，这样当我们需要查阅很久前的记录时，还可以有迹可循但这并不是说把归记录插入归档表，再删除旧记录就OK了，因为MySQL的delete是一个伪删除，虽然看起来不见了，但是还在占用空间，所以需要清除这些空间可以使用<code>optimize 或者 alter </code> 命令去解除已删除数据的占用， 优化表，基本原理是新建一个临时表，然后把数据复制过去然后用临时表替换旧表，在mysql 5.6 之前需要锁整个表期间不能进行操作，但mysql 5.6 之后优化为了online的操作，在复制的过程中仍然可以操作，mysql 会把这期间发生的操作复制下来，之后新表重新执行。 这里我们选择了在半夜定时执行，此时间基本不会有人访问打卡，此外为了保险期间，我们也会在迁移前进行一个备份的操作。<a target="_blank" rel="noopener" href="https://juejin.cn/post/7215971680350502949">https://juejin.cn/post/7215971680350502949</a></p>
+<p>此外也可以选择一些成熟的工具进行处理，比如github开源的gh-ost就提供了更安全的迁移方案，其基本原理也是建立一个镜像表，不过他是采用监听binlog的方式实现的，把自己伪装成从节点，先全量拷贝的同时监听binlong获得增量更新。</p>
+<h2 id="Inlong-项目"><a href="#Inlong-项目" class="headerlink" title="Inlong 项目"></a>Inlong 项目</h2><h3 id="OpenTelemetry-集成时类加载问题"><a href="#OpenTelemetry-集成时类加载问题" class="headerlink" title="OpenTelemetry 集成时类加载问题"></a>OpenTelemetry 集成时类加载问题</h3><p>在为 inlong 的flink connector集成opentelemtry日志上报功能时就遇到了类加载机制引起的bug，当时是在flink的配置文件里面为log4j配置了opentelemetryAppender 这个日志上报器，然后在flink的connector中启动这个appender，但测试的时候发现会报错，因为在flink 的lib中并没有opentelemetryAppender这个类的包，那么启动flink的时候就会出错，最开始觉得是一个小问题，只需要在lib中增加相关的jar包就行了，增加之后没有报错，但是日志并没有成功上报，这里卡了很久，后来我就去看了一下opentelemetryAppender的原理，在启动flin时log4j就会加载这个appender，等到我们的connector执行的时候会从log4j的context中获取这个appender，并为这个appender配置sdk然后启动，问题也就出现在获取这个appender这里，通过调试我发现并没有成功获取到我们提前加载的这个appender，其关键点在：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">config</span><br><span class="line">    .getAppenders()</span><br><span class="line">    .values()</span><br><span class="line">    .forEach(</span><br><span class="line">        appender -&gt; &#123;</span><br><span class="line">          <span class="keyword">if</span> (appender <span class="keyword">instanceof</span> OpenTelemetryAppender) &#123;</span><br><span class="line">            ((OpenTelemetryAppender) appender).setOpenTelemetry(openTelemetry);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>这段代码，虽然通过打印所有的appender可以看到是存在opentelemetryAppender这个对象的，但是if判断根本没有进去，也就是说openTelemetryAppender 并不是 openTelemetryAppender 的实例，这样说确实有点怪，但事实就是这样，这就是因为java的类加载机制导致的，如果两个类是从不同的路径加载的，尽管他们可能完全一样，但是这两个类也会被认为是不同的，也就是说因为我们的对象是从lib路径加载的类的实例，而判断中来自于提交任务时携带的jar包。问题知道出在哪了，但为什么会出现这个问题呢，因为我记得jvm是有双亲委派机制的，会递归请求父加载器去加载这个类，也就是说任务提交时这个加载器也会递归请求父加载器去加载这个类，那应该不会重复加载同一个类导致出现这个问题的啊。</p>
+<p>这里我又去调研了以下，发现flink居然默认的类加载器居然是打破了双亲委派机制，他提供了一个类加载配置， 默认是child-first，也就是不会请求父加载器去加载，这样就会导致重复加载同一个类的问题，还有一个配置是parent-first 其实就是类似双亲委派机制的。那么为什么默认选择child-first呢？ 我翻了一下flink 的文档，flink 这样设计应该是为了隔离用户代码和系统代码，防止出现依赖冲突等。</p>
+<p>那该如何解决呢？ 我尝试了几种解决方法：</p>
+<ol>
+<li><p>强制类型转换（失败）因为只能强转有继承关系的类</p>
+</li>
+<li><p>修改flink配置为parent-first，这个可以解决这个问题，但是inlong项目的核心不是这个功能，修改配置可能导致更多的问题。</p>
+</li>
+<li><p>然后我就想既然是可以遍历获得log4j的context里的appender对象，那我们是不是也可以动态地为他增加这个appender，尝试了一下果然可以，那我们只需要在需要开启日志上报功能的时候向log4jcontext中增加一个opentelemetryAppender就好了，这样保证了全局只有这一个opentelemetryAppender 类被加载，解决了这个问题。而且这种方式也提高了自由度，不必在配置文件内配置appender对象，我们可以根据不同的connector设置不同配置方式。</p>
+</li>
+</ol>
+<h3 id="反射机制的使用"><a href="#反射机制的使用" class="headerlink" title="反射机制的使用"></a>反射机制的使用</h3><p>在Agent 模块的MQTTSource开发前我阅读Agent源码的时候就发现，Agent由于可以配置很多的source，那么具体由那个source执行就是通过反射机制实现的，通过传递source的类路径可以实例化出一个对应的source进行执行，这样代码就很简洁，不需要通过一堆if else 去判断了</p>
+<h2 id="失物招领"><a href="#失物招领" class="headerlink" title="失物招领"></a>失物招领</h2><p>失物招领其实是校园论坛系统的一个子功能，这个系统的基础功能其实很简单：捡到东西的同学可以发布， 丢失的同学可以来系统上搜寻，但我们做了很多细节功能：</p>
+<ol>
+<li>多模态搜索</li>
+</ol>
+<p>系统根据丢失物品的特征提供了不同的检索方案：</p>
+<ul>
+<li><p>对于校园卡，身份证等能够直接获取失主信息的丢失物，发布者可直接填写相关信息，系统可以直接查询到失主并以站内信的形式向失主发送消息。</p>
+</li>
+<li><p>对于普通的丢失物品可以从文本和图片两个维度进行检索：</p>
+<ul>
+<li><p>文本定义了两个字段：物品名称，具体描述，系统使用了 ElasticSearch 进行检索，会对文本进行分词存储，之后失主检索的时候就可以利用他的倒排索引机制高效查询。</p>
+</li>
+<li><p>此外还可以通过图片进行以图搜图，如果失主有失物的照片就可以和失物库中的物品图片进行相似度的比对，系统会按照相似度进行排序，当然这里为了提高效率并不是直接用两张图片直接去计算相似度的，而是提前提取并存储图片的特征，具体来说当有用户发布招领帖时，后端首先存数据库，存完后会把帖子的ID和图片异步发送到另一个python服务，这里是通过消息队列实现的，python服务会去计算这个图片的特征（ResNet），并把它存储到数据库（json字符串格式）中，这里用消息队列主要是为了实现这两个服务的异步通信，而且这样做如果后期用户量比较大出现性能瓶颈时也可以横向扩展这个python特征提取服务。当然这个方法比较初级现在看来还是有一些优化空间的，比如现在的ES也支持存储向量已经进行一些向量距离的运算，我们可以直接把这个特征交给es去处理，此外也有一些专门的向量数据库，比如facebook的fassi等，这些可以提高系统的性能，但当时做的时候没有关注到这些技术，也就没有这样做。</p>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li><p>集成积分系统</p>
+<p>   为了鼓励拾金不昧这种行为，发布并成功找到失主的用户可以获得一定的积分奖励，这个积分可以用于兑换一些小礼品，也可以用于用户的自助打印（用户上传打印文件，设置打印要求，后端会根据页数计算出所需积分，用户确认后预扣积分，并将打印信息发送给办公室电脑上运行的服务，这个服务会调用打印机打印，如打印成功会完成积分扣除，打印失败会返还预扣积分）</p>
+</li>
+</ol>
+<blockquote>
+<p> 参考资料
+ </p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%BC%80%E5%8F%91/" rel="tag"># 开发</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/0.html" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2.html" rel="next" title="">
+       <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#DeviceShare"><span class="nav-number">1.</span> <span class="nav-text">DeviceShare</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0"><span class="nav-number">1.1.</span> <span class="nav-text">服务注册与发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E8%AE%BE%E5%A4%87-I-O-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.</span> <span class="nav-text">输入设备 I&#x2F;O 性能优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E5%AD%AA%E7%94%9F"><span class="nav-number">2.</span> <span class="nav-text">数字孪生</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%A8%E8%BF%B9%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93"><span class="nav-number">2.1.</span> <span class="nav-text">轨迹数据传输</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-%E9%80%89%E7%94%A8"><span class="nav-number">2.2.</span> <span class="nav-text">MQTT 选用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%93%E7%8F%AD%E5%A4%A7%E5%8E%85-%E7%96%AB%E6%83%85%E6%89%93%E5%8D%A1"><span class="nav-number">3.</span> <span class="nav-text">易班大厅 - 疫情打卡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%96%AB%E6%83%85%E6%89%93%E5%8D%A1%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%87%BA"><span class="nav-number">3.1.</span> <span class="nav-text">疫情打卡数据导出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8D%A1%E9%AB%98%E5%B9%B6%E5%8F%91"><span class="nav-number">3.2.</span> <span class="nav-text">打卡高并发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%B0%E5%BD%95%E8%BF%81%E7%A7%BB"><span class="nav-number">3.3.</span> <span class="nav-text">记录迁移</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inlong-%E9%A1%B9%E7%9B%AE"><span class="nav-number">4.</span> <span class="nav-text">Inlong 项目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenTelemetry-%E9%9B%86%E6%88%90%E6%97%B6%E7%B1%BB%E5%8A%A0%E8%BD%BD%E9%97%AE%E9%A2%98"><span class="nav-number">4.1.</span> <span class="nav-text">OpenTelemetry 集成时类加载问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">4.2.</span> <span class="nav-text">反射机制的使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%B1%E7%89%A9%E6%8B%9B%E9%A2%86"><span class="nav-number">5.</span> <span class="nav-text">失物招领</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MaHaotian"
+      src="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
+  <p class="site-author-name" itemprop="name">MaHaotian</p>
+  <div class="site-description" itemprop="description">给时光以生命，而不是给生命以时光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">86</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qy-liuhuo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qy-liuhuo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:maht2001@163.com" title="E-Mail → mailto:maht2001@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wangzekun.cn/" title="http:&#x2F;&#x2F;wangzekun.cn&#x2F;" rel="noopener" target="_blank">坤哥的博客</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://8.142.79.40:9101/" title="http:&#x2F;&#x2F;8.142.79.40:9101" rel="noopener" target="_blank">坤姐的博客</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MaHaotian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>
