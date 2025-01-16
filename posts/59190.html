@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://img.qylh.xyz/blog/1736343328423.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1736349161143.png">
 <meta property="article:published_time" content="2025-01-08T12:44:00.000Z">
-<meta property="article:modified_time" content="2025-01-11T12:43:23.466Z">
+<meta property="article:modified_time" content="2025-01-13T04:15:34.000Z">
 <meta property="article:author" content="MaHaotian">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img.qylh.xyz/blog/1736343328423.png">
@@ -199,7 +199,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-01-11 20:43:23" itemprop="dateModified" datetime="2025-01-11T20:43:23+08:00">2025-01-11</time>
+                <time title="修改时间：2025-01-13 12:15:34" itemprop="dateModified" datetime="2025-01-13T12:15:34+08:00">2025-01-13</time>
               </span>
 
           
@@ -240,25 +240,7 @@
 <h2 id="RocketMQ"><a href="#RocketMQ" class="headerlink" title="RocketMQ"></a>RocketMQ</h2><p>RocketMQ 是阿里开源的一个高性能、高可靠、高实时的分布式消息队列，设计是参考了 Kafka 并对消息的可靠传输及事务性做了优化，目前在阿里集团被广泛应用于交易、充值、流计算、消息推送、日志流式处理、binglog分发等场景。</p>
 <h2 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h2><p>Kafka 是一个开源流处理平台，最初设计用于收集传输才处理数据流，后来开始增加了不少功能，比如防止消息丢失，解决数据可靠性问题等，现在已经很完善也被用作消息队列，其采用批量处理等思想，性能很强，可以做到极致的吞吐率。</p>
 <h2 id="Pulsar"><a href="#Pulsar" class="headerlink" title="Pulsar"></a>Pulsar</h2><p>Apache Pulsar 是 Apache 软件基金会的顶级项目，是下一代云原生分布式消息流平台，集消息、存储、轻量化函数式计算为一体，采用计算与存储分离架构设计，支持多租户、持久化存储、多机房跨区域数据复制，具有强一致性、高吞吐、低延时及高可扩展性等流数据存储特性。</p>
-<h3 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h3><p>这几种消息队列经常被放在一起来比较的，这里也总结以下这几个消息队列的特点：</p>
-<h1 id="广义消息队列"><a href="#广义消息队列" class="headerlink" title="广义消息队列"></a>广义消息队列</h1><h2 id="MQTT"><a href="#MQTT" class="headerlink" title="MQTT"></a>MQTT</h2><p><code>MQTT（Message Queuing Telemetry Transport）</code> 是一种轻量级、基于发布-订阅模式的消息传输协议，适用于资源受限的设备和低带宽、高延迟或不稳定的网络环境。它在<strong>物联网</strong>应用中广受欢迎，能够实现传感器、执行器和其它设备之间的高效通信。而且也可以应用在网络直播互动、手机消息推送等行业场景。详细可参考 [[MQTT协议]]</p>
-<p>其实 MQTT 并不是算是一个消息队列，只是两者的特性比较相近，但他们的出发点和应用场景是有着显著不同的：</p>
-<ul>
-<li>消息队列作为一种中间件，主要用于服务端应用之间的消息存储与转发，数据量大但客户端数量少。</li>
-<li>MQTT 是一种消息传输协议，主要用于物联网设备间的消息传递，特点是连接的设备量很大。</li>
-</ul>
-<p>而且相比消息队列，<code>MQTT</code> 的主题不需要提前创建，在订阅或发布时即自动的创建了主题，开发者无需再关心主题的创建，并且也不需要手动删除主题。</p>
-<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul>
-<li>延迟很低</li>
-<li>可自定义可靠性 QoS</li>
-<li>支持大量设备连接</li>
-<li>适合资源受限的设备使用</li>
-<li>报文长度小，通信开销低</li>
-</ul>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ul>
-<li>吞吐量不如狭义上的消息队列中间件</li>
-</ul>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>MQTT 也是基于 broker 架构的，但是定位是一个通信协议，但和狭义上的消息队列中间件算是殊途同归，但该通信协议比较轻量级，报文长度小，支持海量设备连接，适用于物联网场景。有时 <code>MQTT</code> 和消息队列会一起使用，<code>MQTT</code> 专注于处理物联网设备上报的数据，然后消息队列订阅这些消息并转发到不同的业务系统进行处理。而且 RabbitMQ 也内置了 MQTT 插件，来实现 MQTT 功能。</p>
+<h2 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h2><p>这几种消息队列经常被放在一起来比较的，这里也总结以下这几个消息队列的特点：</p>
 <table>
 <thead>
 <tr>
@@ -340,6 +322,24 @@
 <td>适合多租户、PB级消息量、高吞吐量的应用</td>
 </tr>
 </tbody></table>
+<h1 id="广义消息队列"><a href="#广义消息队列" class="headerlink" title="广义消息队列"></a>广义消息队列</h1><h2 id="MQTT"><a href="#MQTT" class="headerlink" title="MQTT"></a>MQTT</h2><p><code>MQTT（Message Queuing Telemetry Transport）</code> 是一种轻量级、基于发布-订阅模式的消息传输协议，适用于资源受限的设备和低带宽、高延迟或不稳定的网络环境。它在<strong>物联网</strong>应用中广受欢迎，能够实现传感器、执行器和其它设备之间的高效通信。而且也可以应用在网络直播互动、手机消息推送等行业场景。详细可参考 [[MQTT协议]]</p>
+<p>其实 MQTT 并不是算是一个消息队列，只是两者的特性比较相近，但他们的出发点和应用场景是有着显著不同的：</p>
+<ul>
+<li>消息队列作为一种中间件，主要用于服务端应用之间的消息存储与转发，数据量大但客户端数量少。</li>
+<li>MQTT 是一种消息传输协议，主要用于物联网设备间的消息传递，特点是连接的设备量很大。</li>
+</ul>
+<p>而且相比消息队列，<code>MQTT</code> 的主题不需要提前创建，在订阅或发布时即自动的创建了主题，开发者无需再关心主题的创建，并且也不需要手动删除主题。</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul>
+<li>延迟很低</li>
+<li>可自定义可靠性 QoS</li>
+<li>支持大量设备连接</li>
+<li>适合资源受限的设备使用</li>
+<li>报文长度小，通信开销低</li>
+</ul>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ul>
+<li>吞吐量不如狭义上的消息队列中间件</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>MQTT 也是基于 broker 架构的，但是定位是一个通信协议，但和狭义上的消息队列中间件算是殊途同归，但该通信协议比较轻量级，报文长度小，支持海量设备连接，适用于物联网场景。有时 <code>MQTT</code> 和消息队列会一起使用，<code>MQTT</code> 专注于处理物联网设备上报的数据，然后消息队列订阅这些消息并转发到不同的业务系统进行处理。而且 RabbitMQ 也内置了 MQTT 插件，来实现 MQTT 功能。</p>
 <h2 id="ZeroMQ"><a href="#ZeroMQ" class="headerlink" title="ZeroMQ"></a>ZeroMQ</h2><p>严格来说 ZeroMQ 是一个基于消息队列模型的网络库，它并不一定需要其他消息队列的 broker 中间件，非中心化架构，提供了 PUSH-PULL、PUB-SUB、Router-Dealer 等模式。使用起来很像 Socket。</p>
 <h3 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h3><ul>
 <li>去中心化，减少单点故障</li>
@@ -467,7 +467,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">消息队列介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E4%BD%9C%E7%94%A8"><span class="nav-number">1.0.1.</span> <span class="nav-text">消息队列作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86"><span class="nav-number">1.0.2.</span> <span class="nav-text">异步处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8A%E5%B3%B0%E9%99%90%E6%B5%81"><span class="nav-number">1.0.3.</span> <span class="nav-text">削峰限流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E8%80%A6"><span class="nav-number">1.0.4.</span> <span class="nav-text">解耦</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1"><span class="nav-number">1.0.5.</span> <span class="nav-text">分布式事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E4%BF%9D%E8%AF%81"><span class="nav-number">1.0.6.</span> <span class="nav-text">顺序保证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%B6%E6%97%B6%E5%A4%84%E7%90%86"><span class="nav-number">1.0.7.</span> <span class="nav-text">延时处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%B5%81%E5%A4%84%E7%90%86"><span class="nav-number">1.0.8.</span> <span class="nav-text">数据流处理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8B%AD%E4%B9%89%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">2.</span> <span class="nav-text">狭义消息队列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RabbitMQ"><span class="nav-number">2.1.</span> <span class="nav-text">RabbitMQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RocketMQ"><span class="nav-number">2.2.</span> <span class="nav-text">RocketMQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka"><span class="nav-number">2.3.</span> <span class="nav-text">Kafka</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pulsar"><span class="nav-number">2.4.</span> <span class="nav-text">Pulsar</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94"><span class="nav-number">2.4.1.</span> <span class="nav-text">对比</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%BF%E4%B9%89%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">3.</span> <span class="nav-text">广义消息队列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT"><span class="nav-number">3.1.</span> <span class="nav-text">MQTT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%82%B9"><span class="nav-number">3.1.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9"><span class="nav-number">3.1.2.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.1.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ZeroMQ"><span class="nav-number">3.2.</span> <span class="nav-text">ZeroMQ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%82%B9-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9-1"><span class="nav-number">3.2.2.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">3.2.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-Redis-%E7%9A%84%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">3.3.</span> <span class="nav-text">基于 Redis 的消息队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%82%B9-2"><span class="nav-number">3.3.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9-2"><span class="nav-number">3.3.2.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-2"><span class="nav-number">3.3.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Disruptor"><span class="nav-number">3.4.</span> <span class="nav-text">Disruptor</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">消息队列介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E4%BD%9C%E7%94%A8"><span class="nav-number">1.0.1.</span> <span class="nav-text">消息队列作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86"><span class="nav-number">1.0.2.</span> <span class="nav-text">异步处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8A%E5%B3%B0%E9%99%90%E6%B5%81"><span class="nav-number">1.0.3.</span> <span class="nav-text">削峰限流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E8%80%A6"><span class="nav-number">1.0.4.</span> <span class="nav-text">解耦</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1"><span class="nav-number">1.0.5.</span> <span class="nav-text">分布式事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E4%BF%9D%E8%AF%81"><span class="nav-number">1.0.6.</span> <span class="nav-text">顺序保证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%B6%E6%97%B6%E5%A4%84%E7%90%86"><span class="nav-number">1.0.7.</span> <span class="nav-text">延时处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%B5%81%E5%A4%84%E7%90%86"><span class="nav-number">1.0.8.</span> <span class="nav-text">数据流处理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8B%AD%E4%B9%89%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">2.</span> <span class="nav-text">狭义消息队列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RabbitMQ"><span class="nav-number">2.1.</span> <span class="nav-text">RabbitMQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RocketMQ"><span class="nav-number">2.2.</span> <span class="nav-text">RocketMQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka"><span class="nav-number">2.3.</span> <span class="nav-text">Kafka</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pulsar"><span class="nav-number">2.4.</span> <span class="nav-text">Pulsar</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94"><span class="nav-number">2.5.</span> <span class="nav-text">对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%BF%E4%B9%89%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">3.</span> <span class="nav-text">广义消息队列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT"><span class="nav-number">3.1.</span> <span class="nav-text">MQTT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%82%B9"><span class="nav-number">3.1.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9"><span class="nav-number">3.1.2.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.1.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ZeroMQ"><span class="nav-number">3.2.</span> <span class="nav-text">ZeroMQ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%82%B9-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9-1"><span class="nav-number">3.2.2.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">3.2.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-Redis-%E7%9A%84%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">3.3.</span> <span class="nav-text">基于 Redis 的消息队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%82%B9-2"><span class="nav-number">3.3.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9-2"><span class="nav-number">3.3.2.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-2"><span class="nav-number">3.3.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Disruptor"><span class="nav-number">3.4.</span> <span class="nav-text">Disruptor</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -511,19 +511,6 @@
   </div>
 
 
-  <div class="links-of-blogroll motion-element">
-    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
-      友情链接
-    </div>
-    <ul class="links-of-blogroll-list">
-        <li class="links-of-blogroll-item">
-          <a href="http://wangzekun.cn/" title="http:&#x2F;&#x2F;wangzekun.cn&#x2F;" rel="noopener" target="_blank">坤哥的博客</a>
-        </li>
-        <li class="links-of-blogroll-item">
-          <a href="http://8.142.79.40:9101/" title="http:&#x2F;&#x2F;8.142.79.40:9101" rel="noopener" target="_blank">坤姐的博客</a>
-        </li>
-    </ul>
-  </div>
 
       </div>
 

@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://img.qylh.xyz/blog/1736230771561.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1736251041419.png">
 <meta property="article:published_time" content="2025-01-06T14:51:59.000Z">
-<meta property="article:modified_time" content="2025-01-08T03:22:24.504Z">
+<meta property="article:modified_time" content="2025-01-11T14:46:30.061Z">
 <meta property="article:author" content="MaHaotian">
 <meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
@@ -199,7 +199,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-01-08 11:22:24" itemprop="dateModified" datetime="2025-01-08T11:22:24+08:00">2025-01-08</time>
+                <time title="修改时间：2025-01-11 22:46:30" itemprop="dateModified" datetime="2025-01-11T22:46:30+08:00">2025-01-11</time>
               </span>
 
           
@@ -239,7 +239,7 @@
 <h2 id="观察者模式（发布-订阅模式）"><a href="#观察者模式（发布-订阅模式）" class="headerlink" title="观察者模式（发布-订阅模式）"></a>观察者模式（发布-订阅模式）</h2><h3 id="Spring-Event"><a href="#Spring-Event" class="headerlink" title="Spring Event"></a>Spring Event</h3><p>Spring Event 事件监听机制就是基于观察者模式实现的，具体可参考<a target="_blank" rel="noopener" href="https://juejin.cn/post/6951248994899083294">解耦利器——观察者模式在spring中的实现一、什么是观察者模式观察者模式定义了一种一对多的依赖关系，让多个观察者对象同 - 掘金</a></p>
 <h2 id="建造者模式（生成器模式）"><a href="#建造者模式（生成器模式）" class="headerlink" title="建造者模式（生成器模式）"></a>建造者模式（生成器模式）</h2><p>通过 Builder 类解决复杂的构造参数，通过链式的写法来构造一个 Builder 对象，调用 build 方法后生成目标对象。</p>
 <h3 id="OpenTelemetryAppender-构造"><a href="#OpenTelemetryAppender-构造" class="headerlink" title="OpenTelemetryAppender 构造"></a>OpenTelemetryAppender 构造</h3><p>为 Apache InLong 项目的 Sort 模块集成 Opentelemetry 的日志上报功能时设计的OpenTelemetryAppender 类就采用了建造者模式，因为有不少属性是可选配置的，这样可以不用为每种情况都编写一个构造函数，而且代码看起来更优雅一些。</p>
-<blockquote>
+<h2 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h2><blockquote>
 <p>参考资料</p>
 <ol>
 <li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/whgk/p/6920018.html">JavaSE(一) IO类层次关系和各种IO流的用法总结 - 有梦想的老王 - 博客园</a></li>
@@ -329,7 +329,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">装饰器模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-IO-%E6%B5%81"><span class="nav-number">1.1.</span> <span class="nav-text">Java IO 流</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">适配器模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-IO-%E5%AD%97%E8%8A%82%E6%B5%81%E4%B8%8E%E5%AD%97%E7%AC%A6%E6%B5%81"><span class="nav-number">2.1.</span> <span class="nav-text">Java IO 字节流与字符流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SLF4J-%E9%80%82%E9%85%8D%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">SLF4J 适配器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hippo4j-%E5%8A%A8%E6%80%81%E7%BA%BF%E7%A8%8B%E6%B1%A0%E9%80%82%E9%85%8D%E5%99%A8"><span class="nav-number">2.3.</span> <span class="nav-text">Hippo4j 动态线程池适配器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F%EF%BC%88%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">外观模式（门面模式）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SLF4J"><span class="nav-number">3.1.</span> <span class="nav-text">SLF4J</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">单例模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SLF4J-1"><span class="nav-number">4.1.</span> <span class="nav-text">SLF4J</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">工厂模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SLF4J-Logger-factory"><span class="nav-number">5.1.</span> <span class="nav-text">SLF4J Logger factory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InLong-Sort-Flink-Connector"><span class="nav-number">5.2.</span> <span class="nav-text">InLong Sort Flink Connector</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%8F%91%E5%B8%83-%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">观察者模式（发布-订阅模式）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-Event"><span class="nav-number">6.1.</span> <span class="nav-text">Spring Event</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%EF%BC%88%E7%94%9F%E6%88%90%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">7.</span> <span class="nav-text">建造者模式（生成器模式）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenTelemetryAppender-%E6%9E%84%E9%80%A0"><span class="nav-number">7.1.</span> <span class="nav-text">OpenTelemetryAppender 构造</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">装饰器模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-IO-%E6%B5%81"><span class="nav-number">1.1.</span> <span class="nav-text">Java IO 流</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">适配器模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-IO-%E5%AD%97%E8%8A%82%E6%B5%81%E4%B8%8E%E5%AD%97%E7%AC%A6%E6%B5%81"><span class="nav-number">2.1.</span> <span class="nav-text">Java IO 字节流与字符流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SLF4J-%E9%80%82%E9%85%8D%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">SLF4J 适配器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hippo4j-%E5%8A%A8%E6%80%81%E7%BA%BF%E7%A8%8B%E6%B1%A0%E9%80%82%E9%85%8D%E5%99%A8"><span class="nav-number">2.3.</span> <span class="nav-text">Hippo4j 动态线程池适配器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F%EF%BC%88%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">外观模式（门面模式）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SLF4J"><span class="nav-number">3.1.</span> <span class="nav-text">SLF4J</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">单例模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SLF4J-1"><span class="nav-number">4.1.</span> <span class="nav-text">SLF4J</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">工厂模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SLF4J-Logger-factory"><span class="nav-number">5.1.</span> <span class="nav-text">SLF4J Logger factory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InLong-Sort-Flink-Connector"><span class="nav-number">5.2.</span> <span class="nav-text">InLong Sort Flink Connector</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%8F%91%E5%B8%83-%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">观察者模式（发布-订阅模式）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-Event"><span class="nav-number">6.1.</span> <span class="nav-text">Spring Event</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%EF%BC%88%E7%94%9F%E6%88%90%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">7.</span> <span class="nav-text">建造者模式（生成器模式）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenTelemetryAppender-%E6%9E%84%E9%80%A0"><span class="nav-number">7.1.</span> <span class="nav-text">OpenTelemetryAppender 构造</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F"><span class="nav-number">8.</span> <span class="nav-text">代理模式</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -373,19 +373,6 @@
   </div>
 
 
-  <div class="links-of-blogroll motion-element">
-    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
-      友情链接
-    </div>
-    <ul class="links-of-blogroll-list">
-        <li class="links-of-blogroll-item">
-          <a href="http://wangzekun.cn/" title="http:&#x2F;&#x2F;wangzekun.cn&#x2F;" rel="noopener" target="_blank">坤哥的博客</a>
-        </li>
-        <li class="links-of-blogroll-item">
-          <a href="http://8.142.79.40:9101/" title="http:&#x2F;&#x2F;8.142.79.40:9101" rel="noopener" target="_blank">坤姐的博客</a>
-        </li>
-    </ul>
-  </div>
 
       </div>
 
