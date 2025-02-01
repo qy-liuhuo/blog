@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const titleParam = urlSegments[urlSegments.length - 1];
-    const apiEndpoint = `/visit/` + titleParam;
+    const apiEndpoint = `./visit/` + titleParam;
     const apiUrl = new URL(apiEndpoint);
 
     fetch(apiUrl)
