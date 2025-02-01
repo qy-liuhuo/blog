@@ -17,18 +17,13 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         })
         .then(data => {
-            console.log(data)
-            if (!data || !data.content) {
-                throw new Error('无效的响应数据格式');
-            }
-
             let container = document.getElementsByClassName("footer-inner")[0];
             if (!container) {
                 container = document.createElement('div');
                 container.id = 'footer-inner';
                 document.body.prepend(container);
             }
-            container.appendChild(document.createElement('<p>' + data.container + '</p>'));
+            container.appendChild(document.createElement('<p>' + data.res + '</p>'));
         })
         .catch(error => {
             console.error('操作失败:', error);
