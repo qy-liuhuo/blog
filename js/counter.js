@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         })
         .then(data => {
+            console.log(data)
             if (!data || !data.content) {
                 throw new Error('无效的响应数据格式');
             }
