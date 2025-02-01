@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const titleParam = urlSegments[urlSegments.length - 1];
 
-    fetch(`./visit/` + titleParam)
+    fetch(`../visit/` + titleParam)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP错误! 状态码: ${response.status}`);
@@ -31,9 +31,5 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(error => {
             console.error('操作失败:', error);
-            const errorDiv = document.createElement('div');
-            errorDiv.style.color = 'red';
-            errorDiv.textContent = `加载内容失败: ${error.message}`;
-            document.body.prepend(errorDiv);
         });
 });
