@@ -8,10 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const titleParam = urlSegments[urlSegments.length - 1];
-    const apiEndpoint = `http:qylh.xyz/visit/` + titleParam;
-    const apiUrl = new URL(apiEndpoint);
 
-    fetch(apiUrl)
+    fetch(`./visit/` + titleParam)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP错误! 状态码: ${response.status}`);
