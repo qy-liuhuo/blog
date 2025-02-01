@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 container.id = 'footer-inner';
                 document.body.prepend(container);
             }
-            container.appendChild(document.createElement('<p>' + data.res + '</p>'));
+            container.appendChild(document.createElement('div').appendChild(document.createTextNode(`访问量: ${data.visitCount}`)));
         })
         .catch(error => {
             console.error('操作失败:', error);
