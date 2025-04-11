@@ -21,19 +21,21 @@
     var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="大模型 prompt 指在大语言模型应用中，用于 “提示” 模型唤起特定能力以解决实际问题的提问方式。早期它被称作 “输入形式” 或 “输入模板”，后来 “prompt”（提示）这一叫法因契合大语言模型语境，能准确体现其在调用模型能力方面的关键作用，成为公认术语。 Prompt 要素 指令 上下文 输入数据 输出指示  Prompt 框架RTF 框架Role-Task-Format，指定大模型的角">
+  <meta name="description" content="大模型 Prompt 调优技巧">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Echo">
-<meta property="og:url" content="https://qylh.xyz/posts/0.html">
+<meta property="og:title" content="大模型-Prompt调优">
+<meta property="og:url" content="https://qylh.xyz/posts/19889.html">
 <meta property="og:site_name" content="Echo">
-<meta property="og:description" content="大模型 prompt 指在大语言模型应用中，用于 “提示” 模型唤起特定能力以解决实际问题的提问方式。早期它被称作 “输入形式” 或 “输入模板”，后来 “prompt”（提示）这一叫法因契合大语言模型语境，能准确体现其在调用模型能力方面的关键作用，成为公认术语。 Prompt 要素 指令 上下文 输入数据 输出指示  Prompt 框架RTF 框架Role-Task-Format，指定大模型的角">
+<meta property="og:description" content="大模型 Prompt 调优技巧">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-04-10T07:46:11.131Z">
-<meta property="article:modified_time" content="2025-04-10T14:39:20.955Z">
+<meta property="og:image" content="https://img.qylh.xyz/blog/----prompt--.png">
+<meta property="article:published_time" content="2025-04-11T02:00:00.000Z">
+<meta property="article:modified_time" content="2025-04-11T02:24:51.675Z">
 <meta property="article:author" content="MaHaotian">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.qylh.xyz/blog/----prompt--.png">
 
-<link rel="canonical" href="https://qylh.xyz/posts/0.html">
+<link rel="canonical" href="https://qylh.xyz/posts/19889.html">
 
 
 <script id="page-configurations">
@@ -46,7 +48,7 @@
   };
 </script>
 
-  <title> | Echo</title>
+  <title>大模型-Prompt调优 | Echo</title>
   
 
 
@@ -166,7 +168,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/0.html">
+    <link itemprop="mainEntityOfPage" href="https://qylh.xyz/posts/19889.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://img.qylh.xyz/blog/v2-d39a2afc22963be458e0311cb0965dc3_r (1).jpg">
@@ -179,7 +181,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
+          大模型-Prompt调优
         </h1>
 
         <div class="post-meta">
@@ -190,7 +192,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2025-04-10 15:46:11 / 修改时间：22:39:20" itemprop="dateCreated datePublished" datetime="2025-04-10T15:46:11+08:00">2025-04-10</time>
+              <time title="创建时间：2025-04-11 10:00:00 / 修改时间：10:24:51" itemprop="dateCreated datePublished" datetime="2025-04-11T10:00:00+08:00">2025-04-11</time>
             </span>
 
           
@@ -204,19 +206,44 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>大模型 prompt 指在大语言模型应用中，用于 “提示” 模型唤起特定能力以解决实际问题的提问方式。早期它被称作 “输入形式” 或 “输入模板”，后来 “prompt”（提示）这一叫法因契合大语言模型语境，能准确体现其在调用模型能力方面的关键作用，成为公认术语。</p>
+        <img data-src="https://img.qylh.xyz/blog/----prompt--.png" alt ="img" style="zoom: 60%;">
+<center>大模型 Prompt 调优技巧</center>
+<span id="more"></span>
+
+
+
+
+<blockquote>
+<p> 参考资料</p>
+<p>大模型 prompt 指在大语言模型应用中，用于 “提示” 模型唤起特定能力以解决实际问题的提问方式。早期它被称作 “输入形式” 或 “输入模板”，后来 “prompt”（提示）这一叫法因契合大语言模型语境，能准确体现其在调用模型能力方面的关键作用，成为公认术语。</p>
+</blockquote>
 <h2 id="Prompt-要素"><a href="#Prompt-要素" class="headerlink" title="Prompt 要素"></a>Prompt 要素</h2><ol>
 <li>指令</li>
 <li>上下文</li>
 <li>输入数据</li>
 <li>输出指示</li>
 </ol>
+<h3 id="Prompt-原则"><a href="#Prompt-原则" class="headerlink" title="Prompt 原则"></a>Prompt 原则</h3><ol>
+<li>指令需要清晰、具体<ol>
+<li>可以使用分隔符来清晰地表示输入的不同部分（上下文、指令、用户输入等），还可以防止提示词注入（用户输入的文本与提示词冲突）</li>
+<li>寻求结构化的输出</li>
+<li>要求模型自己检查是否满足需要的条件</li>
+<li>提供示例，可以帮助模型检查是否正确，同时使其更好地理解需求</li>
+</ol>
+</li>
+<li>给模型思考过程<ol>
+<li>指定任务完成步骤</li>
+<li>指导模型在下结论前确定一个自己的解决方法，防止因为用户输入的方法错误而引导向错误的结果</li>
+</ol>
+</li>
+</ol>
+<p>此部分参考了：<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/llm-cookbook/#/C1/readme">面向开发者的LLM入门教程</a>，细节及案例可以参考该博客</p>
 <h2 id="Prompt-框架"><a href="#Prompt-框架" class="headerlink" title="Prompt 框架"></a>Prompt 框架</h2><h3 id="RTF-框架"><a href="#RTF-框架" class="headerlink" title="RTF 框架"></a>RTF 框架</h3><p>Role-Task-Format，指定大模型的角色，需要完成的任务，以及数据返回的格式</p>
 <h3 id="RISEN-框架"><a href="#RISEN-框架" class="headerlink" title="RISEN 框架"></a>RISEN 框架</h3><p>Role-Instructions-Steps-Goal-Narrowing，角色，命令、步骤、目标、约束。其实和 RTF 模型差不多，增加了任务的步骤以及最终目标</p>
 <h3 id="RODES-框架"><a href="#RODES-框架" class="headerlink" title="RODES 框架"></a>RODES 框架</h3><p>Role-Objective-Details-Examples-Sense Check 角色，目标，详细细节，示例，感官检查</p>
 <h3 id="思考链模式"><a href="#思考链模式" class="headerlink" title="思考链模式"></a>思考链模式</h3><p>增加提示词让大模型逐步思考，比如：“让我们逐步思考”，这样的话可以处理更复杂的任务</p>
 <h3 id="密度链模式"><a href="#密度链模式" class="headerlink" title="密度链模式"></a>密度链模式</h3><p>“Chain of Density”（CoD）是通过建立一系列相互关联的紧密提示来指导AI生成具体和连续的输出。这些提示相互链接，形成一个“密度链”，从而更有针对性地引导AI达到预期的输出。一般用于生成文本摘要，概念比较抽象，直接看例子：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">_文章：&#123;&#123; 文章 &#125;&#125;_</span><br><span class="line"></span><br><span class="line">_请你为上述文章生成越来越精简，且信息丰富的摘要。_</span><br><span class="line"></span><br><span class="line">_请重复以下两个步骤5次。_</span><br><span class="line"></span><br><span class="line">_步骤 1. 从文章中找出1-3项先前摘要中遗漏的信息实体“informative entity”（以“;“分隔）。_</span><br><span class="line"></span><br><span class="line">_步骤 2. 生成一个新的摘要，长度相同，内容更紧凑，其中涵盖先前摘要中所有的信息实体“informative entity”以及缺失实体“Missing entity”。_</span><br><span class="line"></span><br><span class="line">_“缺失实体”是指：_</span><br><span class="line"></span><br><span class="line">– _与主题相关。_</span><br><span class="line"></span><br><span class="line">– _具体但简洁（5个或更少的字）。_</span><br><span class="line"></span><br><span class="line">– _未在先前摘要中出现。_</span><br><span class="line"></span><br><span class="line">– _文章中存在的，不能自行编造。_</span><br><span class="line"></span><br><span class="line">– _位于文章中的任何位置。_</span><br><span class="line"></span><br><span class="line">_指南：_</span><br><span class="line"></span><br><span class="line">– _第一次的摘要应该很长（4-5句，约80个字），但信息不具体，除了被标记的“缺失实体”外，几乎不包含任何信息。 例如，使用冗长的语言和填充词（例如“本文讨论”）填充词汇，以达到80个字。_</span><br><span class="line"></span><br><span class="line">– _每个字都很重要：重写先前的摘要，使其更加流畅，并为其他信息腾出空间。_</span><br><span class="line"></span><br><span class="line">– _通过融合、压缩和删除像文章讨论之类的非信息短语来腾出空间。_</span><br><span class="line"></span><br><span class="line">– _摘要应该高度密集、简洁，但要容易理解，无需参考原文即可轻松理解。_</span><br><span class="line"></span><br><span class="line">– _“缺失实体”可以放在新摘要中的任何位置。_</span><br><span class="line"></span><br><span class="line">– _不能从先前的摘要中删除信息。 如果无法腾出空间，请减少新加入的信息。_</span><br><span class="line"></span><br><span class="line">_记住，每个摘要的字数应该一致。_</span><br><span class="line"></span><br><span class="line">_回复格式为JSON。 JSON是一个长度为5的列表，其中包含“Missing_Entities”和“Denser_Summary”两个键值。_</span><br><span class="line"></span><br><span class="line">**&lt;/prompt&gt;**</span><br><span class="line"></span><br><span class="line">在上面的提示中，有两个名词需要解释：</span><br><span class="line"></span><br><span class="line">– **Informative entity信息实体：能代表文章核心观点的关键词。**</span><br><span class="line"></span><br><span class="line">– **Missing entity缺失实体：与主题紧密相关，但在先前的摘要中并未出现的关键词。**</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">文章：&#123;&#123; 文章 &#125;&#125;</span><br><span class="line"></span><br><span class="line">请你为上述文章生成越来越精简，且信息丰富的摘要。</span><br><span class="line"></span><br><span class="line">请重复以下两个步骤5次。</span><br><span class="line"></span><br><span class="line">步骤 1. 从文章中找出1-3项先前摘要中遗漏的信息实体“informative entity”（以“;“分隔）。</span><br><span class="line"></span><br><span class="line">步骤 2. 生成一个新的摘要，长度相同，内容更紧凑，其中涵盖先前摘要中所有的信息实体“informative entity”以及缺失实体“Missing entity”。</span><br><span class="line"></span><br><span class="line">_“缺失实体”是指：</span><br><span class="line"></span><br><span class="line">– 与主题相关。</span><br><span class="line"></span><br><span class="line">– 具体但简洁（5个或更少的字）。</span><br><span class="line"></span><br><span class="line">– 未在先前摘要中出现。</span><br><span class="line"></span><br><span class="line">– 文章中存在的，不能自行编造。</span><br><span class="line"></span><br><span class="line">– 位于文章中的任何位置。</span><br><span class="line"></span><br><span class="line">指南：</span><br><span class="line"></span><br><span class="line">– 第一次的摘要应该很长（4-5句，约80个字），但信息不具体，除了被标记的“缺失实体”外，几乎不包含任何信息。 例如，使用冗长的语言和填充词（例如“本文讨论”）填充词汇，以达到80个字。</span><br><span class="line"></span><br><span class="line">– 每个字都很重要：重写先前的摘要，使其更加流畅，并为其他信息腾出空间。</span><br><span class="line"></span><br><span class="line">– 通过融合、压缩和删除像文章讨论之类的非信息短语来腾出空间。</span><br><span class="line"></span><br><span class="line">– 摘要应该高度密集、简洁，但要容易理解，无需参考原文即可轻松理解。</span><br><span class="line"></span><br><span class="line">– “缺失实体”可以放在新摘要中的任何位置。</span><br><span class="line"></span><br><span class="line">– 不能从先前的摘要中删除信息。 如果无法腾出空间，请减少新加入的信息。</span><br><span class="line"></span><br><span class="line">记住，每个摘要的字数应该一致。</span><br><span class="line"></span><br><span class="line">回复格式为JSON。 JSON是一个长度为5的列表，其中包含“Missing_Entities”和“Denser_Summary”两个键值。</span><br></pre></td></tr></table></figure>
 
 
 
@@ -225,6 +252,7 @@
 <ol>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/24256272871">大模型Prompt技巧全解析</a></li>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/663740890">密度链 Chain of Density（CoD）－最新发布的提示工程</a></li>
+<li><a target="_blank" rel="noopener" href="https://datawhalechina.github.io/llm-cookbook/">面向开发者的LLM入门教程</a></li>
 </ol>
 
     </div>
@@ -303,7 +331,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Prompt-%E8%A6%81%E7%B4%A0"><span class="nav-number">1.</span> <span class="nav-text">Prompt 要素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prompt-%E6%A1%86%E6%9E%B6"><span class="nav-number">2.</span> <span class="nav-text">Prompt 框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RTF-%E6%A1%86%E6%9E%B6"><span class="nav-number">2.1.</span> <span class="nav-text">RTF 框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RISEN-%E6%A1%86%E6%9E%B6"><span class="nav-number">2.2.</span> <span class="nav-text">RISEN 框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RODES-%E6%A1%86%E6%9E%B6"><span class="nav-number">2.3.</span> <span class="nav-text">RODES 框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%93%BE%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.4.</span> <span class="nav-text">思考链模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%86%E5%BA%A6%E9%93%BE%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.5.</span> <span class="nav-text">密度链模式</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Prompt-%E8%A6%81%E7%B4%A0"><span class="nav-number">1.</span> <span class="nav-text">Prompt 要素</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Prompt-%E5%8E%9F%E5%88%99"><span class="nav-number">1.1.</span> <span class="nav-text">Prompt 原则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prompt-%E6%A1%86%E6%9E%B6"><span class="nav-number">2.</span> <span class="nav-text">Prompt 框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RTF-%E6%A1%86%E6%9E%B6"><span class="nav-number">2.1.</span> <span class="nav-text">RTF 框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RISEN-%E6%A1%86%E6%9E%B6"><span class="nav-number">2.2.</span> <span class="nav-text">RISEN 框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RODES-%E6%A1%86%E6%9E%B6"><span class="nav-number">2.3.</span> <span class="nav-text">RODES 框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%93%BE%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.4.</span> <span class="nav-text">思考链模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%86%E5%BA%A6%E9%93%BE%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.5.</span> <span class="nav-text">密度链模式</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
