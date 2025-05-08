@@ -21,12 +21,10 @@
     var CONFIG = {"hostname":"qylh.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="阿里云轻量应用级服务器迁移到 ECS 实例过程记录">
-<meta property="og:type" content="article">
+  <meta property="og:type" content="article">
 <meta property="og:title" content="阿里云ECS实例迁移">
 <meta property="og:url" content="https://qylh.xyz/posts/16787.html">
 <meta property="og:site_name" content="Echo">
-<meta property="og:description" content="阿里云轻量应用级服务器迁移到 ECS 实例过程记录">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1746713364288.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1746713630862.png">
@@ -36,7 +34,7 @@
 <meta property="og:image" content="https://img.qylh.xyz/blog/1746714499813.png">
 <meta property="og:image" content="https://img.qylh.xyz/blog/1746714670522.png">
 <meta property="article:published_time" content="2025-05-08T14:06:00.000Z">
-<meta property="article:modified_time" content="2025-05-08T14:38:04.870Z">
+<meta property="article:modified_time" content="2025-05-08T14:38:24.758Z">
 <meta property="article:author" content="MaHaotian">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img.qylh.xyz/blog/1746713364288.png">
@@ -198,7 +196,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2025-05-08 22:06:00 / 修改时间：22:38:04" itemprop="dateCreated datePublished" datetime="2025-05-08T22:06:00+08:00">2025-05-08</time>
+              <time title="创建时间：2025-05-08 22:06:00 / 修改时间：22:38:24" itemprop="dateCreated datePublished" datetime="2025-05-08T22:06:00+08:00">2025-05-08</time>
             </span>
 
           
@@ -212,7 +210,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>阿里云轻量应用级服务器迁移到 ECS 实例过程记录<br><img data-src="https://img.qylh.xyz/blog/1746713364288.png" alt ="" style="zoom: 60%;"></p>
+        <img data-src="https://img.qylh.xyz/blog/1746713364288.png" alt ="" style="zoom: 60%;">
 <span id="more"></span>
 
 <p>由于本科期间购买的阿里云学生活动服务器已经没有了优惠续费政策，还是承担不起原价付费。发现阿里云有个人开发者 99&#x2F;年的 ECS 实例活动- <a target="_blank" rel="noopener" href="https://www.aliyun.com/daily-act/ecs/99program">云服务器低价长效特价精选</a>。因此打算把服务器迁移到 ECS 实例上，由于没时间重新捣鼓，所以采用了镜像的方式进行迁移，以下记录迁移过程。</p>
